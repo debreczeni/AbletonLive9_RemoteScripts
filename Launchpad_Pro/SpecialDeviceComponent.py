@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/SpecialDeviceComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\SpecialDeviceComponent.py
 from _Framework.DeviceComponent import DeviceComponent
 from .consts import FADER_TYPE_STANDARD, DEVICE_MAP_CHANNEL
 
@@ -16,6 +16,8 @@ class SpecialDeviceComponent(DeviceComponent):
         if self._parameter_controls is not None:
             for control in self._parameter_controls:
                 control.update()
+
+        return
 
     def update(self):
         super(SpecialDeviceComponent, self).update()

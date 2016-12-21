@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/MPK225/MPK225.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\MPK225\MPK225.py
 from __future__ import with_statement
 from _Framework.ControlSurface import ControlSurface
 from _Framework.Layer import Layer
@@ -46,7 +46,6 @@ class MPK225(ControlSurface):
             drum_rack.set_enabled(True)
             transport = TransportComponent(name='Transport', is_enabled=False, layer=Layer(play_button=midimap['Play'], record_button=midimap['Record'], stop_button=midimap['Stop'], seek_forward_button=midimap['Forward'], seek_backward_button=midimap['Backward'], loop_button=midimap['Loop']))
             transport.set_enabled(True)
-            device = DeviceComponent(name='Device', is_enabled=False, layer=Layer(parameter_controls=midimap['Encoders']))
+            device = DeviceComponent(name='Device', is_enabled=False, layer=Layer(parameter_controls=midimap['Encoders']), device_selection_follows_track_selection=True)
             device.set_enabled(True)
             self.set_device_component(device)
-            self._device_selection_follows_track_selection = True

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Arturia/MixerComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Arturia\MixerComponent.py
 from _Framework.MixerComponent import MixerComponent as MixerComponentBase
 from .ScrollComponent import ScrollComponent
 
@@ -24,6 +24,8 @@ class MixerComponent(MixerComponentBase):
     def set_return_volume_controls(self, controls):
         for strip, control in map(None, self._return_strips, controls or []):
             strip.set_volume_control(control)
+
+        return
 
     def set_track_select_encoder(self, encoder):
         self._track_selection.set_scroll_encoder(encoder)

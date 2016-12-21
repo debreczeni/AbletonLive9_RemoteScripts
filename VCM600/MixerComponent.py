@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/VCM600/MixerComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\VCM600\MixerComponent.py
 from _Framework.MixerComponent import MixerComponent as MixerComponentBase
 from .TrackEQComponent import TrackEQComponent
 from .TrackFilterComponent import TrackFilterComponent
@@ -30,3 +30,5 @@ class MixerComponent(MixerComponentBase):
                 self._track_eqs[index].set_track(track)
             if len(self._track_filters) > index:
                 self._track_filters[index].set_track(track)
+
+        return

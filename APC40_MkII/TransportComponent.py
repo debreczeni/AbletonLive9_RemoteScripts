@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC40_MkII/TransportComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\APC40_MkII\TransportComponent.py
 import Live
 from _Framework.Control import ButtonControl
 from _Framework.SubjectSlot import subject_slot
@@ -18,6 +18,7 @@ class TransportComponent(TransportComponentBase):
         k['play_toggle_model_transform'] = play_toggle_model_transform
         super(TransportComponent, self).__init__(*a, **k)
         self._tempo_encoder_control = None
+        return
 
     def set_tempo_encoder(self, control):
         if not (not control or control.message_map_mode() in (Live.MidiMap.MapMode.relative_smooth_two_compliment, Live.MidiMap.MapMode.relative_two_compliment)):

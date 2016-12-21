@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_DirectLink/TransportViewModeSelector.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_DirectLink\TransportViewModeSelector.py
 import Live
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 from _Framework.ButtonElement import ButtonElement
@@ -31,6 +31,7 @@ class TransportViewModeSelector(ModeSelectorComponent):
         self._rwd_button = None
         self._loop_button = None
         self.application().view.remove_is_view_visible_listener('Session', self._on_view_changed)
+        return
 
     def update(self):
         super(TransportViewModeSelector, self).update()
@@ -45,6 +46,7 @@ class TransportViewModeSelector(ModeSelectorComponent):
                 self._transport.set_loop_button(None)
                 self._session.set_select_buttons(self._ffwd_button, self._rwd_button)
                 self._session.selected_scene().set_launch_button(self._loop_button)
+        return
 
     def _on_view_changed(self):
         if self.application().view.is_view_visible('Session'):

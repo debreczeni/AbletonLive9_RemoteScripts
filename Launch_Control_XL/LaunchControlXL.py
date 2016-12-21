@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launch_Control_XL/LaunchControlXL.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launch_Control_XL\LaunchControlXL.py
 from __future__ import with_statement
 from functools import partial
 from itertools import chain
@@ -27,7 +27,6 @@ class LaunchControlXL(IdentifiableControlSurface):
 
     def __init__(self, c_instance, *a, **k):
         super(LaunchControlXL, self).__init__(c_instance=c_instance, product_id_bytes=(0, 32, 41, 97), *a, **k)
-        self._device_selection_follows_track_selection = True
         self._biled_skin = make_biled_skin()
         self._default_skin = make_default_skin()
         with self.component_guard():
@@ -126,7 +125,7 @@ class LaunchControlXL(IdentifiableControlSurface):
         self._show_controlled_tracks_message(session)
 
     def _create_device(self):
-        device = DeviceComponent(name='Device_Component', is_enabled=False)
+        device = DeviceComponent(name='Device_Component', is_enabled=False, device_selection_follows_track_selection=True)
         device.layer = Layer(parameter_controls=self._pan_device_encoders, parameter_lights=self._pan_device_encoder_lights, priority=1)
         device_settings_layer = Layer(bank_buttons=self._state_buttons, prev_device_button=self._left_button, next_device_button=self._right_button, priority=1)
         mode = DeviceModeComponent(component=device, device_settings_mode=[AddLayerMode(device, device_settings_layer)], is_enabled=True)
@@ -142,6 +141,7 @@ class LaunchControlXL(IdentifiableControlSurface):
                 self.show_message('Controlling Send %s and %s' % (send_name1, send_name2))
             else:
                 self.show_message('Controlling Send %s' % send_name1)
+        return
 
     def _show_controlled_tracks_message(self, session):
         start = session.track_offset() + 1

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/KeyPad/KeyPad.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\KeyPad\KeyPad.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface

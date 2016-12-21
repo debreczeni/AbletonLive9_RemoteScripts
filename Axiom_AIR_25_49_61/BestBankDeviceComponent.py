@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_AIR_25_49_61/BestBankDeviceComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_AIR_25_49_61\BestBankDeviceComponent.py
 from _Framework.DeviceComponent import DeviceComponent
 from _Generic.Devices import parameter_bank_names, parameter_banks, DEVICE_DICT, BANK_NAME_DICT, DEVICE_BOB_DICT
 BOP_BANK_NAME = 'Best of Parameters'
@@ -6,8 +6,8 @@ BOP_BANK_NAME = 'Best of Parameters'
 class BestBankDeviceComponent(DeviceComponent):
     """ Special Device component that uses the best of bank of a device as default """
 
-    def __init__(self):
-        DeviceComponent.__init__(self)
+    def __init__(self, *a, **k):
+        super(BestBankDeviceComponent, self).__init__(*a, **k)
         new_banks = {}
         new_bank_names = {}
         self._device_banks = DEVICE_DICT
@@ -31,6 +31,7 @@ class BestBankDeviceComponent(DeviceComponent):
 
         self._parameter_controls = controls
         self.update()
+        return
 
     def _number_of_parameter_banks(self):
         result = 0

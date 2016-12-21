@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/ClipActionsComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\ClipActionsComponent.py
 import Live
 from _Framework.SubjectSlot import Subject, subject_slot
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
@@ -27,6 +27,8 @@ def duplicate_clip(song, slot, should_launch = False):
 
     except (AttributeError, TypeError):
         pass
+
+    return
 
 
 def double_clip(clip):
@@ -58,6 +60,7 @@ class ClipActionsComponent(ControlSurfaceComponent, Subject):
         self._selected_clip = None
         self._track = self.song().view.selected_track
         self._on_selection_changed()
+        return
 
     def use_selected_track(self, use_selected_track):
         self._use_selected_track = use_selected_track
@@ -115,6 +118,7 @@ class ClipActionsComponent(ControlSurfaceComponent, Subject):
         else:
             self._on_selection_changed.subject = None
         self._update_control_states()
+        return
 
     def _update_control_states(self):
         can_perform_clip_action = self.can_perform_clip_action()

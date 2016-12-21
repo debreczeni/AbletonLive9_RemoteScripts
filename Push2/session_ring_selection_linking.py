@@ -1,10 +1,10 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/session_ring_selection_linking.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\session_ring_selection_linking.py
 from __future__ import absolute_import, print_function
-from ableton.v2.base.slot import SlotManager, listens
+from ableton.v2.base.event import EventObject, listens
 from ableton.v2.base.dependency import depends
 from ableton.v2.base.util import index_if
 
-class SessionRingSelectionLinking(SlotManager):
+class SessionRingSelectionLinking(EventObject):
 
     @depends(song=None)
     def __init__(self, session_ring = None, selection_changed_notifier = None, song = None, *a, **k):
@@ -15,6 +15,7 @@ class SessionRingSelectionLinking(SlotManager):
         self._session_ring = session_ring
         self._song = song
         self._on_selection_changed.subject = selection_changed_notifier
+        return
 
     @listens('selection_changed')
     def _on_selection_changed(self):

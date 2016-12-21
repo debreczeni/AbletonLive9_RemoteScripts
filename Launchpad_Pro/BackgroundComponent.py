@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/BackgroundComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\BackgroundComponent.py
 from _Framework.SubjectSlot import SubjectSlotError
 from _Framework.BackgroundComponent import BackgroundComponent as BackgroundComponentBase
 
@@ -14,6 +14,7 @@ class BackgroundComponent(BackgroundComponentBase):
                 self.disconnect_disconnectable(slot)
             if name in self._control_map:
                 del self._control_map[name]
+        return
 
 
 class ModifierBackgroundComponent(BackgroundComponentBase):

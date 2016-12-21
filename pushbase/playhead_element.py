@@ -1,7 +1,7 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/playhead_element.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\playhead_element.py
 from __future__ import absolute_import, print_function
-from ableton.v2.base import Proxy, nop
-from ableton.v2.control_surface import ControlElement
+from ableton.v2.base import nop
+from .proxy_element import ProxyElement
 
 class NullPlayhead(object):
     notes = []
@@ -10,16 +10,8 @@ class NullPlayhead(object):
     velocity = 0.0
     wrap_around = False
     track = None
+    clip = None
     set_feedback_channels = nop
-
-
-class ProxyElement(Proxy, ControlElement):
-
-    def reset(self):
-        try:
-            super(ProxyElement, self).__getattr__('reset')()
-        except AttributeError:
-            pass
 
 
 class PlayheadElement(ProxyElement):
@@ -29,3 +21,4 @@ class PlayheadElement(ProxyElement):
 
     def reset(self):
         self.track = None
+        return

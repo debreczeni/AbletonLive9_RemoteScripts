@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_APC/MixerComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_APC\MixerComponent.py
 from _Framework.ChannelStripComponent import ChannelStripComponent as ChannelStripComponentBase
 from _Framework.MixerComponent import MixerComponent as MixerComponentBase
 TRACK_FOLD_DELAY = 5
@@ -22,6 +22,7 @@ class ChanStripComponent(ChannelStripComponentBase):
                 self._toggle_fold_ticks_delay = TRACK_FOLD_DELAY
             else:
                 self._toggle_fold_ticks_delay = -1
+        return
 
     def _on_timer(self):
         if self.is_enabled() and self._track != None and self._toggle_fold_ticks_delay > -1:
@@ -30,6 +31,7 @@ class ChanStripComponent(ChannelStripComponentBase):
                 if self._toggle_fold_ticks_delay == 0:
                     self._track.fold_state = not self._track.fold_state
                 self._toggle_fold_ticks_delay -= 1
+        return
 
 
 class MixerComponent(MixerComponentBase):

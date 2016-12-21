@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/user_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\user_component.py
 from __future__ import absolute_import, print_function
 from contextlib import contextmanager
 from ableton.v2.control_surface.mode import ModeButtonBehaviour
@@ -12,6 +12,7 @@ class UserButtonBehavior(ModeButtonBehaviour):
         super(UserButtonBehavior, self).__init__(*a, **k)
         self._previous_mode = None
         self._user_component = user_component
+        return
 
     def press_immediate(self, component, mode):
         if component.selected_mode != 'user' and self._user_component.mode == sysex.LIVE_MODE:
@@ -28,6 +29,7 @@ class UserButtonBehavior(ModeButtonBehaviour):
             raise AssertionError
             component.selected_mode = self._previous_mode
             self._previous_mode = None
+        return
 
 
 class UserComponent(UserComponentBase):

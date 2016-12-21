@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/AxiomPro/SelectButtonModeSelector.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\AxiomPro\SelectButtonModeSelector.py
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 from _Framework.ButtonElement import ButtonElement
 from _Framework.PhysicalDisplayElement import PhysicalDisplayElement
@@ -17,11 +17,13 @@ class SelectButtonModeSelector(ModeSelectorComponent):
         self._mode_display = None
         self._mode_index = 0
         self.update()
+        return
 
     def disconnect(self):
         self._mixer = None
         self._buttons = None
         self._mode_display = None
+        return
 
     def set_mode_display(self, display):
         raise isinstance(display, PhysicalDisplayElement) or AssertionError
@@ -58,6 +60,8 @@ class SelectButtonModeSelector(ModeSelectorComponent):
                     print 'Invalid mode index'
                     raise False or AssertionError
 
+        return
+
     def _toggle_value(self, value):
         if not self._mode_toggle.is_momentary():
             raise AssertionError
@@ -74,3 +78,4 @@ class SelectButtonModeSelector(ModeSelectorComponent):
             self._mode_display.display_message(mode_name)
         else:
             self._mode_display.update()
+        return

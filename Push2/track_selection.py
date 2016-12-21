@@ -1,8 +1,8 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/track_selection.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\track_selection.py
 from __future__ import absolute_import, print_function
 from functools import partial
 import Live
-from ableton.v2.base import SlotManager, Subject, const, depends, flatten, nop, listenable_property, listens, listens_group, liveobj_changed, liveobj_valid
+from ableton.v2.base import EventObject, const, depends, flatten, nop, listenable_property, listens, listens_group, liveobj_changed, liveobj_valid
 from ableton.v2.control_surface.components import SessionRingComponent, right_align_return_tracks_track_assigner
 from ableton.v2.control_surface.components.view_control import has_next_item, next_item, TrackScroller as TrackScrollerBase, ViewControlComponent as ViewControlComponentBase
 from pushbase.device_chain_utils import find_instrument_devices
@@ -18,7 +18,8 @@ def get_flattened_track(track):
     flat_track = [track]
     if track.can_show_chains and track.is_showing_chains:
         instruments = list(find_instrument_devices(track))
-        flat_track.extend([ c for c in instruments[0].chains ])
+        if instruments:
+            flat_track.extend([ c for c in instruments[0].chains ])
     return flat_track
 
 
@@ -30,7 +31,7 @@ def get_all_mixer_tracks(song):
     return tracks + list(song.return_tracks)
 
 
-class SelectedMixerTrackProvider(Subject, SlotManager):
+class SelectedMixerTrackProvider(EventObject):
 
     @depends(song=None)
     def __init__(self, song = None, *a, **k):
@@ -40,6 +41,7 @@ class SelectedMixerTrackProvider(Subject, SlotManager):
         self._on_selected_track_changed.subject = self._view
         self._on_selected_chain_changed.subject = self._view
         self._on_selected_track_changed()
+        return
 
     @listens('selected_track')
     def _on_selected_track_changed(self):
@@ -83,12 +85,12 @@ class SessionRingTrackProvider(SessionRingComponent, ItemProvider):
     @depends(set_session_highlight=const(nop))
     def __init__(self, set_session_highlight = nop, *a, **k):
         self._decorator_factory = TrackDecoratorFactory()
-        super(SessionRingTrackProvider, self).__init__(set_session_highlight=partial(set_session_highlight, include_rack_chains=True), *a, **k)
+        super(SessionRingTrackProvider, self).__init__(set_session_highlight=partial(set_session_highlight, include_rack_chains=True), tracks_to_use=self._decorated_tracks_to_use, *a, **k)
         self._artificially_selected_item = None
-        self._on_tracklist_changed.subject = self.song
         self._update_listeners()
         self._selected_track = self.register_disconnectable(SelectedMixerTrackProvider())
         self._on_selected_item_changed.subject = self._selected_track
+        return
 
     def scroll_into_view(self, mixable):
         mixable_index = self.tracks_to_use().index(mixable)
@@ -109,6 +111,7 @@ class SessionRingTrackProvider(SessionRingComponent, ItemProvider):
         self._artificially_selected_item = None
         self._selected_track.selected_mixer_track = item
         self.notify_selected_item()
+        return
 
     selected_item = property(_get_selected_item, _set_selected_item)
 
@@ -118,9 +121,17 @@ class SessionRingTrackProvider(SessionRingComponent, ItemProvider):
 
     def move(self, tracks, scenes):
         super(SessionRingTrackProvider, self).move(tracks, scenes)
-        self._on_tracklist_changed()
+        if tracks != 0:
+            self._ensure_valid_track_offset()
+            self.notify_items()
 
-    def tracks_to_use(self):
+    def _update_track_list(self):
+        super(SessionRingTrackProvider, self)._update_track_list()
+        self._ensure_valid_track_offset()
+        self.notify_items()
+        self._update_listeners()
+
+    def _decorated_tracks_to_use(self):
         return self._decorator_factory.decorate_all_mixer_tracks(get_all_mixer_tracks(self.song))
 
     def controlled_tracks(self):
@@ -137,29 +148,19 @@ class SessionRingTrackProvider(SessionRingComponent, ItemProvider):
         if self._artificially_selected_item:
             self.selected_item = self._artificially_selected_item
 
-    @listens('visible_tracks')
-    def _on_tracklist_changed(self):
-        self._notify_and_update()
-
     @listens_group('is_showing_chains')
     def _on_is_showing_chains_changed(self, _):
-        self._notify_and_update()
+        self._update_track_list()
 
     @listens_group('chains')
     def _on_chains_changed(self, _):
         if not self.song.view.selected_track.can_show_chains:
             self.selected_item = self.song.view.selected_track
-        self._notify_and_update()
+        self._update_track_list()
 
     @listens_group('devices')
     def _on_devices_changed(self, _):
-        self._notify_and_update()
-
-    def _notify_and_update(self):
-        self._ensure_valid_track_offset()
-        self.notify_items()
-        self.notify_tracks()
-        self._update_listeners()
+        self._update_track_list()
 
     def _update_listeners(self):
 
@@ -183,14 +184,14 @@ class SessionRingTrackProvider(SessionRingComponent, ItemProvider):
 
     @listens_group('return_chains')
     def _on_instrument_return_chains_changed(self, _):
-        self._notify_and_update()
+        self._update_track_list()
 
     @listens('selected_mixer_track')
     def _on_selected_item_changed(self, _):
         self.notify_selected_item()
 
 
-class TrackScroller(TrackScrollerBase, Subject):
+class TrackScroller(TrackScrollerBase, EventObject):
     __events__ = ('scrolled',)
 
     @depends(tracks_provider=None)
@@ -198,6 +199,7 @@ class TrackScroller(TrackScrollerBase, Subject):
         raise tracks_provider is not None or AssertionError
         super(TrackScroller, self).__init__(*a, **k)
         self._track_provider = tracks_provider
+        return
 
     def _all_items(self):
         return self._track_provider.tracks_to_use() + [self._song.master_track]

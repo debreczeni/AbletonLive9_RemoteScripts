@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/LV2_LX2_LC2_LD2/FaderfoxScript.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\LV2_LX2_LC2_LD2\FaderfoxScript.py
 import Live
 from consts import *
 import sys
@@ -33,6 +33,7 @@ class FaderfoxScript:
         self.show_message(self.__name__ + ' ' + self.__version__ + ' for ' + live)
         self.is_lv1 = False
         self._device_appointer = DeviceAppointer(song=self.song(), appointed_device_setter=self._set_appointed_device)
+        return
 
     def is_live_5(self):
         return hasattr(Live, 'is_live_5')

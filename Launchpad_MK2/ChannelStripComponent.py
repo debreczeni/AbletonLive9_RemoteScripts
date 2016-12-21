@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_MK2/ChannelStripComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_MK2\ChannelStripComponent.py
 from itertools import chain
 from _Framework.SubjectSlot import subject_slot
 from _Framework.Control import ButtonControl
@@ -35,14 +35,17 @@ class ChannelStripComponent(ChannelstripComponentBase):
     def _on_mute_changed(self):
         if self.is_enabled() and self._mute_button is not None:
             self._mute_button.set_light(self._mute_color_value())
+        return
 
     def _on_solo_changed(self):
         if self.is_enabled() and self._solo_button is not None:
             self._solo_button.set_light(self._solo_color_value())
+        return
 
     def _on_arm_changed(self):
         if self.is_enabled() and self._arm_button is not None:
             self._arm_button.set_light(self._arm_color_value())
+        return
 
     def _mute_color_value(self):
         if self._track != None or self.empty_color is None:
@@ -52,6 +55,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
                 return self._mute_off_value
         else:
             return self.empty_color
+        return
 
     def _solo_color_value(self):
         if self._track != None or self.empty_color is None:
@@ -61,6 +65,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
                 return self._solo_off_value
         else:
             return self.empty_color
+        return
 
     def _arm_color_value(self):
         if self._track != None or self.empty_color is None:
@@ -70,6 +75,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
                 return self._arm_off_value
         else:
             return self.empty_color
+        return
 
     def set_track(self, track):
         super(ChannelStripComponent, self).set_track(track)
@@ -85,6 +91,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
         self._update_pan_button_led()
         self._update_send_a_button_led()
         self._update_send_b_button_led()
+        return
 
     @subject_slot('value')
     def _on_volume_changed(self):
@@ -111,6 +118,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
                 self.volume_reset_button.color = 'Mixer.Volume.On'
             else:
                 self.volume_reset_button.color = 'Mixer.Volume.Off'
+        return
 
     def _update_pan_button_led(self):
         if self._track == None:
@@ -121,6 +129,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
                 self.pan_reset_button.color = 'Mixer.Pan.On'
             else:
                 self.pan_reset_button.color = 'Mixer.Pan.Off'
+        return
 
     def _update_send_a_button_led(self):
         if self._track == None or len(self._track.mixer_device.sends) < 1:
@@ -131,6 +140,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
                 self.send_a_reset_button.color = 'Sends.Send0.On'
             else:
                 self.send_a_reset_button.color = 'Sends.Send0.Off'
+        return
 
     def _update_send_b_button_led(self):
         if self._track == None or len(self._track.mixer_device.sends) < 2:
@@ -141,6 +151,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
                 self.send_b_reset_button.color = 'Sends.Send1.On'
             else:
                 self.send_b_reset_button.color = 'Sends.Send1.Off'
+        return
 
     @volume_reset_button.pressed
     def volume_reset_button(self, button):
@@ -148,6 +159,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
             volume = self._track.mixer_device.volume
             if volume.is_enabled:
                 volume.value = volume.default_value
+        return
 
     @pan_reset_button.pressed
     def pan_reset_button(self, button):
@@ -155,6 +167,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
             panning = self._track.mixer_device.panning
             if panning.is_enabled:
                 panning.value = panning.default_value
+        return
 
     @send_a_reset_button.pressed
     def send_a_reset_button(self, button):
@@ -162,6 +175,7 @@ class ChannelStripComponent(ChannelstripComponentBase):
             send = self._track.mixer_device.sends[0]
             if send.is_enabled:
                 send.value = send.default_value
+        return
 
     @send_b_reset_button.pressed
     def send_b_reset_button(self, button):
@@ -169,3 +183,4 @@ class ChannelStripComponent(ChannelstripComponentBase):
             send = self._track.mixer_device.sends[1]
             if send.is_enabled:
                 send.value = send.default_value
+        return

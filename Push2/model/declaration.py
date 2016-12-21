@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/model/declaration.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\model\declaration.py
 from __future__ import absolute_import, print_function
 from itertools import count
 
@@ -92,6 +92,7 @@ class custom_property(view_property):
         raise wrapper_class is not None or AssertionError
         super(custom_property, self).__init__(property_type=property_type, *a, **k)
         self.wrapper_class = wrapper_class
+        return
 
     def visit(self, name, visitor):
         if name == 'id':

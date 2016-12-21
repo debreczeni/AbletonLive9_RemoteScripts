@@ -1,4 +1,5 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_MxDCore/MxDCore.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_MxDCore\MxDCore.py
+import json
 import Live.Base
 from functools import partial, wraps
 import _Framework
@@ -6,7 +7,7 @@ from _Framework.Disconnectable import Disconnectable
 from _Framework.Debug import debug_print
 from MxDUtils import TupleWrapper, StringHandler
 from LomUtils import LomInformation, LomIntrospection, LomPathCalculator, LomPathResolver
-from LomTypes import ENUM_TYPES, EXPOSED_TYPE_PROPERTIES, CONTROL_SURFACES, PROPERTY_TYPES, ROOT_KEYS, get_root_prop, is_lom_object, is_cplusplus_lom_object, is_object_iterable, LomNoteOperationWarning, LomNoteOperationError, LomAttributeError, LomObjectError, verify_object_property, is_property_hidden
+from LomTypes import ENUM_TYPES, CONTROL_SURFACES, PROPERTY_TYPES, ROOT_KEYS, MFLPropertyFormats, get_exposed_lom_types, get_exposed_property_info, get_root_prop, is_lom_object, is_cplusplus_lom_object, is_object_iterable, LomNoteOperationWarning, LomNoteOperationError, LomAttributeError, LomObjectError, verify_object_property, is_property_hidden
 
 def get_current_max_device(device_id):
     raise MxDCore.instance != None and MxDCore.instance.manager != None or AssertionError
@@ -59,6 +60,7 @@ class MxDCore(object):
         self.device_contexts = {}
         self.manager = None
         self.lom_classes = []
+        self.epii_version = (-1, -1)
         self._call_handler = {'get_notes': self._object_get_notes_handler,
          'set_notes': self._object_set_notes_handler,
          'get_selected_notes': self._object_selected_notes_handler,
@@ -67,9 +69,10 @@ class MxDCore(object):
          'note': self._object_note_handler,
          'done': self._object_done_handler,
          'get_control_names': self._object_get_control_names_handler}
-        self.lom_classes = EXPOSED_TYPE_PROPERTIES.keys()
+        self.lom_classes = get_exposed_lom_types()
         self.lom_classes += LomIntrospection(_Framework).lom_classes
         self.appointed_lom_ids = {0: None}
+        return
 
     def disconnect(self):
         for dev_id in self.device_contexts.keys():
@@ -82,10 +85,12 @@ class MxDCore(object):
         self.manager = None
         del self.appointed_lom_ids
         del self.lom_classes
+        return
 
     def set_manager(self, manager):
         self.manager = manager
         manager.set_manager_callbacks(self.update_observer_listener, self.install_observer_listener, self.uninstall_observer_listener, self.update_remote_timeable)
+        self.epii_version = manager.get_epii_version()
 
     def _get_lom_object_by_lom_id(self, referring_device_id, lom_id):
         if lom_id > 0:
@@ -177,6 +182,7 @@ class MxDCore(object):
                 self.device_contexts[device_id][object_id][TYPE_KEY] = type
         else:
             self.device_contexts[device_id][object_id][TYPE_KEY] = type
+        return
 
     def _get_current_type(self, device_id, object_id):
         """get the CURRENT_TYPE of obj/obs/rmt objects"""
@@ -187,7 +193,8 @@ class MxDCore(object):
              2: 'obj',
              3: 'obs',
              4: 'rmt'}[current_type]
-        return self.device_contexts[device_id][object_id][TYPE_KEY]
+        else:
+            return self.device_contexts[device_id][object_id][TYPE_KEY]
 
     def _set_current_property(self, device_id, object_id, property_name):
         """set the name of the observed property"""
@@ -215,6 +222,7 @@ class MxDCore(object):
              PATH_LISTENER_KEY: {},
              OPEN_OPERATIONS_KEY: {},
              LAST_SENT_ID_KEY: None}
+        return
 
     def release_device_context(self, device_id, object_id, parameters):
         device_context = self.device_contexts[device_id]
@@ -240,6 +248,7 @@ class MxDCore(object):
         if found_cs_references:
             TupleWrapper.forget_tuple_wrapper_instances()
             self.appointed_lom_ids = {0: None}
+        return
 
     def path_set_path(self, device_id, object_id, parameters):
         if not isinstance(parameters, (str, unicode)):
@@ -292,7 +301,7 @@ class MxDCore(object):
             if is_object_iterable(current_object):
                 result = '%d list elements, no %s' % (len(current_object), looking_for)
             else:
-                lom_info = LomInformation(current_object)
+                lom_info = LomInformation(current_object, self.epii_version)
                 path_props = map(lambda info: info[0], lom_info.lists_of_children + lom_info.children)
                 result = concatenate_strings(sorted(path_props))
         return result
@@ -323,6 +332,7 @@ class MxDCore(object):
             self.manager.send_message(device_id, object_id, 'path_count', concatenate_strings((parameters, count)))
         else:
             self._raise(device_id, object_id, 'getcount: invalid property name')
+        return
 
     def obj_set_id(self, device_id, object_id, parameter):
         if self._is_integer(parameter) and self._lom_id_exists(device_id, int(parameter)):
@@ -340,6 +350,7 @@ class MxDCore(object):
             self._raise(device_id, object_id, 'get path: error calculating the path')
         else:
             self.manager.send_message(device_id, object_id, 'obj_path', unicode(path).strip())
+        return
 
     def obj_get_type(self, device_id, object_id, parameters):
         current_object = self._get_current_lom_object(device_id, object_id)
@@ -348,6 +359,7 @@ class MxDCore(object):
             current_object = self._disambiguate_object(current_object)
             object_type = current_object.__class__.__name__
         self.manager.send_message(device_id, object_id, 'obj_type', unicode(object_type))
+        return
 
     def obj_get_info(self, device_id, object_id, parameters):
         current_object = self._get_current_lom_object(device_id, object_id)
@@ -355,7 +367,7 @@ class MxDCore(object):
         if current_object != None:
             object_info = 'id %s\n' % unicode(self._get_lom_id_by_lom_object(current_object))
             current_object = self._disambiguate_object(current_object)
-            lom_info = LomInformation(current_object)
+            lom_info = LomInformation(current_object, self.epii_version)
             object_info += 'type %s\n' % unicode(current_object.__class__.__name__)
             object_info += '%s\n' % lom_info.description
             if not is_object_iterable(current_object):
@@ -371,14 +383,20 @@ class MxDCore(object):
                 object_info += accumulate_info(lom_info.lists_of_children, 'children') + accumulate_info(lom_info.children, 'child') + accumulate_info(lom_info.properties, 'property') + accumulate_info(lom_info.functions, 'function')
             object_info += 'done'
         self.manager.send_message(device_id, object_id, 'obj_info', unicode(object_info))
+        return
 
     def obj_set_val(self, device_id, object_id, parameters):
         self.obj_set(device_id, object_id, parameters)
 
     def _set_property_value(self, lom_object, property_name, value):
-        verify_object_property(lom_object, property_name)
+        verify_object_property(lom_object, property_name, self.epii_version)
         prop = getattr(lom_object, property_name)
-        if property_name in PROPERTY_TYPES.keys():
+        prop_info = get_exposed_property_info(type(lom_object), property_name, self.epii_version)
+        if prop_info and prop_info.from_json:
+            value = prop_info.from_json(lom_object, value)
+            if value is None:
+                raise LomAttributeError('set: invalid value')
+        elif property_name in PROPERTY_TYPES.keys():
             if not is_lom_object(value, self.lom_classes):
                 raise LomAttributeError('set: no valid object id')
             if not isinstance(value, PROPERTY_TYPES[property_name]):
@@ -399,16 +417,29 @@ class MxDCore(object):
              float)):
                 raise LomAttributeError('set: type mismatch')
             value = unicode(value)
+        elif isinstance(prop, tuple):
+            prop_info = get_exposed_property_info(type(lom_object), property_name, self.epii_version)
+            if prop_info and prop_info.format == MFLPropertyFormats.JSON:
+                package = json.loads(value)
+                value = tuple(package[property_name])
+            else:
+                raise LomAttributeError('set: unsupported property type')
         else:
             raise LomAttributeError('set: unsupported property type')
         setattr(lom_object, property_name, value)
+        return
 
     def _warn_if_using_private_property(self, device_id, object_id, property_name):
+        did_warn = False
+        warn = partial(self._warn, device_id, object_id)
         if property_name.startswith('_'):
-            self._warn(device_id, object_id, PRIVATE_PROP_WARNING)
+            warn(PRIVATE_PROP_WARNING)
+            did_warn = True
         lom_object = self._get_current_lom_object(device_id, object_id)
         if is_property_hidden(lom_object, property_name):
-            self._warn(device_id, object_id, HIDDEN_PROP_WARNING)
+            warn(HIDDEN_PROP_WARNING)
+            did_warn = True
+        return did_warn
 
     def obj_set(self, device_id, object_id, parameters):
         if not isinstance(parameters, (str, unicode)):
@@ -422,7 +453,9 @@ class MxDCore(object):
                 self._set_property_value(current_object, property_name, value)
                 self._warn_if_using_private_property(device_id, object_id, property_name)
             except LomAttributeError as e:
-                self._raise(device_id, object_id, e.message)
+                self._raise(device_id, object_id, unicode(e))
+
+        return
 
     def obj_get_val(self, device_id, object_id, parameters):
         self.obj_get(device_id, object_id, parameters)
@@ -433,23 +466,28 @@ class MxDCore(object):
         result_value = None
         if current_object != None:
             try:
-                raise parameters.isdigit() and (is_object_iterable(current_object) or AssertionError)
-                if not int(parameters) in range(len(current_object)):
+                if not (parameters.isdigit() and is_object_iterable(current_object)):
                     raise AssertionError
-                    result_value = current_object[int(parameters)]
+                    if not int(parameters) in range(len(current_object)):
+                        raise AssertionError
+                        result_value = current_object[int(parameters)]
+                    else:
+                        if not self._warn_if_using_private_property(device_id, object_id, parameters):
+                            verify_object_property(current_object, parameters, self.epii_version)
+                        result_value = getattr(current_object, parameters)
+                        if isinstance(result_value, ENUM_TYPES):
+                            result_value = int(result_value)
+                    prop_info = get_exposed_property_info(type(current_object), parameters, self.epii_version)
+                    result = prop_info and prop_info.to_json and self._str_representation_for_object(prop_info.to_json(current_object))
                 else:
-                    verify_object_property(current_object, parameters)
-                    self._warn_if_using_private_property(device_id, object_id, parameters)
-                    result_value = getattr(current_object, parameters)
-                    if isinstance(result_value, ENUM_TYPES):
-                        result_value = int(result_value)
-                result = self._str_representation_for_object(result_value)
+                    result = self._str_representation_for_object(result_value)
                 self.manager.send_message(device_id, object_id, 'obj_prop_val', result)
             except LomAttributeError as e:
-                self._warn(device_id, object_id, e.message)
+                self._warn(device_id, object_id, unicode(e))
 
         else:
             self._warn(device_id, object_id, 'get: no valid object set')
+        return
 
     def obj_call(self, device_id, object_id, parameters):
         raise isinstance(parameters, (str, unicode)) or AssertionError
@@ -461,15 +499,16 @@ class MxDCore(object):
                 handler = self._call_handler[func_name] if func_name in self._call_handler.keys() else self._object_default_call_handler
                 handler(device_id, object_id, current_object, param_comps)
             except AttributeError as e:
-                self._raise(device_id, object_id, e.message)
+                self._raise(device_id, object_id, unicode(e))
             except RuntimeError as e:
-                self._raise(device_id, object_id, u"%s: '%s'" % (e.message, parameters))
+                self._raise(device_id, object_id, u"%s: '%s'" % (unicode(e), parameters))
             except Exception as e:
                 reason = 'Invalid ' + ('arguments' if isinstance(e, TypeError) else 'syntax')
                 self._raise(device_id, object_id, u"%s: '%s'" % (reason, parameters))
 
         else:
             self._warn(device_id, object_id, u'call %s: no valid object set' % parameters)
+        return
 
     def obs_set_id(self, device_id, object_id, parameter):
         if self._is_integer(parameter) and self._lom_id_exists(device_id, int(parameter)):
@@ -477,6 +516,7 @@ class MxDCore(object):
             self._set_current_lom_id(device_id, object_id, int(parameter), 'obs')
         else:
             self._raise(device_id, object_id, 'set id: invalid id')
+        return
 
     def obs_get_id(self, device_id, object_id, parameter):
         self.manager.send_message(device_id, object_id, 'obs_id', unicode(self._get_current_lom_id(device_id, object_id)))
@@ -498,6 +538,7 @@ class MxDCore(object):
             else:
                 self._warn(device_id, object_id, 'gettype: no property with the name ' + property_name)
         self.manager.send_message(device_id, object_id, 'obs_type', unicode(result))
+        return
 
     def obs_bang(self, device_id, object_id, parameter):
         self._observer_property_callback(device_id, object_id)
@@ -512,30 +553,34 @@ class MxDCore(object):
                 self._raise(device_id, object_id, 'set id: only accepts objects of type DeviceParameter')
         else:
             self._raise(device_id, object_id, 'set id: invalid id')
+        return
 
     def _object_attr_path_iter(self, device_id, object_id, path_components):
         """Returns a generator of (object, attribute) tuples along the given path.
         It won't pack objects into a TupleWrapper."""
         if len(path_components) == 0:
             return
-        raise path_components[0] in ROOT_KEYS or AssertionError
-        cur_object = get_root_prop(get_current_max_device(device_id), path_components[0])
-        for component in path_components[1:]:
-            if cur_object == None:
-                return
-            yield (cur_object, component)
-            if not (component.isdigit() and is_object_iterable(cur_object)):
-                raise AssertionError
-                index = int(component)
-                if index >= 0 and index < len(cur_object):
-                    cur_object = cur_object[index]
+        else:
+            raise path_components[0] in ROOT_KEYS or AssertionError
+            cur_object = get_root_prop(get_current_max_device(device_id), path_components[0])
+            for component in path_components[1:]:
+                if cur_object == None:
+                    return
+                yield (cur_object, component)
+                if not (component.isdigit() and is_object_iterable(cur_object)):
+                    raise AssertionError
+                    index = int(component)
+                    if index >= 0 and index < len(cur_object):
+                        cur_object = cur_object[index]
+                    else:
+                        return
                 else:
-                    return
-            else:
-                try:
-                    cur_object = getattr(cur_object, component)
-                except Exception:
-                    return
+                    try:
+                        cur_object = getattr(cur_object, component)
+                    except Exception:
+                        return
+
+            return
 
     def _object_from_path(self, device_id, object_id, path_components, must_exist):
         lom_object = None
@@ -544,7 +589,7 @@ class MxDCore(object):
             lom_object = resolver.lom_object
         except (LomAttributeError, LomObjectError) as e:
             if must_exist or isinstance(e, LomObjectError):
-                self._raise(device_id, object_id, e.message)
+                self._raise(device_id, object_id, unicode(e))
 
         return lom_object
 
@@ -590,6 +635,7 @@ class MxDCore(object):
                 new_listeners[lom_object, attribute] = listener
 
         object_context[PATH_LISTENER_KEY] = new_listeners
+        return
 
     def _uninstall_path_listeners(self, device_id, object_id):
         device_context = self.device_contexts[device_id]
@@ -598,6 +644,8 @@ class MxDCore(object):
         for (lom_object, attribute), listener in old_listeners.iteritems():
             if lom_object != None and getattr(lom_object, attribute + '_has_listener')(listener):
                 getattr(lom_object, 'remove_%s_listener' % attribute)(listener)
+
+        return
 
     def _path_listener_callback(self, device_id, object_id):
         device_context = self.device_contexts[device_id]
@@ -627,7 +675,7 @@ class MxDCore(object):
             return
 
     def _object_default_call_handler(self, device_id, object_id, lom_object, parameters):
-        verify_object_property(lom_object, parameters[0])
+        verify_object_property(lom_object, parameters[0], self.epii_version)
         self._warn_if_using_private_property(device_id, object_id, parameters[0])
         function = getattr(lom_object, parameters[0])
         result = function(*parameters[1:])
@@ -677,7 +725,7 @@ class MxDCore(object):
                 raise len(operations[NOTE_BUFFER_KEY]) >= operations[NOTE_COUNT_KEY] and LomNoteOperationError('too many notes')
             operations[NOTE_BUFFER_KEY].append(note_from_parameters(parameters[1:]))
         except LomNoteOperationError as e:
-            self._raise(device_id, object_id, e.message)
+            self._raise(device_id, object_id, unicode(e))
             self._stop_note_operation(device_id, object_id)
 
     def _selector_for_note_operation(self, note_operation):
@@ -701,7 +749,7 @@ class MxDCore(object):
                 selector = self._selector_for_note_operation(operation)
                 getattr(lom_object, selector)(notes)
             except LomNoteOperationWarning as w:
-                self._warn(device_id, object_id, w.message)
+                self._warn(device_id, object_id, unicode(w))
 
             self._stop_note_operation(device_id, object_id)
         else:
@@ -782,6 +830,7 @@ class MxDCore(object):
                     listener_callback()
                 elif hasattr(current_object, transl_prop_name):
                     self._warn(device_id, object_id, 'property cannot be listened to')
+        return
 
     def _observer_uninstall_listener(self, device_id, object_id):
         device_context = self.device_contexts[device_id]
@@ -796,10 +845,13 @@ class MxDCore(object):
             if getattr(current_object, transl_prop_name + '_has_listener')(listener_callback):
                 getattr(current_object, 'remove_%s_listener' % transl_prop_name)(listener_callback)
         object_context[PROP_LISTENER_KEY] = (None, None, None)
+        return
 
-    def _observer_property_message_type(self, prop):
+    def _observer_property_message_type(self, prop, prop_info):
         prop_type = None
-        if isinstance(prop, (str, unicode)):
+        if prop_info and prop_info.format == MFLPropertyFormats.JSON:
+            prop_type = 'obs_dict_val'
+        elif isinstance(prop, (str, unicode)):
             prop_type = 'obs_string_val'
         elif isinstance(prop, (int, bool)):
             prop_type = 'obs_int_val'
@@ -814,25 +866,27 @@ class MxDCore(object):
     def _observer_property_callback(self, device_id, object_id, *args):
         current_object = self._get_current_lom_object(device_id, object_id)
         property_name = self._get_current_property(device_id, object_id)
+        prop_info = get_exposed_property_info(type(current_object), property_name, self.epii_version)
         if len(args) > 0:
             formatter = lambda arg: unicode(int(arg) if isinstance(arg, bool) else arg)
-            args_type = self._observer_property_message_type(args if len(args) > 1 else args[0])
+            args_type = self._observer_property_message_type(args if len(args) > 1 else args[0], prop_info)
             result = concatenate_strings(map(formatter, args))
             self.manager.send_message(device_id, object_id, args_type, result)
         elif not (current_object != None and property_name != '' and not isinstance(current_object, TupleWrapper)):
             raise AssertionError
             if hasattr(current_object, property_name):
                 prop = getattr(current_object, property_name)
-                prop_type = self._observer_property_message_type(prop)
+                prop_type = self._observer_property_message_type(prop, prop_info)
                 if prop_type == None:
                     self._warn(device_id, object_id, 'unsupported property type')
                 else:
-                    prop_value = self._str_representation_for_object(prop, mark_ids=False)
+                    prop_value = self._str_representation_for_object(prop_info.to_json(current_object) if prop_info and prop_info.to_json else prop, mark_ids=False)
                     self.manager.send_message(device_id, object_id, prop_type, prop_value)
             elif hasattr(current_object, property_name + '_has_listener'):
                 self.manager.send_message(device_id, object_id, 'obs_string_val', 'bang')
             else:
                 self._warn(device_id, object_id, 'property should be listenable')
+        return
 
     def _observer_id_callback(self, device_id, object_id):
         if not self._get_current_property(device_id, object_id) == u'id':
@@ -844,6 +898,7 @@ class MxDCore(object):
             current_id = 0 if current_object == None else self._get_current_lom_id(device_id, object_id)
             object_context[LAST_SENT_ID_KEY] = current_id != object_context[LAST_SENT_ID_KEY] and current_id
             self.manager.send_message(device_id, object_id, 'obs_id_val', unicode(current_id))
+        return
 
     def update_remote_timeable(self, device_id, object_id):
         self.update_device_context(device_id, object_id)

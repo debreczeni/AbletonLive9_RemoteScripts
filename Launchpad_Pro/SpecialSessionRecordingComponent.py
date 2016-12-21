@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/SpecialSessionRecordingComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\SpecialSessionRecordingComponent.py
 import Live
 from _Framework.ClipCreator import ClipCreator
 from _Framework.SessionRecordingComponent import SessionRecordingComponent, track_playing_slot, track_is_recording, subject_slot
@@ -14,6 +14,7 @@ class SpecialSessionRecordingComponent(SessionRecordingComponent):
         self._modes_component = None
         self._note_mode_name = None
         super(SpecialSessionRecordingComponent, self).__init__(ClipCreator(), True, *a, **k)
+        return
 
     def set_modes_component(self, modes_component):
         self._modes_component = modes_component
@@ -43,6 +44,7 @@ class SpecialSessionRecordingComponent(SessionRecordingComponent):
                 self._start_recording()
         elif not self._stop_recording():
             self._start_recording()
+        return
 
     def _prepare_new_slot(self, track):
         song = self.song()

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad/Launchpad.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad\Launchpad.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface
@@ -84,6 +84,7 @@ class Launchpad(ControlSurface):
         self._config_button = None
         self._user_byte_write_button.send_value(0)
         self._user_byte_write_button = None
+        return
 
     def refresh_state(self):
         ControlSurface.refresh_state(self)

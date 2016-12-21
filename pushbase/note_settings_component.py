@@ -1,9 +1,9 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/note_settings_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\note_settings_component.py
 from __future__ import absolute_import, print_function
 import math
 from functools import partial
 from itertools import imap, chain, izip_longest
-from ableton.v2.base import clamp, find_if, forward_property, listens, listens_group, Subject, task
+from ableton.v2.base import clamp, find_if, forward_property, listens, listens_group, task
 from ableton.v2.control_surface import defaults, Component
 from ableton.v2.control_surface.control import ButtonControl, ControlManager, EncoderControl, StepEncoderControl
 from ableton.v2.control_surface.elements import DisplayDataSource
@@ -11,7 +11,7 @@ from ableton.v2.control_surface.mode import ModesComponent, Mode, AddLayerMode
 from .action_with_options_component import OptionsComponent
 from .consts import CHAR_ELLIPSIS, GRAPH_VOL
 
-class NoteSettingBase(ControlManager, Subject):
+class NoteSettingBase(ControlManager):
     __events__ = ('setting_changed',)
     attribute_index = -1
     encoder = EncoderControl()
@@ -20,6 +20,7 @@ class NoteSettingBase(ControlManager, Subject):
         super(NoteSettingBase, self).__init__(*a, **k)
         self._min_max_value = None
         self._grid_resolution = grid_resolution
+        return
 
     def encoder_value_to_attribute(self, value):
         raise NotImplementedError
@@ -247,6 +248,7 @@ class DetailViewRestorerMode(Mode):
         super(DetailViewRestorerMode, self).__init__(*a, **k)
         self._app = application
         self._view_to_restore = None
+        return
 
     def enter_mode(self):
         clip_view_visible = self._app.view.is_view_visible('Detail/Clip', False)
@@ -261,6 +263,8 @@ class DetailViewRestorerMode(Mode):
                 self._view_to_restore = None
         except RuntimeError:
             pass
+
+        return
 
 
 class NoteEditorSettingsComponent(ModesComponent):
@@ -296,7 +300,7 @@ class NoteEditorSettingsComponent(ModesComponent):
         self._initial_encoders = None
         self.add_mode('disabled', [])
         self.add_mode('about_to_show', [AddLayerMode(self, initial_encoder_layer), (self._show_settings_task.restart, self._show_settings_task.kill)])
-        self.add_mode('enabled', [DetailViewRestorerMode(self.application()),
+        self.add_mode('enabled', [DetailViewRestorerMode(self.application),
          AddLayerMode(self, encoder_layer),
          self._update_available_modes,
          self._settings_modes])
@@ -306,6 +310,7 @@ class NoteEditorSettingsComponent(ModesComponent):
         self._on_selected_track_changed.subject = self.song.view
         self.__on_full_velocity_changed.subject = self.settings
         self.__on_setting_changed.subject = self.settings
+        return
 
     automation_layer = forward_property('_automation')('layer')
     mode_selector_layer = forward_property('_mode_selector')('layer')
@@ -322,9 +327,10 @@ class NoteEditorSettingsComponent(ModesComponent):
     def add_editor(self, editor):
         raise editor != None or AssertionError
         self._editors.append(editor)
-        self._on_active_steps_changed.add_subject(editor)
+        self._on_active_note_regions_changed.add_subject(editor)
         self._on_notes_changed.replace_subjects(self._editors)
         self.__on_modify_all_notes_changed.add_subject(editor)
+        return
 
     def set_display_line(self, line):
         self._mode_selector.set_display_line(line)
@@ -377,9 +383,9 @@ class NoteEditorSettingsComponent(ModesComponent):
 
     def _show_clip_view(self):
         try:
-            view = self.application().view
+            view = self.application.view
             if view.is_view_visible('Detail/DeviceChain', False) and not view.is_view_visible('Detail/Clip', False):
-                self.application().view.show_view('Detail/Clip')
+                self.application.view.show_view('Detail/Clip')
         except RuntimeError:
             pass
 
@@ -395,10 +401,10 @@ class NoteEditorSettingsComponent(ModesComponent):
         if self.selected_mode == 'about_to_show' and any(imap(lambda e: e and e.is_pressed(), self._initial_encoders or [])):
             self._show_settings()
 
-    @listens_group('active_steps')
-    def _on_active_steps_changed(self, editor):
+    @listens_group('active_note_regions')
+    def _on_active_note_regions_changed(self, _):
         if self.is_enabled():
-            all_steps = list(set(chain.from_iterable(imap(lambda e: e.active_steps, self._editors))))
+            all_steps = list(set(chain.from_iterable(imap(lambda e: e.active_note_regions, self._editors))))
             self._automation.selected_time = all_steps
             self._update_note_infos()
             if len(all_steps) > 0:
@@ -422,6 +428,7 @@ class NoteEditorSettingsComponent(ModesComponent):
     def _on_detail_clip_changed(self):
         clip = self.song.view.detail_clip if self.is_enabled() else None
         self._automation.clip = clip
+        return
 
     @listens('selected_track')
     def _on_selected_track_changed(self):
@@ -469,6 +476,7 @@ class NoteEditorSettingsComponent(ModesComponent):
 
             edit_all_notes_active = find_if(lambda e: e.modify_all_notes_enabled, self._editors) != None
             self.settings.set_info_message('Tweak to add note' if not edit_all_notes_active and not min_max_values else '')
+        return
 
     def _show_settings(self):
         if self.selected_mode != 'enabled':
@@ -480,7 +488,9 @@ class NoteEditorSettingsComponent(ModesComponent):
         if option == 0:
             self.selected_setting = 'note_settings'
         elif option == 1:
+            self._on_active_note_regions_changed(None)
             self.selected_setting = 'automation'
+        return
 
     def _try_hide_settings(self):
         if self._request_hide and not any(imap(lambda e: e and e.is_pressed(), self._encoders or [])):

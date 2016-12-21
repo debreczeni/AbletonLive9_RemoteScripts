@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_AIR_25_49_61/SingleFaderButtonModeSelector.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_AIR_25_49_61\SingleFaderButtonModeSelector.py
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 from consts import *
 
@@ -15,6 +15,7 @@ class SingleFaderButtonModeSelector(ModeSelectorComponent):
         self._flashing_button_on = True
         self._flashing_reset_delay = 0
         self._register_timer_callback(self._on_timer)
+        return
 
     def disconnect(self):
         self._unregister_timer_callback(self._on_timer)
@@ -22,6 +23,7 @@ class SingleFaderButtonModeSelector(ModeSelectorComponent):
         self._mixer = None
         self._fader_button = None
         self._flashing_button = None
+        return
 
     def number_of_modes(self):
         return self._number_of_modes
@@ -46,6 +48,7 @@ class SingleFaderButtonModeSelector(ModeSelectorComponent):
                 else:
                     strip.set_arm_button(fader_button)
                     self._mode_toggle.send_value(RED_FULL, True)
+        return
 
     def _on_timer(self):
         if self._flashing_button != None:
@@ -54,6 +57,7 @@ class SingleFaderButtonModeSelector(ModeSelectorComponent):
             else:
                 self._flash()
                 self._flashing_reset_delay = 5
+        return
 
     def _flash(self):
         self._flashing_button.turn_off() if self._flashing_button_on else self._flashing_button.turn_on()

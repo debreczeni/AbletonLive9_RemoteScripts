@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_APC/SessionComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_APC\SessionComponent.py
 from _Framework.SessionComponent import SessionComponent as SessionComponentBase
 
 class SessionComponent(SessionComponentBase):
@@ -8,7 +8,7 @@ class SessionComponent(SessionComponentBase):
         if not track_offset >= 0:
             raise AssertionError
             self._is_linked() and self._unlink()
-        self.set_offsets(track_offset, 0)
+        self.set_offsets(track_offset, self.scene_offset())
         self._link()
 
     def unlink(self):

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/hardware_settings_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\hardware_settings_component.py
 from __future__ import absolute_import, print_function
 import Live
 from ableton.v2.base import clamp, listens, task
@@ -24,11 +24,17 @@ class HardwareSettingsComponent(Component):
         self._fade_in_delay_task = self._tasks.add(task.sequence(task.wait(LED_FADE_IN_DELAY), task.run(self._led_brightness_timer.restart))).kill()
         self.__on_led_brightness_changed.subject = settings
         self.__on_display_brightness_changed.subject = settings
+        return
 
     def disconnect(self):
         super(HardwareSettingsComponent, self).disconnect()
         self._led_brightness_timer.stop()
         self._led_brightness_timer = None
+        return
+
+    def hardware_initialized(self):
+        self.fade_in_led_brightness(self._settings.led_brightness)
+        self._display_brightness_element.send_value(self._settings.display_brightness)
 
     def fade_in_led_brightness(self, target_brightness):
         raise MIN_BRIGHTNESS_FOR_FADE_IN <= target_brightness <= self._settings.max_led_brightness or AssertionError

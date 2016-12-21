@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Serato/Serato.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Serato\Serato.py
 from __future__ import with_statement
 import Live
 import libInterprocessCommsAPIPython
@@ -31,7 +31,6 @@ class Serato(ControlSurface):
     def __init__(self, c_instance):
         publish_in_cs_list = True
         ControlSurface.__init__(self, c_instance, not publish_in_cs_list)
-        self._device_selection_follows_track_selection = True
         with self.component_guard():
             self._matrix = None
             self._session = None
@@ -52,11 +51,13 @@ class Serato(ControlSurface):
             self._setup_device_control()
             self._session.set_mixer(self._mixer)
             self.set_highlighting_session_component(self._session)
+        return
 
     def disconnect(self):
         ControlSurface.disconnect(self)
         self._serato_interface.PySCA_DeinitializeClipControl()
         self._serato_interface = None
+        return
 
     def connect_script_instances(self, instanciated_scripts):
         """ Called by the Application as soon as all scripts are initialized.
@@ -133,7 +134,7 @@ class Serato(ControlSurface):
     def _setup_device_control(self):
         is_momentary = True
         self._device_on_off_button = ButtonElement(not is_momentary, MIDI_NOTE_TYPE, 0, 0)
-        self._device = SpecialDeviceComponent()
+        self._device = SpecialDeviceComponent(device_selection_follows_track_selection=True)
         self._device.set_serato_interface(self._serato_interface)
         self._device.set_parameter_controls(tuple([ SliderElement(MIDI_CC_TYPE, 0, 0) for index in range(NUM_PARAMS) ]))
         self._device.set_on_off_button(self._device_on_off_button)

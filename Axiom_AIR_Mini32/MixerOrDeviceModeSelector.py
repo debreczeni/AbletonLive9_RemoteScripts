@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_AIR_Mini32/MixerOrDeviceModeSelector.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_AIR_Mini32\MixerOrDeviceModeSelector.py
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 
 class MixerOrDeviceModeSelector(ModeSelectorComponent):
@@ -31,6 +31,7 @@ class MixerOrDeviceModeSelector(ModeSelectorComponent):
         self._mixer_modes = None
         self._device_nav = None
         ModeSelectorComponent.disconnect(self)
+        return
 
     def number_of_modes(self):
         return 3
@@ -68,3 +69,4 @@ class MixerOrDeviceModeSelector(ModeSelectorComponent):
                 self._session.set_page_right_button(None)
                 self._device.set_on_off_button(None)
                 self._mixer.selected_strip().set_arm_button(None)
+        return

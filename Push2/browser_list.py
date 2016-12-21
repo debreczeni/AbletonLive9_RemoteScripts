@@ -1,11 +1,11 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/browser_list.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\browser_list.py
 from __future__ import absolute_import, print_function
 import Live
 from itertools import islice
-from ableton.v2.base import Subject, listenable_property, clamp, nop
+from ableton.v2.base import EventObject, listenable_property, clamp, nop
 from .model.uniqueid import UniqueIdMixin
 
-class BrowserList(Subject, UniqueIdMixin):
+class BrowserList(EventObject, UniqueIdMixin):
     LAZY_ACCESS_COUNT = 1000
     LAZY_ACCESS_THRESHOLD = LAZY_ACCESS_COUNT - 100
 
@@ -70,7 +70,8 @@ class BrowserList(Subject, UniqueIdMixin):
     def selected_item(self):
         if self.selected_index == -1:
             return None
-        return self.items[self.selected_index]
+        else:
+            return self.items[self.selected_index]
 
     @listenable_property
     def selected_index(self):

@@ -1,10 +1,10 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/browser_model.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\browser_model.py
 from __future__ import absolute_import, print_function
 import os
 from functools import partial
 from itertools import imap, chain
 import Live
-from ableton.v2.base import first, nop, find_if, index_if, in_range, lazy_attribute, BooleanContext, SlotManager, Subject
+from ableton.v2.base import first, nop, find_if, index_if, in_range, lazy_attribute, BooleanContext, EventObject
 from pushbase.scrollable_list import ActionList, ActionListItem
 from pushbase.browser_util import filter_type_for_hotswap_target
 
@@ -75,7 +75,7 @@ class BrowserList(ActionList):
         self.browser = browser
 
 
-class BrowserModel(Subject, SlotManager):
+class BrowserModel(EventObject):
     """
     A browser model provides the data to a browser component as a
     sequence of BrowserLists.
@@ -220,6 +220,7 @@ class FullBrowserModel(BrowserModel):
 
         if last_seleced_list_index != None:
             self.notify_selection_updated(last_seleced_list_index)
+        return
 
     def _push_content_list(self):
         if self._num_contents < len(self._contents):
@@ -280,6 +281,7 @@ class FullBrowserModel(BrowserModel):
             self._finalize_content_lists_change()
             if old_num_contents != self._num_contents:
                 self.notify_content_lists()
+        return
 
 
 class QueryingBrowserModel(FullBrowserModel):

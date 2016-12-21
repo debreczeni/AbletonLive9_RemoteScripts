@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/decoration.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\decoration.py
 from __future__ import absolute_import, print_function
 from itertools import ifilter
 from ableton.v2.base import CompoundDisconnectable, Proxy
@@ -49,6 +49,8 @@ class LiveObjectDecorator(CompoundDisconnectable, Proxy):
         self._live_object = live_object
         for name, value in additional_properties.iteritems():
             setattr(self, name, value)
+
+        return
 
     def __eq__(self, other):
         return id(self) == id(other) or self._live_object == other

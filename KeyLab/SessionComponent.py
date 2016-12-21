@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/KeyLab/SessionComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\KeyLab\SessionComponent.py
 from _Arturia.SessionComponent import SessionComponent as SessionComponentBase
 
 class SessionComponent(SessionComponentBase):

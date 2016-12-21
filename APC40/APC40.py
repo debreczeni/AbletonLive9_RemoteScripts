@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC40/APC40.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\APC40\APC40.py
 from __future__ import with_statement
 from functools import partial
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
@@ -45,8 +45,6 @@ class APC40(APC, OptimizedControlSurface):
             self.set_device_component(self._device)
             for component in self.components:
                 component.set_enabled(False)
-
-        self._device_selection_follows_track_selection = True
 
     def _with_shift(self, button):
         return ComboElement(button, modifiers=[self._shift_button])
@@ -141,7 +139,7 @@ class APC40(APC, OptimizedControlSurface):
         self._mixer.master_strip().layer = Layer(volume_control=self._master_volume_control, select_button=self._master_select_button)
 
     def _create_device(self):
-        self._device = DeviceComponent(name='Device_Component', is_enabled=False, layer=Layer(bank_buttons=self._device_bank_buttons, on_off_button=self._device_on_off_button), use_fake_banks=True)
+        self._device = DeviceComponent(name='Device_Component', is_enabled=False, layer=Layer(bank_buttons=self._device_bank_buttons, on_off_button=self._device_on_off_button), use_fake_banks=True, device_selection_follows_track_selection=True)
         ChannelTranslationSelector(8, name='Control_Translations')
         self._device.set_parameter_controls(tuple(self._device_param_controls_raw))
 
@@ -160,6 +158,8 @@ class APC40(APC, OptimizedControlSurface):
                 self._mixer.channel_strip(index).set_send_controls((None, None, None))
                 control.set_channel(0)
 
+            return None
+
         def set_send_controls(send_index):
             for index, control in enumerate(self._global_param_controls):
                 self._mixer.channel_strip(index).set_pan_control(None)
@@ -167,6 +167,8 @@ class APC40(APC, OptimizedControlSurface):
                 send_controls[send_index] = control
                 self._mixer.channel_strip(index).set_send_controls(send_controls)
                 control.set_channel(send_index + 1)
+
+            return
 
         encoder_modes = ModesComponent(name='Track_Control_Modes', is_enabled=False)
         encoder_modes.add_mode('pan', [set_pan_controls])

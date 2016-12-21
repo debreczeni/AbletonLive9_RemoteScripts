@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/TargetTrackComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\TargetTrackComponent.py
 from _Framework.SubjectSlot import Subject, subject_slot, subject_slot_group
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
 
@@ -60,6 +60,7 @@ class TargetTrackComponent(ControlSurfaceComponent, Subject):
         if self._target_track != new_target:
             self._target_track = new_target
         self.notify_target_track()
+        return
 
     def _refresh_armed_track_stack(self, all_tracks):
         for track in self._armed_track_stack:

@@ -1,6 +1,6 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/parameter_slot_description.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\parameter_slot_description.py
 from __future__ import absolute_import, print_function
-from ableton.v2.base import find_if, listens_group, liveobj_valid, Subject, SlotManager
+from ableton.v2.base import find_if, listens_group, liveobj_valid, EventObject
 RESULTING_NAME_KEY = 'ResultingName'
 CONDITION_NAME_KEY = 'ConditionName'
 CONDITIONS_LIST_NAME_KEY = 'ConditionsListName'
@@ -14,7 +14,7 @@ def find_parameter(name, host):
     return find_if(lambda p: p.original_name == name, parameters)
 
 
-class ParameterSlotDescription(Subject, SlotManager):
+class ParameterSlotDescription(EventObject):
     """
     Description class that allows chosing a parameter (name) based on
     the values of other parameters. To retrieve the chosen parameter name
@@ -34,6 +34,7 @@ class ParameterSlotDescription(Subject, SlotManager):
         self._default_parameter_name = ''
         self._conditions = []
         self._cached_content = None
+        return
 
     def _calc_content(self):
         content = self._default_parameter_name

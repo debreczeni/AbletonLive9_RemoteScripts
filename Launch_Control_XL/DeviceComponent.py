@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launch_Control_XL/DeviceComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launch_Control_XL\DeviceComponent.py
 import Live
 from _Framework.Control import control_list, ButtonControl
 from _Framework.DeviceComponent import DeviceComponent as DeviceComponentBase
@@ -45,6 +45,7 @@ class DeviceModeComponent(EnablingModesComponent):
         super(DeviceModeComponent, self).__init__(*a, **k)
         raise device_settings_mode is not None or AssertionError
         self._device_settings_mode = tomode(device_settings_mode)
+        return
 
     @device_mode_button.released_immediately
     def device_mode_button(self, button):

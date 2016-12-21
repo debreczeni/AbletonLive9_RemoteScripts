@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchkey/Launchkey.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchkey\Launchkey.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface
@@ -72,7 +72,6 @@ class Launchkey(ControlSurface):
         self._identity_response = identity_response
         with self.component_guard():
             self.set_pad_translations(PAD_TRANSLATIONS)
-            self._device_selection_follows_track_selection = True
             self._suggested_input_port = 'Launchkey InControl'
             self._suggested_output_port = 'Launchkey InControl'
             self._has_sliders = True
@@ -91,6 +90,8 @@ class Launchkey(ControlSurface):
             self._setup_navigation()
             for component in self.components:
                 component.set_enabled(False)
+
+        return
 
     def refresh_state(self):
         ControlSurface.refresh_state(self)
@@ -122,6 +123,7 @@ class Launchkey(ControlSurface):
 
                 self._mixer.selected_strip().set_volume_control(self._master_slider)
             self.request_rebuild_midi_map()
+        return
 
     def disconnect(self):
         ControlSurface.disconnect(self)
@@ -138,6 +140,7 @@ class Launchkey(ControlSurface):
         self._transport_view_modes = None
         self._send_midi(LED_FLASHING_OFF)
         self._send_midi(LIVE_MODE_OFF)
+        return
 
     def build_midi_map(self, midi_map_handle):
         self._current_midi_map = midi_map_handle
@@ -210,7 +213,7 @@ class Launchkey(ControlSurface):
     def _setup_device(self):
         encoders = [ make_encoder(21 + index, 'Device_Control_%d' % index) for index in xrange(8) ]
         self._encoders = tuple(encoders)
-        device = DeviceComponent()
+        device = DeviceComponent(device_selection_follows_track_selection=True)
         device.name = 'Device_Component'
         self.set_device_component(device)
         device.set_parameter_controls(self._encoders)

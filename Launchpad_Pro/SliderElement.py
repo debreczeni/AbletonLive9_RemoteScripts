@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/SliderElement.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\SliderElement.py
 from _Framework.SliderElement import SliderElement as SliderElementBase
 from _Framework.Skin import Skin, SkinColorMissingError
 import consts
@@ -13,6 +13,7 @@ class SliderElement(SliderElementBase):
         self._color = 0
         super(SliderElement, self).__init__(msg_type, channel, identifier, *a, **k)
         self.set_needs_takeover(False)
+        return
 
     def set_index(self, index):
         self._header = consts.SYSEX_STANDARD_PREFIX + consts.SYSEX_PARAM_BYTE_FADER_SETUP + (index,)
@@ -46,6 +47,7 @@ class SliderElement(SliderElementBase):
                 color_value = 0
             msg = self._header + (self._type, color_value, value) + consts.SYSEX_STANDARD_SUFFIX
             self._send_midi(msg)
+        return
 
     def update(self):
         if len(self.resource.owners) > 0:

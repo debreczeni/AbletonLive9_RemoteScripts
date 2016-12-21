@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/KeyLab/KeyLab.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\KeyLab\KeyLab.py
 from __future__ import with_statement
 from itertools import izip
 import Live
@@ -29,7 +29,7 @@ SLIDER_MSG_IDS = (73, 75, 79, 72, 80, 81, 82, 83, 85)
 PAD_MSG_IDS = xrange(36, 52)
 BUTTON_HARDWARE_AND_MESSAGE_IDS = {'session_record_button': (91, 5),
  'stop_all_clips_button': (92, 4),
- 'stop_button': (89, 1),
+ 'stop_button': (89, 102),
  'play_button': (88, 2),
  'record_button': (90, 6),
  'loop_button': (93, 55),
@@ -45,7 +45,8 @@ def get_button_identifier_by_name(identifier):
     id_pair = BUTTON_HARDWARE_AND_MESSAGE_IDS.get(identifier, None)
     if id_pair is not None:
         return id_pair[1]
-    return id_pair
+    else:
+        return id_pair
 
 
 class KeyLab(ArturiaControlSurface):
@@ -94,10 +95,9 @@ class KeyLab(ArturiaControlSurface):
         self._display_line2_data_source.set_display_string('Ableton Live')
 
     def _create_device(self):
-        self._device = DeviceComponent(name='Device', is_enabled=False, layer=Layer(parameter_controls=self._device_encoders))
+        self._device = DeviceComponent(name='Device', is_enabled=False, layer=Layer(parameter_controls=self._device_encoders), device_selection_follows_track_selection=True)
         self._device.set_enabled(True)
         self.set_device_component(self._device)
-        self._device_selection_follows_track_selection = True
         self._device_navigation = DeviceNavigationComponent(name='Device_Navigation', is_enabled=False, layer=Layer(device_nav_left_button=self._device_left_button, device_nav_right_button=self._device_right_button))
         self._device_navigation.set_enabled(True)
 

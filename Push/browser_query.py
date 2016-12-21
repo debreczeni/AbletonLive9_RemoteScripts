@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/browser_query.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\browser_query.py
 from __future__ import absolute_import, print_function
 from functools import partial
 from ableton.v2.base import first, find_if, const
@@ -34,6 +34,7 @@ class PathBrowserQuery(BrowserQuery):
         super(PathBrowserQuery, self).__init__(*a, **k)
         self.path = path
         self.root_name = root_name
+        return
 
     def query(self, browser):
         return self._find_item(self.path, [getattr(browser, self.root_name)], browser) or []
@@ -62,6 +63,7 @@ class TagBrowserQuery(BrowserQuery):
         self.include = include
         self.exclude = exclude
         self.root_name = root_name
+        return
 
     def query(self, browser):
         return filter(lambda item: item.name not in self.exclude, sum(map(partial(self._extract_path, browser=browser), self.include), tuple()))

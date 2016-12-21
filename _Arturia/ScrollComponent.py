@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Arturia/ScrollComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Arturia\ScrollComponent.py
 from _Framework.ScrollComponent import ScrollComponent as ScrollComponentBase
 from _Framework.Control import EncoderControl
 
@@ -18,3 +18,4 @@ class ScrollComponent(ScrollComponentBase):
             scroll_step = self._do_scroll_up
         if scroll_step is not None:
             scroll_step()
+        return

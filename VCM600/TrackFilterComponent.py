@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/VCM600/TrackFilterComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\VCM600\TrackFilterComponent.py
 import Live
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
 from _Framework.EncoderElement import EncoderElement
@@ -25,6 +25,7 @@ class TrackFilterComponent(ControlSurfaceComponent):
         self._device = None
         self._freq_control = None
         self._reso_control = None
+        return
 
     def disconnect(self):
         if self._freq_control != None:
@@ -37,6 +38,7 @@ class TrackFilterComponent(ControlSurfaceComponent):
             self._track.remove_devices_listener(self._on_devices_changed)
             self._track = None
         self._device = None
+        return
 
     def on_enabled_changed(self):
         self.update()
@@ -54,6 +56,7 @@ class TrackFilterComponent(ControlSurfaceComponent):
             self._track = track
             self._track != None and self._track.add_devices_listener(self._on_devices_changed)
         self._on_devices_changed()
+        return
 
     def set_filter_controls(self, freq, reso):
         if not isinstance(freq, EncoderElement):
@@ -66,6 +69,7 @@ class TrackFilterComponent(ControlSurfaceComponent):
         self._freq_control = freq
         self._reso_control = reso
         self.update()
+        return
 
     def update(self):
         super(TrackFilterComponent, self).update()
@@ -81,6 +85,7 @@ class TrackFilterComponent(ControlSurfaceComponent):
                 parameter = get_parameter_by_name(self._device, device_dict['Resonance'])
                 if parameter != None:
                     self._reso_control.connect_to(parameter)
+        return
 
     def _on_devices_changed(self):
         self._device = None
@@ -92,3 +97,4 @@ class TrackFilterComponent(ControlSurfaceComponent):
                     break
 
         self.update()
+        return

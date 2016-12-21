@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/automation_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\automation_component.py
 from __future__ import absolute_import, print_function
 import Live
 from ableton.v2.base import clamp, task, liveobj_valid
@@ -124,6 +124,7 @@ class AutomationComponent(DeviceParameterComponent):
             self._parameter_floats = [ [ (self._value_at_time(envelope, step) if envelope != None else 0.0) for envelope in envelopes ] for step in self.selected_time ]
         else:
             self._parameter_floats = []
+        return
 
     def _insert_step(self, time_range, time_index, param_index, envelope, value):
         param = self._parameter_for_index(self.parameters, param_index)

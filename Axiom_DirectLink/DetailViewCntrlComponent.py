@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_DirectLink/DetailViewCntrlComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_DirectLink\DetailViewCntrlComponent.py
 import Live
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
 from _Framework.ButtonElement import ButtonElement
@@ -10,6 +10,7 @@ class DetailViewCntrlComponent(ControlSurfaceComponent):
         ControlSurfaceComponent.__init__(self)
         self._left_button = None
         self._right_button = None
+        return
 
     def disconnect(self):
         if self._left_button != None:
@@ -18,6 +19,7 @@ class DetailViewCntrlComponent(ControlSurfaceComponent):
         if self._right_button != None:
             self._right_button.remove_value_listener(self._nav_value)
             self._right_button = None
+        return
 
     def set_device_nav_buttons(self, left_button, right_button):
         if not (left_button == None or isinstance(left_button, ButtonElement)):
@@ -34,6 +36,7 @@ class DetailViewCntrlComponent(ControlSurfaceComponent):
             self._right_button = right_button
             self._right_button != None and self._right_button.add_value_listener(self._nav_value, identify_sender)
         self.update()
+        return
 
     def on_enabled_changed(self):
         self.update()
@@ -45,6 +48,7 @@ class DetailViewCntrlComponent(ControlSurfaceComponent):
                 self._left_button.turn_off()
             if self._right_button != None:
                 self._right_button.turn_off()
+        return
 
     def _nav_value(self, value, sender):
         raise sender != None and sender in (self._left_button, self._right_button) or AssertionError
@@ -59,3 +63,4 @@ class DetailViewCntrlComponent(ControlSurfaceComponent):
                     if sender == self._right_button:
                         direction = Live.Application.Application.View.NavDirection.right
                     self.application().view.scroll_view(direction, 'Detail/DeviceChain', not modifier_pressed)
+        return

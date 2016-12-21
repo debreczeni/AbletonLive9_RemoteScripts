@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/elements.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\elements.py
 from __future__ import absolute_import, print_function
 from ableton.v2.control_surface.elements import SysexElement
 from pushbase.control_element_factory import create_button, create_note_button
@@ -35,6 +35,7 @@ class Elements(ElementsBase):
         self.layout_button = create_button(31, 'Layout')
         self._create_touch_strip()
         self.aftertouch_control = SysexElement(send_message_generator=sysex.make_aftertouch_mode_message, default_value='polyphonic')
+        return
 
     def _create_touch_strip(self):
         touch_strip_mode_element = SysexElement(send_message_generator=sysex.make_touch_strip_mode_message)

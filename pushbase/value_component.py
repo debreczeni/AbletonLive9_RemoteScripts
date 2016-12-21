@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/value_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\value_component.py
 from __future__ import absolute_import, print_function
 from ableton.v2.base import listenable_property, listens
 from ableton.v2.control_surface import CompoundComponent, Component, ParameterSlot
@@ -50,6 +50,7 @@ class ValueDisplayComponentBase(Component):
         if display:
             display.set_data_sources((None,) * NUM_SEGMENTS)
             display.segment(self._display_seg_start).set_data_source(source)
+        return None
 
     def update(self):
         super(ValueDisplayComponentBase, self).update()
@@ -114,6 +115,7 @@ class ValueDisplayComponent(ValueDisplayComponentBase):
             self.graphic_transform = graphic_transform
         self.register_slot(subject, self._on_value_changed, property_name)
         self._on_value_changed()
+        return
 
     def view_transform(self, x):
         return x
@@ -161,6 +163,7 @@ class ValueComponent(ValueComponentBase):
         if encoder_factor is not None:
             self.encoder_factor = encoder_factor
         self._original_encoder_factor = self.encoder_factor
+        return
 
     def model_transform(self, x):
         """

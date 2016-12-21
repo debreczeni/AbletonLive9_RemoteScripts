@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/SpecialMixerComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\SpecialMixerComponent.py
 from functools import partial
 from itertools import izip_longest
 from _Framework.Util import clamp
@@ -70,6 +70,8 @@ class SpecialMixerComponent(MixerComponent):
                     control.set_light_and_type(SEND_COLORS[self.send_index][0], FADER_TYPE_STANDARD)
                 strip.set_send_controls((None,) * self._send_index + (control,))
 
+        return
+
     def set_arm_buttons(self, buttons):
         for strip, button in izip_longest(self._channel_strips, buttons or []):
             if button:
@@ -118,6 +120,8 @@ class SpecialMixerComponent(MixerComponent):
         else:
             for button in self.send_select_buttons:
                 button.is_checked = False
+
+        return
 
 
 class SpecialChanStripComponent(ChannelStripComponent):

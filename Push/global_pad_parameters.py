@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/global_pad_parameters.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\global_pad_parameters.py
 from __future__ import absolute_import, print_function
 from ableton.v2.control_surface import Component
 from . import sysex
@@ -9,6 +9,7 @@ class GlobalPadParameters(Component):
         super(GlobalPadParameters, self).__init__(*a, **k)
         self._pad_parameter_element = None
         self._aftertouch_threshold = aftertouch_threshold
+        return
 
     def _get_aftertouch_threshold(self):
         return self._aftertouch_threshold

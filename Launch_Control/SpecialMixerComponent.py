@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launch_Control/SpecialMixerComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launch_Control\SpecialMixerComponent.py
 from itertools import izip_longest
 from _Framework.MixerComponent import MixerComponent
 from _Framework.ModesComponent import ModesComponent, LayerMode, LatchingBehaviour
@@ -33,6 +33,7 @@ class SpecialMixerComponent(MixerComponent):
         self._modes.layer = mode_layer
         self._on_visible_tracks.subject = self.song()
         self._on_selected_mixer_mode.subject = self._modes
+        return
 
     def _get_selected_send_index(self):
         return self._selected_send_index
@@ -77,6 +78,8 @@ class SpecialMixerComponent(MixerComponent):
             send_controls = [ self._send_controls.get_button(index, i) for i in (1, 0) ] if self._send_controls else [None]
             skipped_sends = [ None for _ in xrange(self._selected_send_index) ]
             channel_strip.set_send_controls(skipped_sends + send_controls)
+
+        return
 
     @subject_slot('visible_tracks')
     def _on_visible_tracks(self):

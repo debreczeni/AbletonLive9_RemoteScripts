@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/colors.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\colors.py
 """
 Module for the color interfaces defining all posible ways of turning
 on buttons on Push.
@@ -29,6 +29,7 @@ class RgbColor(PushColor):
         super(RgbColor, self).__init__(midi_value=midi_value, *a, **k)
         if rgb_value is not None:
             self._rgb_value = rgb_value
+        return
 
     def shade(self, shade_level):
         """
@@ -125,6 +126,15 @@ class Blink(AnimatedColor):
         super(Blink, self).__init__(color1=color1, color2=color2, channel2=channel2, *a, **k)
 
 
+class TransparentColor(object):
+    """
+    Color that does not transmit any MIDI data.
+    """
+
+    def draw(self, interface):
+        pass
+
+
 class Rgb:
     """
     Table of RgbColors for main matrix.
@@ -161,6 +171,7 @@ class Basic:
     FULL_BLINK_FAST = FallbackColor(Blink(Rgb.WHITE, Rgb.BLACK, 24), 6)
     OFF = FallbackColor(Rgb.BLACK, 0)
     ON = FallbackColor(Rgb.WHITE, 127)
+    TRANSPARENT = TransparentColor()
 
 
 class BiLed:

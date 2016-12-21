@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/auto_arm_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\auto_arm_component.py
 """
 Component that automatically arms the selected track.
 """
@@ -26,6 +26,7 @@ class AutoArmRestoreBehaviour(LatchingBehaviour):
         self._auto_arm = auto_arm
         self._last_update_params = None
         self._skip_super = False
+        return
 
     def press_immediate(self, component, mode):
         called_super = False
@@ -75,6 +76,7 @@ class AutoArmComponent(Component, Messenger):
         self._on_tracks_changed()
         self._notification_reference = partial(nop, None)
         self._on_selected_track_changed.subject = self.song.view
+        return
 
     def auto_arm_restore_behaviour(self, *extra_classes, **extra_params):
         if not self._auto_arm_restore_behaviour:
@@ -102,6 +104,7 @@ class AutoArmComponent(Component, Messenger):
     def _hide_notification(self):
         if self._notification_reference() is not None:
             self._notification_reference().hide()
+        return
 
     def update(self):
         super(AutoArmComponent, self).update()
@@ -134,7 +137,7 @@ class AutoArmComponent(Component, Messenger):
     def _on_tracks_changed(self):
         tracks = filter(lambda t: t.can_be_armed, self.song.tracks)
         self._on_arm_changed.replace_subjects(tracks)
-        self._on_current_input_routing_changed.replace_subjects(tracks)
+        self._on_input_routing_type_changed.replace_subjects(tracks)
         self._on_frozen_state_changed.replace_subjects(tracks)
 
     @listens('exclusive_arm')
@@ -145,8 +148,8 @@ class AutoArmComponent(Component, Messenger):
     def _on_arm_changed(self, track):
         self.update()
 
-    @listens_group('current_input_routing')
-    def _on_current_input_routing_changed(self, track):
+    @listens_group('input_routing_type')
+    def _on_input_routing_type_changed(self, track):
         self.update()
 
     @listens_group('is_frozen')

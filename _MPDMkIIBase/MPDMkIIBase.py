@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_MPDMkIIBase/MPDMkIIBase.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_MPDMkIIBase\MPDMkIIBase.py
 from __future__ import with_statement
 from _Framework.ControlSurface import ControlSurface
 from _Framework.Layer import Layer
@@ -26,6 +26,7 @@ class MPDMkIIBase(ControlSurface):
         with self.component_guard():
             self._create_controls()
             self._create_drums()
+        return
 
     def _create_controls(self):
         """
@@ -41,10 +42,9 @@ class MPDMkIIBase(ControlSurface):
         self._drums.layer = Layer(pads=self._pads)
 
     def _create_device(self):
-        self._device = DeviceComponent(is_enabled=True, name='Device')
+        self._device = DeviceComponent(is_enabled=True, name='Device', device_selection_follows_track_selection=True)
         self._device.layer = Layer(parameter_controls=self._encoders)
         self.set_device_component(self._device)
-        self._device_selection_follows_track_selection = True
 
     def _create_transport(self):
         self._transport = TransportComponent(is_enabled=True, name='Transport')

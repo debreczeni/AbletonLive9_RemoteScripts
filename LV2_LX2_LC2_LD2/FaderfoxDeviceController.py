@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/LV2_LX2_LC2_LD2/FaderfoxDeviceController.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\LV2_LX2_LC2_LD2\FaderfoxDeviceController.py
 import Live
 from FaderfoxComponent import FaderfoxComponent
 from consts import *
@@ -30,6 +30,7 @@ class FaderfoxDeviceController(FaderfoxComponent):
         self.parent.song().view.add_selected_track_listener(self.on_track_selected_callback)
         self.parent.song().view.add_detail_clip_listener(self.on_selected_clip)
         self.selected_track = None
+        return
 
     def on_loop_end(self):
         pass
@@ -80,6 +81,7 @@ class FaderfoxDeviceController(FaderfoxComponent):
 
         self.map_device_params(script_handle, midi_map_handle)
         forward_cc(CHANNEL_SETUP2, CLIP_TRANSPOSE_CC)
+        return
 
     def map_device_params(self, script_handle, midi_map_handle):
 
@@ -125,6 +127,8 @@ class FaderfoxDeviceController(FaderfoxComponent):
                         ParamMap.map_with_feedback(midi_map_handle, channel, ccs[encoder], parameter, mode2)
                     else:
                         self.log('Could not find parameter %s' % param_bank[encoder])
+
+            return
 
         self.log('map device params %s' % self.device)
         if self.device:
@@ -190,30 +194,32 @@ class FaderfoxDeviceController(FaderfoxComponent):
 
         if not self.device:
             return
-        device_name = self.helper.device_name(self.device)
-        if channel == CHANNEL_SETUP2 and status == NOTEON_STATUS:
-            notes = FX3_NOTES + FX4_NOTES
-            if note_no not in notes:
-                return
-            idx = index_of(notes, note_no)
-            parameter = None
-            if device_name in DEVICE_BOB_DICT.keys():
-                param_bank = DEVICE_BOB_DICT[device_name]
-                parameter = self.helper.get_parameter_by_name(self.device, param_bank[idx])
-            elif self.helper.device_is_plugin(self.device):
-                if len(self.device.parameters) >= idx + 1:
-                    parameter = self.device.parameters[idx + 1]
-            else:
-                return
-            if parameter:
-                if parameter.is_quantized:
-                    if parameter.value + 1 > parameter.max:
-                        parameter.value = parameter.min
-                    else:
-                        parameter.value += 1
+        else:
+            device_name = self.helper.device_name(self.device)
+            if channel == CHANNEL_SETUP2 and status == NOTEON_STATUS:
+                notes = FX3_NOTES + FX4_NOTES
+                if note_no not in notes:
+                    return
+                idx = index_of(notes, note_no)
+                parameter = None
+                if device_name in DEVICE_BOB_DICT.keys():
+                    param_bank = DEVICE_BOB_DICT[device_name]
+                    parameter = self.helper.get_parameter_by_name(self.device, param_bank[idx])
+                elif self.helper.device_is_plugin(self.device):
+                    if len(self.device.parameters) >= idx + 1:
+                        parameter = self.device.parameters[idx + 1]
                 else:
-                    parameter.value = parameter.default_value
-            self.log('device %s, index %s, parameter %s' % (self.device, idx, parameter.name))
+                    return
+                if parameter:
+                    if parameter.is_quantized:
+                        if parameter.value + 1 > parameter.max:
+                            parameter.value = parameter.min
+                        else:
+                            parameter.value += 1
+                    else:
+                        parameter.value = parameter.default_value
+                self.log('device %s, index %s, parameter %s' % (self.device, idx, parameter.name))
+            return
 
     def receive_midi_cc(self, chan, cc_no, cc_value):
 

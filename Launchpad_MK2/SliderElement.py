@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_MK2/SliderElement.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_MK2\SliderElement.py
 from _Framework.Dependency import depends
 from _Framework.Skin import SkinColorMissingError
 from _Framework.SliderElement import SliderElement as SliderElementBase
@@ -58,3 +58,4 @@ class SliderElement(SliderElementBase):
          value,
          247)
         self._send_midi(msg)
+        return

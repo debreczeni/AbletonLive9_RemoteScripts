@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/MackieControlXT/MackieControlXT.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\MackieControlXT\MackieControlXT.py
 from MackieControl.consts import *
 from MackieControl.MainDisplay import MainDisplay
 from MackieControl.ChannelStrip import ChannelStrip
@@ -22,6 +22,7 @@ class MackieControlXT:
         self.is_pro_version = False
         self._received_firmware_version = False
         self._refresh_state_next_time = 0
+        return
 
     def disconnect(self):
         for c in self.__components:

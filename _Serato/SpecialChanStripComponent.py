@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Serato/SpecialChanStripComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Serato\SpecialChanStripComponent.py
 from _Framework.ChannelStripComponent import ChannelStripComponent
 
 class SpecialChanStripComponent(ChannelStripComponent):
@@ -7,6 +7,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
         ChannelStripComponent.__init__(self)
         self._serato_interface = None
         self._index = -1
+        return
 
     def disconnect(self):
         self._remove_send_listeners()
@@ -25,6 +26,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
         self._on_track_color_changed()
         self._update_track_index()
         self._serato_interface = None
+        return
 
     def set_track(self, track):
         self._remove_send_listeners()
@@ -42,6 +44,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
         self._on_volume_changed()
         self._on_output_type_changed()
         self._update_track_index()
+        return
 
     def set_index(self, index):
         raise index > -1 or AssertionError
@@ -61,17 +64,20 @@ class SpecialChanStripComponent(ChannelStripComponent):
         self._on_send_b_changed()
         self._on_volume_changed()
         self._update_track_index()
+        return
 
     def set_track_volume(self, volume):
         if not (0.0 <= volume and volume <= 1.0):
             raise AssertionError
             self._track.mixer_device.volume.value = self._track != None and self._track.mixer_device.volume.is_enabled and volume
+        return
 
     def set_send(self, index, amount):
         if not (0.0 <= amount and amount <= 1.0):
             raise AssertionError
             if self._track != None and len(self._track.mixer_device.sends) > index:
                 self._track.mixer_device.sends[index].value = self._track.mixer_device.sends[index].is_enabled and amount
+        return
 
     def is_track_selected(self):
         return self._track == self.song().view.selected_track
@@ -97,6 +103,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
             if self._track != None:
                 value_to_send = int(not self._track.mute)
             self._serato_interface.PySCA_SetTrackActiveState(self._index + 1, value_to_send)
+        return
 
     def _on_solo_changed(self):
         if self._track != self.song().master_track and self._serato_interface != None and self._index > -1:
@@ -104,6 +111,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
             if self._track != None:
                 value_to_send = int(self._track.solo)
             self._serato_interface.PySCA_SetTrackSoloState(self._index + 1, value_to_send)
+        return
 
     def _on_arm_changed(self):
         if (self._track in self.song().tracks or self._track == None) and self._serato_interface != None and self._index > -1:
@@ -111,6 +119,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
             if self._track != None and self._track.can_be_armed:
                 value_to_send = int(self._track.arm)
             self._serato_interface.PySCA_SetTrackRecordState(self._index + 1, value_to_send)
+        return
 
     def _on_track_name_changed(self):
         if self._serato_interface != None and self._index > -1:
@@ -118,6 +127,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
             if self._track != None:
                 name = self._track.name
             self._serato_interface.PySCA_SetTrackLabel(self._index + 1, name)
+        return
 
     def _on_track_color_changed(self):
         if self._serato_interface != None and self._index > -1:
@@ -125,6 +135,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
             if self._track != None:
                 color = self._track.color
             self._serato_interface.PySCA_SetTrackColor(self._index + 1, color)
+        return
 
     def _on_send_a_changed(self):
         if (self._track in self.song().tracks or self._track == None) and self._serato_interface != None and self._index > -1:
@@ -132,6 +143,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
             if self._track != None and len(self._track.mixer_device.sends) > 0:
                 value_to_send = self._track.mixer_device.sends[0].value
             self._serato_interface.PySCA_SetTrackSendAState(self._index + 1, value_to_send)
+        return
 
     def _on_send_b_changed(self):
         if (self._track in self.song().tracks or self._track == None) and self._serato_interface != None and self._index > -1:
@@ -139,6 +151,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
             if self._track != None and len(self._track.mixer_device.sends) > 1:
                 value_to_send = self._track.mixer_device.sends[1].value
             self._serato_interface.PySCA_SetTrackSendBState(self._index + 1, value_to_send)
+        return
 
     def _on_volume_changed(self):
         if self._serato_interface != None:
@@ -149,6 +162,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
                 if self._track != None:
                     value_to_send = self._track.mixer_device.volume.value
                 self._serato_interface.PySCA_SetTrackGainState(self._index + 1, value_to_send)
+        return
 
     def _on_output_type_changed(self):
         self._remove_level_listener()
@@ -167,6 +181,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
                 self._serato_interface.PySCA_SetMasterLevel(-1, level)
             elif self._index > -1:
                 self._serato_interface.PySCA_SetTrackLevel(self._index + 1, level)
+        return
 
     def _remove_send_listeners(self):
         if self._track != None:
@@ -177,6 +192,8 @@ class SpecialChanStripComponent(ChannelStripComponent):
                     if send.value_has_listener(send_callbacks[index]):
                         send.remove_value_listener(send_callbacks[index])
 
+        return
+
     def _add_send_listeners(self):
         if self._track != None:
             send_callbacks = (self._on_send_a_changed, self._on_send_b_changed)
@@ -184,6 +201,8 @@ class SpecialChanStripComponent(ChannelStripComponent):
                 if index < len(self._track.mixer_device.sends):
                     self._track.mixer_device.sends[index].add_value_listener(send_callbacks[index])
                     send_callbacks[index]()
+
+        return
 
     def _remove_level_listener(self):
         if self._track != None:
@@ -194,6 +213,7 @@ class SpecialChanStripComponent(ChannelStripComponent):
                     self._track.remove_output_meter_left_listener(self._on_level_changed)
             elif self._track.output_meter_level_has_listener(self._on_level_changed):
                 self._track.remove_output_meter_level_listener(self._on_level_changed)
+        return
 
     def _add_level_listener(self):
         if self._track != None:
@@ -204,10 +224,12 @@ class SpecialChanStripComponent(ChannelStripComponent):
                     self._track.add_output_meter_left_listener(self._on_level_changed)
             elif not self._track.output_meter_level_has_listener(self._on_level_changed):
                 self._track.add_output_meter_level_listener(self._on_level_changed)
+        return
 
     def _update_track_index(self):
         if self._serato_interface != None and self._index > -1:
             self._serato_interface.PySCA_SetTrackNumber(self._index + 1, self._identifier())
+        return
 
     def _encode_track_identifier(self, identifier):
         raise len(identifier) <= 4 or AssertionError

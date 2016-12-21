@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/DrumGroupFinderComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\DrumGroupFinderComponent.py
 from __future__ import with_statement
 from itertools import imap, chain
 import Live
@@ -88,3 +88,4 @@ def find_drum_group_device(track_or_chain):
             return instrument
         if instrument.can_have_chains:
             return find_if(bool, imap(find_drum_group_device, instrument.chains))
+    return None

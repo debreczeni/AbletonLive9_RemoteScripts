@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Oxygen_3rd_Gen/Oxygen_3rd_Gen.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Oxygen_3rd_Gen\Oxygen_3rd_Gen.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface
@@ -31,7 +31,6 @@ class Oxygen_3rd_Gen(ControlSurface):
             self._suggested_input_port = 'Oxygen'
             self._suggested_output_port = 'Oxygen'
             self._has_slider_section = True
-            self._device_selection_follows_track_selection = True
             self._shift_button = ButtonElement(is_momentary, MIDI_CC_TYPE, GLOBAL_CHANNEL, 57)
             self._shift_button.add_value_listener(self._shift_value)
             self._mixer = SpecialMixerComponent(NUM_TRACKS)
@@ -46,7 +45,7 @@ class Oxygen_3rd_Gen(ControlSurface):
             self._shift_value(0)
             self._mixer.master_strip().set_volume_control(self._master_slider)
             self._mixer.selected_strip().set_volume_control(None)
-            device = DeviceComponent()
+            device = DeviceComponent(device_selection_follows_track_selection=True)
             device.set_parameter_controls(tuple([ EncoderElement(MIDI_CC_TYPE, GLOBAL_CHANNEL, 17 + index, Live.MidiMap.MapMode.absolute) for index in range(8) ]))
             self.set_device_component(device)
             ffwd_button = ButtonElement(is_momentary, MIDI_CC_TYPE, GLOBAL_CHANNEL, 115)
@@ -58,11 +57,13 @@ class Oxygen_3rd_Gen(ControlSurface):
             transport.set_record_button(ButtonElement(is_momentary, MIDI_CC_TYPE, GLOBAL_CHANNEL, 118))
             session = SessionComponent(0, 0)
             transport_view_modes = TransportViewModeSelector(transport, session, ffwd_button, rwd_button, loop_button)
+        return
 
     def disconnect(self):
         self._shift_button.remove_value_listener(self._shift_value)
         self._shift_button = None
         ControlSurface.disconnect(self)
+        return
 
     def refresh_state(self):
         ControlSurface.refresh_state(self)
@@ -73,6 +74,7 @@ class Oxygen_3rd_Gen(ControlSurface):
             if midi_bytes[10] == 38:
                 self._mixer.master_strip().set_volume_control(None)
                 self._mixer.selected_strip().set_volume_control(self._master_slider)
+        return
 
     def _shift_value(self, value):
         raise value in range(128) or AssertionError
@@ -87,3 +89,5 @@ class Oxygen_3rd_Gen(ControlSurface):
                 self._mixer.channel_strip(index).set_solo_button(self._mute_solo_buttons[index])
                 self._mixer.set_select_buttons(None, None)
                 self._mixer.set_bank_buttons(self._track_up_button, self._track_down_button)
+
+        return

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_AIR_Mini32/EncoderMixerModeSelector.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_AIR_Mini32\EncoderMixerModeSelector.py
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 
 class EncoderMixerModeSelector(ModeSelectorComponent):
@@ -8,11 +8,13 @@ class EncoderMixerModeSelector(ModeSelectorComponent):
         ModeSelectorComponent.__init__(self)
         self._mixer = mixer
         self._controls = None
+        return
 
     def disconnect(self):
         self._mixer = None
         self._controls = None
         ModeSelectorComponent.disconnect(self)
+        return
 
     def set_mode_toggle(self, button):
         ModeSelectorComponent.set_mode_toggle(self, button)
@@ -37,3 +39,5 @@ class EncoderMixerModeSelector(ModeSelectorComponent):
                 elif mode == 1:
                     strip.set_volume_control(None)
                     strip.set_pan_control(self._controls[index])
+
+        return

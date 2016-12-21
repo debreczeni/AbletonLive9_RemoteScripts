@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC20/ShiftableSelectorComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\APC20\ShiftableSelectorComponent.py
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 from _Framework.Layer import Layer
 from consts import NOTE_MODE, ABLETON_MODE
@@ -42,6 +42,7 @@ class ShiftableSelectorComponent(ModeSelectorComponent):
         self._mode_callback = None
         self._note_matrix = None
         self._background = None
+        return
 
     def set_mode_toggle(self, button):
         super(ShiftableSelectorComponent, self).set_mode_toggle(button)
@@ -98,12 +99,14 @@ class ShiftableSelectorComponent(ModeSelectorComponent):
                     self._mixer.channel_strip(index).set_arm_button(None)
 
                 self._slider_modes.set_mode_buttons(self._arm_buttons)
+        return
 
     def _toggle_value(self, value):
         raise self._mode_toggle != None or AssertionError
         raise value in range(128) or AssertionError
         self._toggle_pressed = value > 0
         self._recalculate_mode()
+        return
 
     def _recalculate_mode(self):
         self.set_mode((int(self._toggle_pressed) + int(self._invert_assignment)) % self.number_of_modes())
@@ -142,6 +145,7 @@ class ShiftableSelectorComponent(ModeSelectorComponent):
                     self._set_session_navigation_controls(self._select_buttons[4], self._select_buttons[5], self._select_buttons[6], self._select_buttons[7])
                 self._zooming.set_ignore_buttons(self._note_mode_active)
                 self._on_note_mode_changed()
+        return
 
     def _on_note_mode_changed(self):
         if not self._master_button != None:
@@ -150,3 +154,4 @@ class ShiftableSelectorComponent(ModeSelectorComponent):
                 self._note_mode_active and self._master_button.turn_on()
             else:
                 self._master_button.turn_off()
+        return

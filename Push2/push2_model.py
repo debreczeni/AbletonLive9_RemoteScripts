@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/push2_model.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\push2_model.py
 from __future__ import absolute_import, print_function
 from pprint import pformat
 import logging
@@ -19,10 +19,12 @@ class Sender(object):
         self._attribute_paths = []
         self._structural_change = False
         self.notifier = ModelUpdateNotifier(delegate=self)
+        return
 
     def structural_change(self, path):
         self._attribute_paths.append((path, None))
         self._structural_change = True
+        return
 
     def attribute_changed(self, path, value):
         self._attribute_paths.append((path, value))
@@ -57,10 +59,12 @@ class Root(generate_mrs_model(RootModel)):
         if sender is not None:
             k['notifier'] = sender.notifier
         super(Root, self).__init__(*a, **k)
+        return
 
     def commit_changes(self, send_all = False):
         if self._sender is not None:
             self._sender.send(self, send_all)
+        return
 
     def to_json(self, root_keys = None):
         if root_keys is None:
@@ -71,3 +75,4 @@ class Root(generate_mrs_model(RootModel)):
                 res[key] = self.data[key].to_json()
 
             return res
+            return

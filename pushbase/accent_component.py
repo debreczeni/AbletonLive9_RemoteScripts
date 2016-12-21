@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/accent_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\accent_component.py
 from __future__ import absolute_import, print_function
 from ableton.v2.control_surface.mode import ModesComponent
 
@@ -15,6 +15,7 @@ class AccentComponent(ModesComponent):
         self.add_mode('enabled', (self._on_accent_on, self._on_accent_off), 'Accent.On')
         self.selected_mode = 'disabled'
         self.set_full_velocity(None)
+        return
 
     def set_full_velocity(self, full_velocity):
         full_velocity = full_velocity or DummyFullVelocity()
@@ -22,6 +23,7 @@ class AccentComponent(ModesComponent):
             self._full_velocity.enabled = False
         self._full_velocity = full_velocity
         self._full_velocity.enabled = self.selected_mode == 'enabled'
+        return
 
     @property
     def activated(self):

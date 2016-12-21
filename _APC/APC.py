@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_APC/APC.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_APC\APC.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface
@@ -16,9 +16,14 @@ class APC(ControlSurface):
             support_devices |= instance._device_component != None
 
         track_offset = 0
+        if APC._active_instances:
+            first_instance = APC._active_instances[0]
+            track_offset = first_instance.highlighting_session_component().track_offset()
         for instance in APC._active_instances:
             instance._activate_combination_mode(track_offset, support_devices)
             track_offset += instance.highlighting_session_component().width()
+
+        return
 
     _combine_active_instances = staticmethod(_combine_active_instances)
 

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/track_frozen_mode.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\track_frozen_mode.py
 from __future__ import absolute_import, print_function
 from ableton.v2.base import listens
 from ableton.v2.control_surface.mode import ModesComponent
@@ -14,6 +14,7 @@ class TrackFrozenModesComponent(ModesComponent):
             self.add_mode('frozen', frozen_mode)
             self._on_selected_track_is_frozen_changed.subject = self.song.view
             self.is_enabled() and self._update_selected_mode()
+        return
 
     def _update_selected_mode(self):
         self.selected_mode = 'frozen' if self.song.view.selected_track.is_frozen else 'default'

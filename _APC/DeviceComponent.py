@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_APC/DeviceComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_APC\DeviceComponent.py
 from itertools import ifilter
 from _Framework.CompoundComponent import CompoundComponent
 from _Framework.DeviceComponent import DeviceComponent as DeviceComponentBase
@@ -33,6 +33,8 @@ class DeviceComponent(DeviceComponentBase, CompoundComponent):
     def _update_parameter_controls(self):
         for control in ifilter(None, self._parameter_controls or []):
             control.set_channel(self._bank_index)
+
+        return
 
     def update(self):
         super(DeviceComponent, self).update()

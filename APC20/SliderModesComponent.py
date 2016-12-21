@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC20/SliderModesComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\APC20\SliderModesComponent.py
 from _Framework.ButtonElement import ButtonElement
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 
@@ -16,6 +16,7 @@ class SliderModesComponent(ModeSelectorComponent):
         super(SliderModesComponent, self).disconnect()
         self._mixer = None
         self._sliders = None
+        return
 
     def set_mode_buttons(self, buttons):
         raise isinstance(buttons, (tuple, type(None))) or AssertionError
@@ -31,6 +32,7 @@ class SliderModesComponent(ModeSelectorComponent):
                 self._modes_buttons.append(button)
 
         self.update()
+        return
 
     def number_of_modes(self):
         return 8
@@ -62,3 +64,5 @@ class SliderModesComponent(ModeSelectorComponent):
                     send_controls = [None, None, None]
                     send_controls[self._mode_index - 2] = slider
                     strip.set_send_controls(tuple(send_controls))
+
+        return

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Generic/GenericScript.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Generic\GenericScript.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface
@@ -101,10 +101,12 @@ class GenericScript(ControlSurface):
 
                 strip.set_send_controls(tuple(send_controls))
 
+        return
+
     def _init_device_component(self, device_controls, bank_controls, global_channel, macro_map_mode):
         is_momentary = True
         if device_controls:
-            device = DeviceComponent()
+            device = DeviceComponent(device_selection_follows_track_selection=True)
             device.name = 'Device_Component'
             if bank_controls:
                 next_button = None
@@ -158,6 +160,7 @@ class GenericScript(ControlSurface):
             if len(parameter_encoders) > 0:
                 device.set_parameter_controls(tuple(parameter_encoders))
             self.set_device_component(device)
+        return
 
     def _init_transport_component(self, transport_controls, global_channel):
         is_momentary = True
@@ -190,3 +193,4 @@ class GenericScript(ControlSurface):
                 rwd_button = ButtonElement(momentary_seek, MIDI_CC_TYPE, global_channel, transport_controls['RWD'])
                 rwd_button.name = 'Rwd_Button'
             transport.set_seek_buttons(ffwd_button, rwd_button)
+        return

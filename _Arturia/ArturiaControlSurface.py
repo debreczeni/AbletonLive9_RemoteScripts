@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Arturia/ArturiaControlSurface.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Arturia\ArturiaControlSurface.py
 from __future__ import with_statement
 from functools import partial
 from _Framework import Task
@@ -111,6 +111,7 @@ class ArturiaControlSurface(ControlSurface):
          hardware_id,
          value) + SETUP_MSG_SUFFIX
         self._messages_to_send.append(msg)
+        return
 
     def _setup_hardware(self):
         sequence_to_run = [None] * (len(self._messages_to_send) * 2)
@@ -120,6 +121,7 @@ class ArturiaControlSurface(ControlSurface):
             self._tasks.add(Task.sequence(*subsequence))
 
         self._messages_to_send = []
+        return
 
     def port_settings_changed(self):
         super(ArturiaControlSurface, self).port_settings_changed()

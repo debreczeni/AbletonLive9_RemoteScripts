@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launch_Control_XL/ButtonElement.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launch_Control_XL\ButtonElement.py
 from _Framework.ButtonElement import ON_VALUE, OFF_VALUE, ButtonElement as ButtonElementBase
 
 class ButtonElement(ButtonElementBase):
@@ -9,6 +9,7 @@ class ButtonElement(ButtonElementBase):
         self._on_value = None
         self._off_value = None
         super(ButtonElement, self).reset()
+        return
 
     def set_on_off_values(self, on_value, off_value):
         self._on_value = on_value
@@ -21,3 +22,4 @@ class ButtonElement(ButtonElementBase):
             self._skin[self._off_value].draw(self)
         else:
             super(ButtonElement, self).send_value(value, **k)
+        return

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_DirectLink/BestBankDeviceComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_DirectLink\BestBankDeviceComponent.py
 import Live
 from _Framework.DeviceComponent import DeviceComponent
 from _Framework.DisplayDataSource import DisplayDataSource
@@ -8,17 +8,17 @@ BOP_BANK_NAME = 'Best of Parameters'
 class BestBankDeviceComponent(DeviceComponent):
     """ Special Device component that uses the best of bank of a device as default """
 
-    def __init__(self):
-        DeviceComponent.__init__(self)
+    def __init__(self, *a, **k):
+        super(BestBankDeviceComponent, self).__init__(*a, **k)
         new_banks = {}
         new_bank_names = {}
         self._device_banks = DEVICE_DICT
         self._device_bank_names = BANK_NAME_DICT
         self._device_best_banks = DEVICE_BOB_DICT
         for device_name, current_banks in self._device_banks.iteritems():
-            if len(current_banks) > 1:
-                raise device_name in self._device_best_banks.keys() or AssertionError("Could not find best-of-banks for '%s'" % device_name)
-                raise device_name in self._device_bank_names.keys() or AssertionError("Could not find bank names for '%s'" % device_name)
+            raise len(current_banks) > 1 and (device_name in self._device_best_banks.keys() or AssertionError("Could not find best-of-banks for '%s'" % device_name))
+            if not device_name in self._device_bank_names.keys():
+                raise AssertionError("Could not find bank names for '%s'" % device_name)
                 current_banks = self._device_best_banks[device_name] + current_banks
                 new_bank_names[device_name] = (BOP_BANK_NAME,) + self._device_bank_names[device_name]
             new_banks[device_name] = current_banks
@@ -30,6 +30,7 @@ class BestBankDeviceComponent(DeviceComponent):
     def disconnect(self):
         self._bank_name_data_source = None
         DeviceComponent.disconnect(self)
+        return
 
     def bank_name_data_source(self):
         return self._bank_name_data_source
@@ -50,6 +51,7 @@ class BestBankDeviceComponent(DeviceComponent):
                 if bank_name in (BOP_BANK_NAME, 'Bank 1'):
                     bank_name = 'Home'
             self._bank_name_data_source.set_display_string(bank_name)
+        return
 
     def _is_banking_enabled(self):
         return True

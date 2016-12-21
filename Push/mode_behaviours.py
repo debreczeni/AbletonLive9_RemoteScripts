@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/mode_behaviours.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\mode_behaviours.py
 from __future__ import absolute_import, print_function
 from itertools import imap
 from ableton.v2.control_surface.mode import ModeButtonBehaviour
@@ -27,10 +27,12 @@ class CancellableBehaviour(ModeButtonBehaviour):
 
     def remember_previous_mode(self, component):
         self._previous_mode = component.active_modes[0] if component.active_modes else None
+        return
 
     def restore_previous_mode(self, component):
         if len(component.active_modes) == 0 and self._previous_mode is not None:
             component.push_mode(self._previous_mode)
+        return
 
 
 class AlternativeBehaviour(CancellableBehaviour):
@@ -79,6 +81,7 @@ class DynamicBehaviourMixin(ModeButtonBehaviour):
         super(DynamicBehaviourMixin, self).__init__(*a, **k)
         self._mode_chooser = mode_chooser
         self._chosen_mode = None
+        return
 
     def press_immediate(self, component, mode):
         self._chosen_mode = self._mode_chooser() or mode

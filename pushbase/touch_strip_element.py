@@ -1,7 +1,7 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/touch_strip_element.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\touch_strip_element.py
 from __future__ import absolute_import, print_function
 import Live
-from ableton.v2.base import SlotManager, in_range, nop, NamedTuple, clamp
+from ableton.v2.base import in_range, nop, NamedTuple, clamp
 from ableton.v2.control_surface import InputControlElement, MIDI_PB_TYPE
 MAX_PITCHBEND = 16384.0
 
@@ -88,7 +88,7 @@ class DraggingBehaviour(SelectingBehaviour):
 DEFAULT_BEHAVIOUR = SimpleBehaviour()
 MODWHEEL_BEHAVIOUR = SimpleBehaviour(mode=TouchStripModes.MODWHEEL)
 
-class TouchStripElement(InputControlElement, SlotManager):
+class TouchStripElement(InputControlElement):
     """
     Represents the Push TouchStrip.
     """
@@ -114,6 +114,7 @@ class TouchStripElement(InputControlElement, SlotManager):
         self._touch_slot = self.register_slot(touch_button, None, 'value')
         self._behaviour = None
         self.behaviour = None
+        return
 
     @property
     def touch_button(self):
@@ -122,6 +123,8 @@ class TouchStripElement(InputControlElement, SlotManager):
     def _get_mode(self):
         if self._behaviour != None:
             return self._behaviour.mode
+        else:
+            return
 
     def set_mode(self, mode):
         if not in_range(mode, 0, TouchStripModes.COUNT):
@@ -150,6 +153,7 @@ class TouchStripElement(InputControlElement, SlotManager):
 
     def reset(self):
         self.behaviour = None
+        return
 
     def notify_value(self, value):
         notify = super(TouchStripElement, self).notify_value

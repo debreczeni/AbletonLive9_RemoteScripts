@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchkey_MK2/ModeUtils.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchkey_MK2\ModeUtils.py
 from _Framework.Dependency import depends
 from _Framework.ModesComponent import ModesComponent, ModeButtonBehaviour
 import consts
@@ -71,6 +71,7 @@ class DisablingModesComponent(ModesComponent):
                 entry = self._mode_map.get(selected)
                 value = entry and entry.toggle_value
                 self._mode_toggle.set_light(value)
+        return
 
     def _on_mode_button_value(self, name, value, sender):
         if self._enabled_modes[name]:

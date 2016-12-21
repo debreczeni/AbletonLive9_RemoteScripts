@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/pad_velocity_curve.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\pad_velocity_curve.py
 from __future__ import absolute_import, print_function
 import math
 from ableton.v2.base import SerializableListenableProperties, chunks, clamp, listenable_property, task
@@ -194,6 +194,7 @@ class PadVelocityCurveSender(Component):
         self.register_slot(settings, self._on_setting_changed, 'gain')
         self.register_slot(settings, self._on_setting_changed, 'dynamics')
         self._update_curve_model()
+        return
 
     def send(self):
         self._send_velocity_curve()

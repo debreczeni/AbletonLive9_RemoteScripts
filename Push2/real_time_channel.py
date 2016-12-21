@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/real_time_channel.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push2\real_time_channel.py
 from __future__ import absolute_import, print_function
 from ableton.v2.control_surface import Component
 from ableton.v2.base import depends, listenable_property, liveobj_changed, liveobj_valid
@@ -30,6 +30,12 @@ class RealTimeDataComponent(Component):
         self._data = None
         self._valid = True
         register_real_time_data(self)
+        return
+
+    def disconnect(self):
+        super(RealTimeDataComponent, self).disconnect()
+        self._data = None
+        return
 
     @listenable_property
     def channel_id(self):
@@ -38,6 +44,10 @@ class RealTimeDataComponent(Component):
     @listenable_property
     def object_id(self):
         return self._object_id
+
+    @property
+    def attached_object(self):
+        return self._data
 
     def on_enabled_changed(self):
         super(RealTimeDataComponent, self).on_enabled_changed()
@@ -69,3 +79,4 @@ class RealTimeDataComponent(Component):
             self.notify_channel_id()
             self.notify_object_id()
             self._valid = True
+        return

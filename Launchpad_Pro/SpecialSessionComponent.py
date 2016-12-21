@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/SpecialSessionComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\SpecialSessionComponent.py
 import Live
 from _Framework.Util import find_if, in_range
 from _Framework.Dependency import depends
@@ -21,6 +21,7 @@ class SpecialClipSlotComponent(ClipSlotComponent):
         self._quantize_button = None
         super(SpecialClipSlotComponent, self).__init__(*a, **k)
         self._should_arm = should_arm
+        return
 
     def set_double_loop_button(self, button):
         self._double_loop_button = button
@@ -35,6 +36,7 @@ class SpecialClipSlotComponent(ClipSlotComponent):
                 self.application().view.show_view('Detail')
             if not self.application().view.is_view_visible('Detail/Clip'):
                 self.application().view.show_view('Detail/Clip')
+        return
 
     @subject_slot('value')
     def _launch_button_value(self, value):
@@ -53,6 +55,7 @@ class SpecialClipSlotComponent(ClipSlotComponent):
                 if self._should_arm() and value:
                     self._do_track_arm()
                 self._do_launch_clip(value)
+        return
 
     @property
     def can_duplicate_loop(self):
@@ -95,6 +98,7 @@ class SpecialSceneComponent(SceneComponent):
     def __init__(self, *a, **k):
         self._duplicate_button = None
         super(SpecialSceneComponent, self).__init__(*a, **k)
+        return
 
     def set_duplicate_button(self, button):
         self._duplicate_button = button
@@ -110,6 +114,7 @@ class SpecialSceneComponent(SceneComponent):
                 self._do_duplicate_scene()
             else:
                 self._do_launch_scene(value)
+        return
 
     def _do_duplicate_scene(self):
         try:
@@ -133,6 +138,7 @@ class SpecialSessionComponent(SessionComponent):
     def __init__(self, *a, **k):
         self._stop_scene_clip_buttons = None
         super(SpecialSessionComponent, self).__init__(*a, **k)
+        return
 
     def set_clip_launch_buttons(self, buttons):
         if buttons:
@@ -196,6 +202,7 @@ class SpecialSessionComponent(SessionComponent):
                     button.send_value(value_to_send)
                 else:
                     button.set_light(value_to_send)
+        return
 
     def _update_stop_scene_clip_buttons(self):
         if self.is_enabled():
@@ -223,6 +230,7 @@ class SpecialSessionComponent(SessionComponent):
                     button.send_value(value_to_send)
                 else:
                     button.set_light(value_to_send)
+        return
 
     def _update_stop_all_clips_button(self):
         button = self._stop_all_button
@@ -237,6 +245,7 @@ class SpecialSessionComponent(SessionComponent):
                 button.turn_off()
             else:
                 button.set_light(value_to_send)
+        return
 
     @subject_slot_group('fired_slot_index')
     def _on_fired_slot_index_changed(self, track_index):

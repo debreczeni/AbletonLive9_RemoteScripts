@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/elements.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\elements.py
 from __future__ import absolute_import, print_function
 from functools import partial
 from ableton.v2.base import recursive_map
@@ -7,13 +7,14 @@ from pushbase import consts
 from pushbase.control_element_factory import create_note_button, make_send_message_generator
 from pushbase.elements import Elements as ElementsBase
 from pushbase.touch_strip_element import TouchStripElement
+from .parameter_mapping_sensitivities import CONTINUOUS_MAPPING_SENSITIVITY, FINE_GRAINED_CONTINUOUS_MAPPING_SENSITIVITY
 from .special_physical_display import SpecialPhysicalDisplay
 from . import sysex
 
 class Elements(ElementsBase):
 
     def __init__(self, *a, **k):
-        super(Elements, self).__init__(*a, **k)
+        super(Elements, self).__init__(continuous_mapping_sensitivity=CONTINUOUS_MAPPING_SENSITIVITY, fine_grained_continuous_mapping_sensitivity=FINE_GRAINED_CONTINUOUS_MAPPING_SENSITIVITY, *a, **k)
         self.display_line1 = self._create_display_line(sysex.CLEAR_LINE1, sysex.WRITE_LINE1, 0)
         self.display_line2 = self._create_display_line(sysex.CLEAR_LINE2, sysex.WRITE_LINE2, 1)
         self.display_line3 = self._create_display_line(sysex.CLEAR_LINE3, sysex.WRITE_LINE3, 2)

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_AIR_25_49_61/MainModeSelector.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_AIR_25_49_61\MainModeSelector.py
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 from consts import *
 
@@ -31,6 +31,7 @@ class MainModeSelector(ModeSelectorComponent):
         self._right_button = None
         self._up_button = None
         self._down_button = None
+        return
 
     def number_of_modes(self):
         return 2
@@ -60,3 +61,4 @@ class MainModeSelector(ModeSelectorComponent):
                 self._device_0.set_bank_nav_buttons(self._left_button, self._right_button)
                 self._device_1.set_bank_nav_buttons(self._left_button, self._right_button)
                 self._device_nav.set_device_nav_buttons(self._up_button, self._down_button)
+        return

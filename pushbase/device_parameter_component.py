@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/device_parameter_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\device_parameter_component.py
 from __future__ import absolute_import, print_function
 from itertools import chain, repeat, izip_longest
 import Live
@@ -53,6 +53,7 @@ class DeviceParameterComponentBase(Component):
         self._parameter_provider = provider or ParameterProvider()
         self._on_parameters_changed.subject = self._parameter_provider
         self._update_parameters()
+        self._on_parameter_provider_changed(provider)
 
     parameter_provider = property(_get_parameter_provider, _set_parameter_provider)
 
@@ -67,6 +68,8 @@ class DeviceParameterComponentBase(Component):
             control.mapped_parameter = parameter
             if parameter:
                 control.update_sensitivities(parameter_info.default_encoder_sensitivity, parameter_info.fine_grain_encoder_sensitivity)
+
+        return
 
     @property
     def parameters(self):
@@ -83,6 +86,9 @@ class DeviceParameterComponentBase(Component):
     @listens('parameters')
     def _on_parameters_changed(self):
         self._update_parameters()
+
+    def _on_parameter_provider_changed(self, provider):
+        pass
 
     def update(self):
         super(DeviceParameterComponentBase, self).update()
@@ -153,6 +159,8 @@ class DeviceParameterComponent(DeviceParameterComponentBase):
                     name = consts.CHAR_FULL_BLOCK + name
                 name_data_source.set_display_string(name or '')
 
+        return
+
     def _update_parameter_values(self):
         if self.is_enabled():
             for parameter, data_source in izip_longest(self.parameters, self._parameter_value_data_sources):
@@ -170,7 +178,8 @@ class DeviceParameterComponent(DeviceParameterComponentBase):
     def parameter_to_string(self, parameter):
         if parameter == None:
             return ''
-        return unicode(parameter)
+        else:
+            return unicode(parameter)
 
     def parameter_to_value(self, parameter):
         return parameter.value

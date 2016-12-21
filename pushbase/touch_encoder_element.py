@@ -1,6 +1,5 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/touch_encoder_element.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\touch_encoder_element.py
 from __future__ import absolute_import, print_function
-from ableton.v2.base import SlotManager
 from ableton.v2.control_surface.elements import TouchEncoderElement as TouchEncoderElementBase
 
 class TouchEncoderObserver(object):
@@ -13,7 +12,7 @@ class TouchEncoderObserver(object):
         pass
 
 
-class TouchEncoderElement(TouchEncoderElementBase, SlotManager):
+class TouchEncoderElement(TouchEncoderElementBase):
     """ Class representing an encoder that is touch sensitive """
 
     def __init__(self, undo_step_handler = None, delete_handler = None, *a, **k):
@@ -23,11 +22,13 @@ class TouchEncoderElement(TouchEncoderElementBase, SlotManager):
         self._undo_step_handler = undo_step_handler
         self._delete_handler = delete_handler
         self.set_observer(None)
+        return
 
     def set_observer(self, observer):
         if observer is None:
             observer = TouchEncoderObserver()
         self._observer = observer
+        return
 
     def on_nested_control_element_value(self, value, control):
         self._trigger_undo_step = value
@@ -56,6 +57,7 @@ class TouchEncoderElement(TouchEncoderElementBase, SlotManager):
         if self.mapped_parameter() != None:
             super(TouchEncoderElement, self).release_parameter()
             self._observer.on_encoder_parameter(self)
+        return
 
     def receive_value(self, value):
         self._begin_undo_step()
@@ -64,6 +66,7 @@ class TouchEncoderElement(TouchEncoderElementBase, SlotManager):
     def disconnect(self):
         super(TouchEncoderElement, self).disconnect()
         self._undo_step_handler = None
+        return
 
     def _begin_undo_step(self):
         if self._undo_step_handler and self._trigger_undo_step:

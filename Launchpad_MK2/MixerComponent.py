@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_MK2/MixerComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_MK2\MixerComponent.py
 from _Framework.Control import ButtonControl
 from _Framework.MixerComponent import MixerComponent as MixerComponentBase
 from .ChannelStripComponent import ChannelStripComponent
@@ -51,6 +51,8 @@ class MixerComponent(MixerComponentBase):
                 control.type = consts.FADER_STANDARD_TYPE
                 control.color = self._volume_on_value
 
+        return
+
     def set_pan_controls(self, controls):
         if controls is not None:
             for control in controls:
@@ -63,6 +65,8 @@ class MixerComponent(MixerComponentBase):
                 control.index = index
                 control.type = consts.FADER_BIPOLAR_TYPE
                 control.color = self._pan_on_value
+
+        return
 
     def set_send_controls(self, controls):
         translation_channel = 0
@@ -82,6 +86,7 @@ class MixerComponent(MixerComponentBase):
                 control.type = consts.FADER_STANDARD_TYPE
 
         self.on_send_index_changed()
+        return
 
     def set_volume_reset_buttons(self, buttons):
         if buttons is not None:
@@ -92,6 +97,8 @@ class MixerComponent(MixerComponentBase):
             for strip in self._channel_strips:
                 strip.volume_reset_button.set_control_element(None)
 
+        return
+
     def set_pan_reset_buttons(self, buttons):
         if buttons is not None:
             for index, strip in enumerate(self._channel_strips):
@@ -100,6 +107,8 @@ class MixerComponent(MixerComponentBase):
         else:
             for strip in self._channel_strips:
                 strip.pan_reset_button.set_control_element(None)
+
+        return
 
     def set_send_a_reset_buttons(self, buttons):
         if buttons is not None:
@@ -110,6 +119,8 @@ class MixerComponent(MixerComponentBase):
             for strip in self._channel_strips:
                 strip.send_a_reset_button.set_control_element(None)
 
+        return
+
     def set_send_b_reset_buttons(self, buttons):
         if buttons is not None:
             for index, strip in enumerate(self._channel_strips):
@@ -118,6 +129,8 @@ class MixerComponent(MixerComponentBase):
         else:
             for strip in self._channel_strips:
                 strip.send_b_reset_button.set_control_element(None)
+
+        return
 
     @unmute_all_button.pressed
     def unmute_all_button(self, button):
@@ -142,3 +155,5 @@ class MixerComponent(MixerComponentBase):
         if self.send_index is not None and self._send_controls is not None:
             for control in self._send_controls:
                 control.color = 'Sends.Send%d.On' % (self.send_index,)
+
+        return

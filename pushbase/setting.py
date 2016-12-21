@@ -1,14 +1,14 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/setting.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\setting.py
 from __future__ import absolute_import, print_function
 from math import fabs
-from ableton.v2.base import sign, clamp, Subject, Event
+from ableton.v2.base import sign, clamp, EventObject, Event
 
-class Setting(Subject):
+class Setting(EventObject):
     """
     Setting interface for writing to the preferences and all
     information for changing and displaying it.
     """
-    __events__ = (Event(name='value', doc=' Called when the value of the\n                                                 setting changes '),)
+    __events__ = (Event(name='value', doc=' Called when the value of the setting changes '),)
 
     def __init__(self, name = '', values = None, default_value = None, preferences = None, *a, **k):
         super(Setting, self).__init__(*a, **k)
@@ -19,6 +19,7 @@ class Setting(Subject):
             default_value = self._preferences[name]
         self._preferences[name] = None
         self.value = default_value
+        return
 
     def __str__(self):
         return self.value_to_string(self.value)
@@ -80,6 +81,8 @@ class EnumerableSetting(Setting):
             relative_position = int(sign(self._relative_value))
             self._relative_value -= self.STEP_SIZE
             return self._jump_relative(relative_position) != None
+        else:
+            return None
 
     def _jump_relative(self, relative_position):
         current_position = self.values.index(self.value)
@@ -87,6 +90,8 @@ class EnumerableSetting(Setting):
         self.value = self.values[new_position]
         if current_position != new_position:
             return new_position
+        else:
+            return None
 
     def on_value_changed(self, value):
         self._relative_value = 0.0

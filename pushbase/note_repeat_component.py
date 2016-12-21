@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/note_repeat_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\note_repeat_component.py
 from __future__ import absolute_import, print_function
 from ableton.v2.base import listens, task
 from ableton.v2.control_surface import CompoundComponent
@@ -36,6 +36,7 @@ class NoteRepeatComponent(CompoundComponent):
         self._options.selected_option = 5
         self._on_selected_option_changed.subject = self._options
         self.set_note_repeat(None)
+        return
 
     def on_enabled_changed(self):
         if self.is_enabled():
@@ -64,6 +65,7 @@ class NoteRepeatComponent(CompoundComponent):
             self._note_repeat.enabled = False
         self._note_repeat = note_repeat
         self._update_note_repeat(enabled=self.is_enabled())
+        return
 
     def set_pad_parameters(self, element):
         if element:

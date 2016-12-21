@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/quantization_settings.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\quantization_settings.py
 from __future__ import absolute_import, print_function
 from ableton.v2.base import listens
 from ableton.v2.control_surface.control import TextDisplayControl

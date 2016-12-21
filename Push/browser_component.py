@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/browser_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\browser_component.py
 from __future__ import absolute_import, print_function
 from functools import partial
 from itertools import izip, izip_longest
@@ -78,7 +78,7 @@ class BrowserComponent(CompoundComponent):
     def __init__(self, browser = None, make_browser_model = None, preferences = dict(), *a, **k):
         super(BrowserComponent, self).__init__(*a, **k)
         raise make_browser_model is not None or AssertionError
-        self._browser = browser or self.application().browser
+        self._browser = browser or self.application.browser
         self._browser_model = EmptyBrowserModel(browser=self._browser)
         self._make_browser_model = make_browser_model
         num_data_sources = self.NUM_COLUMNS * self.COLUMN_SIZE
@@ -109,10 +109,12 @@ class BrowserComponent(CompoundComponent):
         self._on_content_lists_changed()
         self.prehear_button.is_toggled = preferences.setdefault('browser_prehear', True)
         self._last_selected_item = None
+        return
 
     def disconnect(self):
         self._last_selected_item = None
         super(BrowserComponent, self).disconnect()
+        return
 
     def set_display_line1(self, display):
         self.set_display_line_with_index(display, 0)
@@ -150,6 +152,8 @@ class BrowserComponent(CompoundComponent):
                 self._set_button_if_enabled(component, 'prev_page_button', None)
                 self._set_button_if_enabled(component, 'select_prev_button', button)
 
+        return
+
     def set_state_buttons(self, buttons):
         for button in buttons or []:
             if button:
@@ -170,6 +174,8 @@ class BrowserComponent(CompoundComponent):
             if button and self.is_enabled():
                 button.set_light('DefaultButton.Disabled')
 
+        return
+
     @shift_button.value
     def shift_button(self, value, control):
         self.set_select_buttons(self._select_buttons)
@@ -183,6 +189,7 @@ class BrowserComponent(CompoundComponent):
             control.set_control_element(None)
             if button and self.is_enabled():
                 button.set_light('DefaultButton.Disabled')
+        return
 
     def set_encoder_controls(self, encoder_controls):
         if encoder_controls:
@@ -211,6 +218,7 @@ class BrowserComponent(CompoundComponent):
 
     def reset_load_memory(self):
         self._update_load_memory(None)
+        return
 
     def _do_load_item(self, item):
         self.do_load_item(item)
@@ -303,6 +311,7 @@ class BrowserComponent(CompoundComponent):
         elif self._last_selected_item is not None:
             self._last_selected_item.preview()
         self._preferences['browser_prehear'] = toggled
+        return
 
     @listens('hotswap_target')
     def _on_hotswap_target_changed(self):
@@ -330,7 +339,7 @@ class BrowserComponent(CompoundComponent):
             new_model.disconnect()
         else:
             self.disconnect_disconnectable(self._browser_model)
-            self._browser_model = self.register_slot_manager(new_model)
+            self._browser_model = self.register_disconnectable(new_model)
             self._on_content_lists_changed.subject = self._browser_model
             self._on_selection_updated.subject = self._browser_model
         self._browser_model.update_content()
@@ -355,6 +364,7 @@ class BrowserComponent(CompoundComponent):
         if item is not None and self.prehear_button.is_toggled:
             item.preview()
         self._last_selected_item = item
+        return
 
     @listens('selection_updated')
     def _on_selection_updated(self, index):
@@ -411,6 +421,7 @@ class BrowserComponent(CompoundComponent):
         self.set_state_buttons(self._state_buttons)
         self.set_encoder_controls(self._encoder_controls)
         self._update_navigation_button_state()
+        return
 
     @listens('value')
     def _on_select_matrix_value(self, value, *_):

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/AIRA_MX_1/NotifyingSessionComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\AIRA_MX_1\NotifyingSessionComponent.py
 from itertools import count, izip_longest
 from _Framework.SubjectSlot import subject_slot, subject_slot_group
 from _Framework.SessionComponent import SessionComponent, SceneComponent
@@ -17,6 +17,8 @@ class SpecialSceneComponent(SceneComponent):
     def scene_name(self):
         if self._scene and self._scene.name:
             return self._scene.name
+        else:
+            return None
 
     def set_playing_value(self, value):
         self._playing_value = value
@@ -47,6 +49,7 @@ class SpecialSceneComponent(SceneComponent):
                 self._launch_button.turn_off()
             else:
                 self._launch_button.set_light(value_to_send)
+        return
 
     def _has_fired_slots(self):
         for track in self.song().tracks:

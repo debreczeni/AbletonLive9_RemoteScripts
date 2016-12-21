@@ -1,20 +1,23 @@
-Ableton Live 9.6 Remote Scripts
+Ableton Live 9 Remote Scripts
 =============================
 
-This is the unofficial repository of Ableton Live 9.6 MIDI Remote Scripts.
+This is the unofficial repository of Ableton Live 9 MIDI Remote Scripts.
+You can checkout branches to switch to different Live versions.
+
+Currently available branches are:
+- *Live_9.6+Framework* - the Live 9.6 scripts, LiveControl and the framework
+- *Live_9.6* - only the 9.6 scripts and LiveControl, since the framework is available at
+               *{Live Installation Folder}/Resources/Python/remote-script-framework*
+- *Live_9.7* - the 9.7 scripts without LiveControl
+- *master* - the latest version I decompiled or customized
+
 (all files marked with older references didn't have changed since previous versions)
 
 You can find more informations on 
 [this page](http://julienbayle.net/ableton-live-9-midi-remote-scripts "this page")
 
-
-**UPDATES**
-- _Mar 31th 2016_ added Lemur Live Control v2.1.31 (just in case)
-- _Dec 21th 2016_ removed *_Framework* and *ableton* folders, since they are available at
-  *{Live Installation Folder}/Resources/Python/remote-script-framework*
-
+Decompilation was done using https://sourceforge.net/projects/easypythondecompiler/
 
 ===> NO support given, ONLY source files !
 
 Please, enjoy.
-

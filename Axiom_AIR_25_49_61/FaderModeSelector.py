@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_AIR_25_49_61/FaderModeSelector.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_AIR_25_49_61\FaderModeSelector.py
 from _Framework.ModeSelectorComponent import ModeSelectorComponent
 from consts import *
 
@@ -24,6 +24,7 @@ class FaderModeSelector(ModeSelectorComponent):
         self._faders = None
         self._fader_button_modes = None
         self._master_fader_button = None
+        return
 
     def set_mode_buttons(self, buttons):
         for button in buttons:
@@ -67,6 +68,7 @@ class FaderModeSelector(ModeSelectorComponent):
                 self._mixer.master_strip().set_select_button(self._master_fader_button)
             self._device.set_allow_update(True)
             self._mixer.set_allow_update(True)
+        return
 
     def _mode_value(self, value, sender):
         if self.is_enabled():

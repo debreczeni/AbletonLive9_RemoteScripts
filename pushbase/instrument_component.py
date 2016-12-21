@@ -1,6 +1,6 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/instrument_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\instrument_component.py
 from __future__ import absolute_import, print_function
-from ableton.v2.base import Subject, index_if, listenable_property, listens, liveobj_valid, find_if
+from ableton.v2.base import EventObject, index_if, listenable_property, listens, liveobj_valid, find_if
 from ableton.v2.control_surface import CompoundComponent
 from ableton.v2.control_surface.control import control_matrix
 from ableton.v2.control_surface.components import PlayableComponent, Slideable, SlideComponent
@@ -11,9 +11,7 @@ from .pad_control import PadControl
 from .slideable_touch_strip_component import SlideableTouchStripComponent
 DEFAULT_SCALE = SCALES[0]
 
-class NoteLayout(Subject):
-    is_horizontal = listenable_property.managed(True)
-    interval = listenable_property.managed(3)
+class NoteLayout(EventObject):
 
     def __init__(self, song = None, preferences = dict(), *a, **k):
         raise liveobj_valid(song) or AssertionError
@@ -23,6 +21,8 @@ class NoteLayout(Subject):
         self._preferences = preferences
         self._is_in_key = self._preferences.setdefault('is_in_key', True)
         self._is_fixed = self._preferences.setdefault('is_fixed', False)
+        self._interval = self._song.get_data('push-note-layout-interval', 3)
+        self._is_horizontal = self._song.get_data('push-note-layout-horizontal', True)
 
     @property
     def notes(self):
@@ -67,6 +67,28 @@ class NoteLayout(Subject):
         self._preferences['is_fixed'] = self._is_fixed
         self.notify_is_fixed(self._is_fixed)
 
+    @listenable_property
+    def interval(self):
+        return self._interval
+
+    @interval.setter
+    def interval(self, interval):
+        if interval != self._interval:
+            self._interval = interval
+            self._song.set_data('push-note-layout-interval', interval)
+            self.notify_interval(interval)
+
+    @listenable_property
+    def is_horizontal(self):
+        return self._is_horizontal
+
+    @is_horizontal.setter
+    def is_horizontal(self, is_horizontal):
+        if is_horizontal != self._is_horizontal:
+            self._is_horizontal = is_horizontal
+            self._song.set_data('push-note-layout-horizontal', is_horizontal)
+            self.notify_is_horizontal(is_horizontal)
+
     def _get_scale_from_name(self, name):
         return find_if(lambda scale: scale.name == name, SCALES) or DEFAULT_SCALE
 
@@ -98,6 +120,7 @@ class InstrumentComponent(PlayableComponent, CompoundComponent, Slideable, Messe
             self.register_slot(self._note_layout, self._on_note_layout_changed, event)
 
         self._update_pattern()
+        return
 
     def set_detail_clip(self, clip):
         if clip != self._detail_clip:
@@ -136,7 +159,8 @@ class InstrumentComponent(PlayableComponent, CompoundComponent, Slideable, Messe
             if note is not None:
                 return self._has_notes[note]
             return False
-        return False
+        else:
+            return False
 
     @property
     def page_length(self):
@@ -292,10 +316,19 @@ class InstrumentComponent(PlayableComponent, CompoundComponent, Slideable, Messe
             first_note = int(round(self._first_note))
         interval = self._note_layout.interval
         notes = self._note_layout.notes
+        width = None
+        height = None
         octave = first_note / self.page_length
         offset = first_note % self.page_length - self._first_scale_note_offset()
         if interval == None:
-            interval = 8
+            if self._note_layout.is_in_key:
+                interval = len(self._note_layout.notes)
+                if self._note_layout.is_horizontal:
+                    width = interval + 1
+                else:
+                    height = interval + 1
+            else:
+                interval = 8
         elif not self._note_layout.is_in_key:
             interval = [0,
              2,
@@ -311,8 +344,9 @@ class InstrumentComponent(PlayableComponent, CompoundComponent, Slideable, Messe
         else:
             steps = [interval, 1]
             origin = [0, offset]
-        return MelodicPattern(steps=steps, scale=notes, origin=origin, root_note=octave * 12, chromatic_mode=not self._note_layout.is_in_key)
+        return MelodicPattern(steps=steps, scale=notes, origin=origin, root_note=octave * 12, chromatic_mode=not self._note_layout.is_in_key, width=width, height=height)
 
     def _update_aftertouch(self):
         if self.is_enabled() and self._aftertouch_control != None:
             self._aftertouch_control.send_value('mono')
+        return

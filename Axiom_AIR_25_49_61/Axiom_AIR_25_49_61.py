@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_AIR_25_49_61/Axiom_AIR_25_49_61.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_AIR_25_49_61\Axiom_AIR_25_49_61.py
 from __future__ import with_statement
 import Live
 from Live import MidiMap
@@ -57,7 +57,6 @@ class Axiom_AIR_25_49_61(ControlSurface):
         self._alt_device_component = None
         with self.component_guard():
             self.set_pad_translations(PAD_TRANSLATIONS)
-            self._device_selection_follows_track_selection = True
             self._suggested_input_port = 'HyperControl'
             self._suggested_output_port = 'HyperControl'
             self._single_fader_button_modes = None
@@ -76,6 +75,8 @@ class Axiom_AIR_25_49_61(ControlSurface):
             self._drum_group_hyper_button = None
             for component in self.components:
                 component.set_enabled(False)
+
+        return
 
     def disconnect(self):
         self._scheduled_messages = []
@@ -149,6 +150,7 @@ class Axiom_AIR_25_49_61(ControlSurface):
         self._session = None
         ControlSurface.disconnect(self)
         self._send_midi(SYSEX_START + DISABLE_HYPERCONTROL)
+        return
 
     def refresh_state(self):
         ControlSurface.refresh_state(self)
@@ -190,12 +192,14 @@ class Axiom_AIR_25_49_61(ControlSurface):
         ControlSurface.restore_bank(self, bank_index)
         if self._alt_device_component != None:
             self._alt_device_component.restore_bank(bank_index)
+        return
 
     def set_appointed_device(self, device):
         ControlSurface.set_appointed_device(self, device)
         with self.component_guard():
             if self._alt_device_component != None:
                 self._alt_device_component.set_device(device)
+        return
 
     def set_alt_device_component(self, device_component):
         self._alt_device_component = device_component
@@ -210,6 +214,7 @@ class Axiom_AIR_25_49_61(ControlSurface):
         self._device_component.set_device(device_to_select)
         if self._alt_device_component != None:
             self._alt_device_component.set_device(device_to_select)
+        return
 
     def _setup_controls(self):
         self._left_button = create_button(99, 'Left_Button')
@@ -329,9 +334,9 @@ class Axiom_AIR_25_49_61(ControlSurface):
         transport_view_modes.name = 'Transport_View_Modes'
 
     def _setup_device(self):
-        self._device_for_encoders = BestBankDeviceComponent()
+        self._device_for_encoders = BestBankDeviceComponent(device_selection_follows_track_selection=True)
         self._device_for_encoders.name = 'Device_Component_for_encoders'
-        self._device_for_faders = BestBankDeviceComponent()
+        self._device_for_faders = BestBankDeviceComponent(device_selection_follows_track_selection=True)
         self._device_for_faders.name = 'Device_Component_for_faders'
         self.set_device_component(self._device_for_encoders)
         self.set_alt_device_component(self._device_for_faders)
@@ -506,6 +511,7 @@ class Axiom_AIR_25_49_61(ControlSurface):
             self.schedule_message(1, self._set_value_string)
         self._set_name_string(name_string)
         self._set_value_string(value_string)
+        return
 
     def _encoder_value(self, value, sender):
         param = sender.mapped_parameter()
@@ -533,6 +539,7 @@ class Axiom_AIR_25_49_61(ControlSurface):
             self.schedule_message(1, self._set_value_string)
         self._set_name_string(name_string)
         self._set_value_string(value_string)
+        return
 
     def _set_displays_to_default(self):
         self._name_display.segment(0).set_data_source(self._mixer_for_encoders.selected_strip().track_name_data_source())
@@ -540,6 +547,7 @@ class Axiom_AIR_25_49_61(ControlSurface):
         self._update_bank_value()
         self._set_value_string(None)
         self._send_midi(SYSEX_START + LCD_HC_DEFAULT)
+        return
 
     def _set_name_string(self, name_string):
         self._name_display.segment(0).set_data_source(self._name_display_data_source)
@@ -551,12 +559,14 @@ class Axiom_AIR_25_49_61(ControlSurface):
             self._value_display_data_source.set_display_string(value_string)
         else:
             self._value_display.reset()
+        return
 
     def _set_bank_string(self, bank_string = None):
         if bank_string != None:
             self._bank_display_data_source.set_display_string(bank_string)
         else:
             self._bank_display.reset()
+        return
 
     def _update_bank_value(self):
         bank = (self._session.track_offset() + 1) / self._session.width() + 1

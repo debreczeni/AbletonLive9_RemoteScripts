@@ -1,9 +1,9 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/device_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\device_component.py
 from __future__ import absolute_import, print_function
 from ableton.v2.base import depends, listens, liveobj_valid, liveobj_changed
 from ableton.v2.control_surface import CompoundComponent
 from .device_parameter_bank import create_device_bank
-from .parameter_provider import ParameterProvider, generate_info
+from .parameter_provider import ParameterProvider
 from .simpler_slice_nudging import SimplerSliceNudging
 
 class DeviceComponent(ParameterProvider, CompoundComponent):
@@ -27,6 +27,7 @@ class DeviceComponent(ParameterProvider, CompoundComponent):
         self.__on_bank_changed.subject = device_bank_registry
         self.__on_provided_device_changed.subject = device_provider
         self.__on_provided_device_changed()
+        return
 
     def set_device(self, device):
         self._device_provider.device = device
@@ -48,6 +49,7 @@ class DeviceComponent(ParameterProvider, CompoundComponent):
     def _set_bank_index(self, device, bank):
         if self._bank is not None:
             self._bank.index = bank
+        return
 
     def _update_parameters(self):
         self._provided_parameters = self._get_provided_parameters()
@@ -59,11 +61,13 @@ class DeviceComponent(ParameterProvider, CompoundComponent):
             self._bank = None
         if liveobj_valid(device):
             self._bank = self.register_disconnectable(bank_factory(device, self._banking_info))
+        return
 
     def _get_decorated_device(self, device):
         if self._decorator_factory is not None:
             return self._decorator_factory.decorate(device)
-        return device
+        else:
+            return device
 
     def _device_changed(self, device):
         current_device = getattr(self.device(), '_live_object', self.device())
@@ -103,13 +107,18 @@ class DeviceComponent(ParameterProvider, CompoundComponent):
     def _current_bank_details(self):
         if self._bank is not None:
             return (self._bank.name, self._bank.parameters)
-        return ('', [None] * 8)
+        else:
+            return ('', [None] * 8)
 
     def _number_of_parameter_banks(self):
         if self._bank is not None:
             return self._bank.bank_count()
-        return 0
+        else:
+            return 0
 
     def _get_provided_parameters(self):
         _, parameters = self._current_bank_details() if self.device() else (None, ())
-        return [ generate_info(p) for p in parameters ]
+        return [ self._create_parameter_info(p) for p in parameters ]
+
+    def _create_parameter_info(self, parameter, name):
+        raise NotImplementedError()

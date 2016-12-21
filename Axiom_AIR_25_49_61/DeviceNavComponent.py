@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_AIR_25_49_61/DeviceNavComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_AIR_25_49_61\DeviceNavComponent.py
 import Live
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
 
@@ -9,6 +9,7 @@ class DeviceNavComponent(ControlSurfaceComponent):
         ControlSurfaceComponent.__init__(self)
         self._left_button = None
         self._right_button = None
+        return
 
     def disconnect(self):
         if self._left_button != None:
@@ -17,6 +18,7 @@ class DeviceNavComponent(ControlSurfaceComponent):
         if self._right_button != None:
             self._right_button.remove_value_listener(self._nav_value)
             self._right_button = None
+        return
 
     def set_device_nav_buttons(self, left_button, right_button):
         identify_sender = True
@@ -31,6 +33,7 @@ class DeviceNavComponent(ControlSurfaceComponent):
         if self._right_button != None:
             self._right_button.add_value_listener(self._nav_value, identify_sender)
         self.update()
+        return
 
     def on_enabled_changed(self):
         self.update()

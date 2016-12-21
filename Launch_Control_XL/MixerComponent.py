@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launch_Control_XL/MixerComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launch_Control_XL\MixerComponent.py
 from itertools import izip_longest
 from _Framework.Control import control_list, ButtonControl
 from _Framework.ChannelStripComponent import ChannelStripComponent as ChannelStripComponentBase
@@ -36,6 +36,8 @@ class MixerComponent(MixerComponentBase):
                 skipped_sends = [ None for _ in xrange(self.send_index) ]
                 channel_strip.set_send_controls(skipped_sends + send_controls)
 
+        return
+
     def set_send_lights(self, lights):
         for index, channel_strip in enumerate(self._channel_strips):
             elements = None
@@ -43,6 +45,8 @@ class MixerComponent(MixerComponentBase):
                 lights.reset()
                 elements = None if self.send_index is None else [ lights.get_button(index, i) for i in xrange(2) ]
             channel_strip.send_lights.set_control_element(elements)
+
+        return
 
     def set_pan_lights(self, lights):
         for strip, light in izip_longest(self._channel_strips, lights or []):
@@ -56,12 +60,14 @@ class MixerComponent(MixerComponentBase):
             index -= 1
         super(MixerComponent, self)._set_send_index(index)
         self._update_send_buttons()
+        return
 
     send_index = property(_get_send_index, _set_send_index)
 
     def _update_send_buttons(self):
         self.next_sends_button.enabled = self.send_index is not None and self.send_index < self.num_sends - 2
         self.prev_sends_button.enabled = self.send_index is not None and self.send_index > 0
+        return
 
     @next_sends_button.pressed
     def next_sends_button(self, button):

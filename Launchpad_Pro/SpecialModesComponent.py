@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/SpecialModesComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\SpecialModesComponent.py
 from _Framework.ModesComponent import ReenterBehaviour, ModesComponent
 
 class SpecialModesComponent(ModesComponent):
@@ -7,6 +7,7 @@ class SpecialModesComponent(ModesComponent):
         super(SpecialModesComponent, self).on_enabled_changed()
         if not self.is_enabled():
             self._last_selected_mode = None
+        return
 
 
 class SpecialReenterBehaviour(ReenterBehaviour):
@@ -25,6 +26,7 @@ class SpecialReenterBehaviour(ReenterBehaviour):
             if self._mode_name is not None and component.get_mode(self._mode_name):
                 component.push_mode(self._mode_name)
                 component.pop_unselected_modes()
+        return
 
 
 class CancelingReenterBehaviour(SpecialReenterBehaviour):

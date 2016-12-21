@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Axiom_DirectLink/Axiom_DirectLink.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Axiom_DirectLink\Axiom_DirectLink.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface
@@ -43,7 +43,6 @@ class Axiom_DirectLink(ControlSurface):
         ControlSurface.__init__(self, c_instance)
         with self.component_guard():
             self.set_pad_translations(PAD_TRANSLATIONS)
-            self._device_selection_follows_track_selection = True
             self._suggested_input_port = 'DirectLink'
             self._suggested_output_port = 'DirectLink'
             self._waiting_for_first_response = True
@@ -70,6 +69,8 @@ class Axiom_DirectLink(ControlSurface):
             for component in self.components:
                 component.set_enabled(False)
 
+        return
+
     def refresh_state(self):
         ControlSurface.refresh_state(self)
         self._waiting_for_first_response = True
@@ -91,6 +92,7 @@ class Axiom_DirectLink(ControlSurface):
                 self._mixer.master_strip().set_volume_control(None)
                 self._mixer.selected_strip().set_volume_control(self._master_slider)
             self.request_rebuild_midi_map()
+        return
 
     def disconnect(self):
         self._display_data_source.set_display_string('  ')
@@ -120,6 +122,7 @@ class Axiom_DirectLink(ControlSurface):
         self._display = None
         ControlSurface.disconnect(self)
         self._send_midi(SYSEX_START + (32, 0, 247))
+        return
 
     def build_midi_map(self, midi_map_handle):
         self._current_midi_map = midi_map_handle
@@ -208,7 +211,7 @@ class Axiom_DirectLink(ControlSurface):
         next_bank_button = ButtonElement(IS_MOMENTARY, MIDI_CC_TYPE, 15, 15)
         prev_bank_button.name = 'Device_Bank_Down_Button'
         next_bank_button.name = 'Device_Bank_Up_Button'
-        device = BestBankDeviceComponent()
+        device = BestBankDeviceComponent(device_selection_follows_track_selection=True)
         device.name = 'Device_Component'
         self.set_device_component(device)
         device.set_parameter_controls(tuple(self._encoders))
@@ -250,6 +253,7 @@ class Axiom_DirectLink(ControlSurface):
             self._device_navigation.set_device_nav_buttons(None, None)
             self._device_component.set_bank_nav_buttons(self._device_bank_buttons[0], self._device_bank_buttons[1])
         self.request_rebuild_midi_map()
+        return
 
     def _encoder_value(self, value, sender):
         if not sender in self._encoders:
@@ -261,6 +265,7 @@ class Axiom_DirectLink(ControlSurface):
             self._display_data_source.set_display_string(display_string)
             self._set_display_data_source(self._display_data_source)
             self._display_reset_delay = STANDARD_DISPLAY_DELAY
+        return
 
     def _slider_value(self, value, sender):
         if not sender in tuple(self._sliders) + (self._master_slider,):
@@ -291,6 +296,7 @@ class Axiom_DirectLink(ControlSurface):
             self._display_data_source.set_display_string(display_string)
             self._set_display_data_source(self._display_data_source)
             self._display_reset_delay = STANDARD_DISPLAY_DELAY
+        return
 
     def _mixer_button_value(self, value, sender):
         if not sender in tuple(self._strip_buttons) + (self._selected_mute_solo_button,):
@@ -307,6 +313,7 @@ class Axiom_DirectLink(ControlSurface):
                 self._display_data_source.set_display_string(' - ')
                 self._set_display_data_source(self._display_data_source)
             self._display_reset_delay = STANDARD_DISPLAY_DELAY
+        return
 
     def _device_bank_value(self, value):
         if not value in range(128):
@@ -326,6 +333,7 @@ class Axiom_DirectLink(ControlSurface):
     def _show_current_track_name(self):
         if self._display != None and self._mixer != None:
             self._set_display_data_source(self._mixer.selected_strip().track_name_data_source())
+        return
 
     def _show_startup_message(self):
         self._display.display_message('LIVE')

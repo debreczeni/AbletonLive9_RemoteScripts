@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/MultiButtonElement.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\MultiButtonElement.py
 from .ConfigurableButtonElement import ConfigurableButtonElement
 
 class MultiButtonElement(ConfigurableButtonElement):
@@ -14,6 +14,7 @@ class MultiButtonElement(ConfigurableButtonElement):
         super(MultiButtonElement, self).__init__(is_momentary, msg_type, channel, identifier, skin, default_states, *a, **k)
         self.name = name
         self._slave_buttons = [ SlaveButtonElement(self, is_momentary, msg_type, slave_channel, identifier, skin, (default_states if color_slaves else None), name=(name + '_ch_' + str(slave_channel + 1)), *a, **k) for slave_channel in slave_channels ]
+        return
 
     def reset(self):
         super(MultiButtonElement, self).reset()

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/handshake_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\handshake_component.py
 """
 Component for handling the initialization process of Push.
 """
@@ -87,17 +87,20 @@ class HandshakeComponent(Component):
     def has_version_requirements(self, major_version, minor_version):
         if self._hardware_identity is None:
             return False
-        return self._hardware_identity.major_version > major_version or self._hardware_identity.major_version == major_version and self._hardware_identity.minor_version >= minor_version
+        else:
+            return self._hardware_identity.major_version > major_version or self._hardware_identity.major_version == major_version and self._hardware_identity.minor_version >= minor_version
 
     def on_enabled_changed(self):
         super(HandshakeComponent, self).on_enabled_changed()
         if self._handshake_succeeded == None:
             self._do_fail()
+        return
 
     def _start_handshake(self):
         self._handshake_succeeded = None
         self._identification_timeout_task.restart()
         self._identity_control.enquire_value()
+        return
 
     @listens('value')
     def _on_identity_value(self, value):
@@ -128,12 +131,14 @@ class HandshakeComponent(Component):
             self._handshake_succeeded = True
             self._identification_timeout_task.kill()
             self.notify_success()
+        return
 
     def _do_fail(self, bootloader_mode = False):
         if self._handshake_succeeded == None:
             self._handshake_succeeded = False
             self._identification_timeout_task.kill()
             self.notify_failure(bootloader_mode)
+        return
 
 
 class MinimumFirmwareVersionElement(ToggleElement):
@@ -147,6 +152,7 @@ class MinimumFirmwareVersionElement(ToggleElement):
         self._handshake_component = handshake_component
         self._on_handshake_success.subject = handshake_component
         self._on_handshake_failure.subject = handshake_component
+        return
 
     @listens('success')
     def _on_handshake_success(self):

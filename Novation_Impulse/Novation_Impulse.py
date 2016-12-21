@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Novation_Impulse/Novation_Impulse.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Novation_Impulse\Novation_Impulse.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface
@@ -41,7 +41,6 @@ class Novation_Impulse(ControlSurface):
         ControlSurface.__init__(self, c_instance)
         with self.component_guard():
             self.set_pad_translations(PAD_TRANSLATIONS)
-            self._device_selection_follows_track_selection = True
             self._suggested_input_port = 'Impulse'
             self._suggested_output_port = 'Impulse'
             self._has_sliders = True
@@ -68,6 +67,8 @@ class Novation_Impulse(ControlSurface):
             self._string_to_display = None
             for component in self.components:
                 component.set_enabled(False)
+
+        return
 
     def refresh_state(self):
         ControlSurface.refresh_state(self)
@@ -99,6 +100,7 @@ class Novation_Impulse(ControlSurface):
 
             self._encoder_modes.set_provide_volume_mode(not self._has_sliders)
             self.request_rebuild_midi_map()
+        return
 
     def disconnect(self):
         self._name_display_data_source.set_display_string('  ')
@@ -127,6 +129,7 @@ class Novation_Impulse(ControlSurface):
         self._encoder_modes = None
         self._transport_view_modes = None
         self._send_midi(SYSEX_START + (6, 0, 0, 0, 247))
+        return
 
     def build_midi_map(self, midi_map_handle):
         self._current_midi_map = midi_map_handle
@@ -141,6 +144,7 @@ class Novation_Impulse(ControlSurface):
             self._display_reset_delay -= 1
             if self._display_reset_delay == -1:
                 self._show_current_track_name()
+        return
 
     def _setup_mixer(self):
         mute_solo_flip_button = ButtonElement(not IS_MOMENTARY, MIDI_CC_TYPE, 0, 34)
@@ -231,7 +235,7 @@ class Novation_Impulse(ControlSurface):
         self._next_bank_button = ButtonElement(IS_MOMENTARY, MIDI_CC_TYPE, 1, 11)
         self._prev_bank_button.name = 'Device_Bank_Down_Button'
         self._next_bank_button.name = 'Device_Bank_Up_Button'
-        device = DeviceComponent()
+        device = DeviceComponent(device_selection_follows_track_selection=True)
         device.name = 'Device_Component'
         self.set_device_component(device)
         device.set_parameter_controls(self._encoders)
@@ -252,6 +256,7 @@ class Novation_Impulse(ControlSurface):
                 display_string = self._device_component.is_enabled() and ' - '
                 display_string = sender.mapped_parameter() != None and sender.mapped_parameter().name
             self._set_string_to_display(display_string)
+        return
 
     def _slider_value(self, value, sender):
         if not sender in tuple(self._sliders) + (self._master_slider,):
@@ -280,6 +285,7 @@ class Novation_Impulse(ControlSurface):
                     raise False or AssertionError
                 display_string += ' Volume'
             self._set_string_to_display(display_string)
+        return
 
     def _mixer_button_value(self, value, sender):
         if not value in range(128):
@@ -292,6 +298,7 @@ class Novation_Impulse(ControlSurface):
                 self._display_reset_delay = STANDARD_DISPLAY_DELAY
             else:
                 self._set_string_to_display(' - ')
+        return
 
     def _preview_value(self, value):
         raise value in range(128) or AssertionError
@@ -303,6 +310,7 @@ class Novation_Impulse(ControlSurface):
             self._string_to_display = None
             self._name_display.segment(0).set_data_source(self._mixer.selected_strip().track_name_data_source())
             self._name_display.update()
+        return
 
     def _show_startup_message(self):
         self._name_display.display_message('LIVE')

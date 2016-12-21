@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_APC/RingedEncoderElement.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_APC\RingedEncoderElement.py
 from _Framework.EncoderElement import EncoderElement
 from _Framework.ButtonElement import ButtonElement
 RING_OFF_VALUE = 0
@@ -15,6 +15,7 @@ class RingedEncoderElement(EncoderElement):
         super(RingedEncoderElement, self).__init__(msg_type, channel, identifier, map_mode, *a, **k)
         self._ring_mode_button = None
         self.set_needs_takeover(False)
+        return
 
     def set_ring_mode_button(self, button):
         if not (button == None or isinstance(button, ButtonElement)):
@@ -22,6 +23,7 @@ class RingedEncoderElement(EncoderElement):
             self._ring_mode_button != None and self._ring_mode_button.send_value(RING_OFF_VALUE, force=True)
         self._ring_mode_button = button
         self._update_ring_mode()
+        return
 
     def connect_to(self, parameter):
         if parameter != self._parameter_to_map_to and not self.is_mapped_manually():
@@ -58,3 +60,4 @@ class RingedEncoderElement(EncoderElement):
                     self._ring_mode_button.send_value(RING_VOL_VALUE, force=True)
             else:
                 self._ring_mode_button.send_value(RING_OFF_VALUE, force=True)
+        return

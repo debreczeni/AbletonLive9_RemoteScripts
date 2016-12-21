@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/ConfigurableButtonElement.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\ConfigurableButtonElement.py
 from _Framework.Skin import SkinColorMissingError
 from _Framework.ButtonElement import ButtonElement, ON_VALUE, OFF_VALUE
 
@@ -20,6 +20,7 @@ class ConfigurableButtonElement(ButtonElement):
         if default_states is not None:
             self.default_states = default_states
         self.states = dict(self.default_states)
+        return
 
     @property
     def _on_value(self):

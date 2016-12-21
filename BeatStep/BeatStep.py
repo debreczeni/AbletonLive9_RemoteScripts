@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/BeatStep/BeatStep.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\BeatStep\BeatStep.py
 from __future__ import with_statement
 from itertools import izip, chain
 import Live
@@ -62,10 +62,9 @@ class BeatStep(ArturiaControlSurface):
         self._play_button = ButtonElement(True, MIDI_CC_TYPE, 0, 2, name='Play_Button')
 
     def _create_device(self):
-        self._device = DeviceComponent(name='Device', is_enabled=False, layer=Layer(parameter_controls=self._device_encoders))
+        self._device = DeviceComponent(name='Device', is_enabled=False, layer=Layer(parameter_controls=self._device_encoders), device_selection_follows_track_selection=True)
         self._device.set_enabled(True)
         self.set_device_component(self._device)
-        self._device_selection_follows_track_selection = True
 
     def _create_session(self):
         self._session = SessionComponent(name='Session', is_enabled=False, num_tracks=self._pads.width(), num_scenes=self._pads.height(), enable_skinning=True, layer=Layer(clip_launch_buttons=self._pads, scene_select_control=self._vertical_scroll_encoder))

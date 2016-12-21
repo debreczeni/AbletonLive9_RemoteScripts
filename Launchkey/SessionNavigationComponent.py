@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchkey/SessionNavigationComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchkey\SessionNavigationComponent.py
 from _Framework.CompoundComponent import CompoundComponent
 from _Framework.ScrollComponent import ScrollComponent
 from _Framework import Task
@@ -53,6 +53,8 @@ class ArmingTrackScrollComponent(ScrollComponent):
         can_arm_track = track != None and track.has_midi_input and track.can_be_armed and not track.arm
         if can_arm_track:
             return track
+        else:
+            return
 
     def _try_arm(self):
         track_to_arm = self._track_to_arm()
@@ -68,6 +70,7 @@ class ArmingTrackScrollComponent(ScrollComponent):
 
                 track_to_arm.arm = True
                 track_to_arm.view.select_instrument()
+        return
 
     def _arm_task(self, delta):
         result_state = Task.KILLED

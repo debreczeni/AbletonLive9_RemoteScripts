@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_MK2/SessionZoomingComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_MK2\SessionZoomingComponent.py
 from _Framework.SessionZoomingComponent import SessionZoomingComponent as SessionZoomingComponentBase
 from .ComponentUtils import skin_scroll_component
 from _Framework.SessionComponent import SessionComponent

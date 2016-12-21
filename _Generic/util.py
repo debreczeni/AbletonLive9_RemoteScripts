@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Generic/util.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Generic\util.py
 from __future__ import absolute_import, print_function
 from _Framework.SubjectSlot import SlotManager, subject_slot
 from _Framework.Util import nop
@@ -13,6 +13,7 @@ class DeviceAppointer(SlotManager):
         self.__on_appointed_device_changed.subject = self._song
         self.__on_selected_track_changed.subject = self._song.view
         self.__on_selected_track_changed()
+        return
 
     @subject_slot('appointed_device')
     def __on_appointed_device_changed(self):
@@ -25,6 +26,7 @@ class DeviceAppointer(SlotManager):
         device = song.view.selected_track.view.selected_device
         if device != None:
             self._update_appointed_device(device)
+        return
 
     @subject_slot('selected_track')
     def __on_selected_track_changed(self):
@@ -37,3 +39,4 @@ class DeviceAppointer(SlotManager):
             self._appointed_device = device
             self._set_appointed_device(device)
             self._song.appointed_device = device
+        return

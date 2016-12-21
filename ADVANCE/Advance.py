@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/ADVANCE/Advance.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\ADVANCE\Advance.py
 from __future__ import with_statement
 import Live
 from _Framework.ControlSurface import ControlSurface
@@ -31,10 +31,9 @@ class Advance(ControlSurface):
         with self.component_guard():
             encoders = ButtonMatrixElement(rows=[[ make_encoder(index + 22, 'Encoder_%d' % index) for index in xrange(8) ]])
             pads = ButtonMatrixElement(rows=[ [ make_button(identifier, 'Pad_%d_%d' % (col, row)) for col, identifier in enumerate(row_ids) ] for row, row_ids in enumerate(PAD_IDS) ])
-            device = DeviceComponent(is_enabled=False, layer=Layer(parameter_controls=encoders))
+            device = DeviceComponent(is_enabled=False, layer=Layer(parameter_controls=encoders), device_selection_follows_track_selection=True)
             device.set_enabled(True)
             self.set_device_component(device)
-            self._device_selection_follows_track_selection = True
             drums = DrumRackComponent(is_enabled=False, layer=Layer(pads=pads))
             drums.set_enabled(True)
             play_button = make_button(118, 'Play_Button', MIDI_CC_TYPE, 0)

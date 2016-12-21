@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC40_MkII/MixerComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\APC40_MkII\MixerComponent.py
 from itertools import ifilter, izip_longest
 from _Framework.Control import RadioButtonControl, control_list
 from _Framework.Dependency import depends
@@ -18,11 +18,14 @@ class ChannelStripComponent(ChannelStripComponentBase):
             elif state == 2:
                 value_to_send = 'Mixer.Crossfade.B'
             self._crossfade_toggle.set_light(value_to_send)
+        return
 
 
 def _set_channel(controls, channel):
     for control in ifilter(None, controls or []):
         control.set_channel(channel)
+
+    return
 
 
 class MixerComponent(MixerComponentBase):
@@ -36,6 +39,7 @@ class MixerComponent(MixerComponentBase):
         self._pan_controls = None
         self._send_controls = None
         self._user_controls = None
+        return
 
     def _create_strip(self):
         return ChannelStripComponent()
@@ -54,11 +58,13 @@ class MixerComponent(MixerComponentBase):
             self.send_select_buttons[self.send_index].is_checked = True
         if self.is_enabled() and self._send_controls:
             self._show_controlled_sends_message()
+        return
 
     def _show_controlled_sends_message(self):
         if self._send_index is not None:
             send_name = chr(ord('A') + self._send_index)
             self._show_message('Controlling Send %s' % send_name)
+        return
 
     def set_pan_controls(self, controls):
         super(MixerComponent, self).set_pan_controls(controls)

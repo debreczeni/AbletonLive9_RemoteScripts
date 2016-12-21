@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchkey_MK2/Launchkey_MK2.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchkey_MK2\Launchkey_MK2.py
 from __future__ import with_statement
 from functools import partial
 from _Framework import Task
@@ -108,11 +108,11 @@ class Launchkey_MK2(OptimizedControlSurface):
         self._mute_button_modes.layer = Layer(solo_mode_button=self._master_button)
         self._mute_button_modes.selected_mode = 'mute_mode'
         self._mute_button_modes.set_enabled(True)
+        return
 
     def _create_device(self):
-        self._device = DeviceComponent(name='Device', is_enabled=False)
+        self._device = DeviceComponent(name='Device', is_enabled=False, device_selection_follows_track_selection=True)
         self.set_device_component(self._device)
-        self._device_selection_follows_track_selection = True
         self._device.set_enabled(True)
 
     def _create_background(self):

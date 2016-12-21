@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_MK2/ModeUtils.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_MK2\ModeUtils.py
 from _Framework.Dependency import depends
 from _Framework.ModesComponent import ModesComponent, ModeButtonBehaviour, ImmediateBehaviour
 
@@ -50,6 +50,7 @@ class EnablingReenterBehaviour(SkinableBehaviourMixin, ImmediateBehaviour):
     def component_set_enabled(self, enable):
         if self._component is not None:
             self._component.set_enabled(enable)
+        return
 
 
 class NotifyingModesComponent(ModesComponent):
@@ -69,6 +70,7 @@ class NotifyingModesComponent(ModesComponent):
         super(NotifyingModesComponent, self).add_mode(name, mode_or_component, toggle_value, groups, behaviour)
         if layout_byte is not None:
             self._modes_to_layout_bytes[name] = layout_byte
+        return
 
     def push_mode(self, mode):
         self.send_switch_layout_message(mode)

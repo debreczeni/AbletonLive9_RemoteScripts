@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/pad_control.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\pad_control.py
 from __future__ import absolute_import, print_function
 from ableton.v2.control_surface.control import PlayableControl
 
@@ -6,9 +6,9 @@ class PadControl(PlayableControl):
 
     class State(PlayableControl.State):
 
-        def __init__(self, *a, **k):
+        def __init__(self, sensitivity_profile = None, *a, **k):
             super(PadControl.State, self).__init__(*a, **k)
-            self._sensitivity_profile = None
+            self._sensitivity_profile = sensitivity_profile
 
         def _get_sensitivity_profile(self):
             return self._sensitivity_profile

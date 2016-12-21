@@ -1,7 +1,7 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/grid_resolution.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\grid_resolution.py
 from __future__ import absolute_import, print_function
 import Live
-from ableton.v2.base import product, listens, SlotManager, Subject
+from ableton.v2.base import EventObject, product, listens
 GridQuantization = Live.Clip.GridQuantization
 QUANTIZATION_FACTOR = 24
 QUANTIZATION_LIST = [2.0,
@@ -26,14 +26,14 @@ CLIP_LENGTH_LIST = [2.0,
  32.0]
 DEFAULT_INDEX = 3
 
-class GridResolution(SlotManager, Subject):
+class GridResolution(EventObject):
     __events__ = ('index',)
 
     def __init__(self, *a, **k):
         super(GridResolution, self).__init__(*a, **k)
         self._index = DEFAULT_INDEX
         self._quantization_buttons = []
-        self._quantization_button_slots = self.register_slot_manager()
+        self._quantization_button_slots = self.register_disconnectable(EventObject())
 
     def _get_index(self):
         return self._index
@@ -79,6 +79,8 @@ class GridResolution(SlotManager, Subject):
                     button.turn_on()
                 else:
                     button.turn_off()
+
+        return
 
     def update(self):
         self._update_quantization_buttons()

@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC20/ShiftableZoomingComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\APC20\ShiftableZoomingComponent.py
 from _Framework.ButtonElement import ButtonElement
 from _Framework.SessionZoomingComponent import DeprecatedSessionZoomingComponent
 
@@ -34,12 +34,15 @@ class ShiftableZoomingComponent(DeprecatedSessionZoomingComponent):
                 for button in self._scene_bank_buttons:
                     button.turn_off()
 
+        return
+
     def _stop_value(self, value, sender):
         if not value in range(128):
             raise AssertionError
             if not sender != None:
                 raise AssertionError
                 self.is_enabled() and not self._ignore_buttons and self._is_zoomed_out and (value != 0 or not sender.is_momentary()) and self.song().stop_all_clips()
+        return
 
     def _zoom_value(self, value):
         if not self._zoom_button != None:
@@ -57,6 +60,7 @@ class ShiftableZoomingComponent(DeprecatedSessionZoomingComponent):
                         self._scene_bank_index = 0
                     self._session.set_enabled(not self._is_zoomed_out)
                     self._is_zoomed_out and self.update()
+        return
 
     def _matrix_value(self, value, x, y, is_momentary):
         if not self._ignore_buttons:

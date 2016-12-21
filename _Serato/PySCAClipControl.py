@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Serato/PySCAClipControl.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Serato\PySCAClipControl.py
 import libInterprocessCommsAPIPython
 
 class PySCAClipControl:
@@ -50,7 +50,8 @@ class PySCAClipControl:
             self.PySCA_InitializeIncomingPath()
         if reader == 0 or reader_events == 0 or libInterprocessCommsAPIPython.SCAValidateReaderObject(self.reader) != 0:
             return -1
-        return libInterprocessCommsAPIPython.SCAEventsReadEvent(event_type, event_key1, event_key2, data_size, data, None)
+        else:
+            return libInterprocessCommsAPIPython.SCAEventsReadEvent(event_type, event_key1, event_key2, data_size, data, None)
 
     def PySCA_HasIncomingEvent(self):
         if not self.reader or not self.reader_events:
@@ -147,6 +148,7 @@ class PySCAClipControl:
             libInterprocessCommsAPIPython.SCASetIntValue(self.writer, atom, int_value)
             if event_name:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, 0, 0, 0, None)
+        return
 
     def PySCA_SetShMemTrackDoubleVariableState(self, track_id, double_value, track_key_name, key_name, event_name):
         if self.writer and self.writer_events and self.writer_clip_control_atom:
@@ -154,6 +156,7 @@ class PySCAClipControl:
             libInterprocessCommsAPIPython.SCASetDoubleValue(self.writer, atom, double_value)
             if event_name:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, track_id, 0, 0, None)
+        return
 
     def PySCA_SetShMemTrackIntVariableState(self, track_id, int_value, track_key_name, key_name, event_name):
         if self.writer and self.writer_events and self.writer_clip_control_atom:
@@ -161,6 +164,7 @@ class PySCAClipControl:
             libInterprocessCommsAPIPython.SCASetIntValue(self.writer, atom, int_value)
             if event_name:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, track_id, 0, 0, None)
+        return
 
     def PySCA_SetShMemTrackLabelVariableState(self, track_id, label, max_length, track_key_name, key_name, event_name):
         if self.writer and self.writer_events and self.writer_clip_control_atom:
@@ -168,6 +172,7 @@ class PySCAClipControl:
             result = libInterprocessCommsAPIPython.SCASetDataValue(self.writer, atom, label, max_length)
             if event_name and result == 0:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, track_id, 0, 0, None)
+        return
 
     def PySCA_SetShMemClipIntVariableState(self, track_id, clip_id, int_value, track_key_name, clip_key_name, key_name, event_name):
         if self.writer and self.writer_events and self.writer_clip_control_atom:
@@ -176,6 +181,7 @@ class PySCAClipControl:
             libInterprocessCommsAPIPython.SCASetIntValue(self.writer, atom, int_value)
             if event_name:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, track_id, clip_id, 0, None)
+        return
 
     def PySCA_SetShMemClipLabelVariableState(self, track_id, clip_id, label, max_length, track_key_name, clip_key_name, key_name, event_name):
         if self.writer and self.writer_events and self.writer_clip_control_atom:
@@ -184,6 +190,7 @@ class PySCAClipControl:
             result = libInterprocessCommsAPIPython.SCASetDataValue(self.writer, atom, label, max_length)
             if event_name and result == 0:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, track_id, clip_id, 0, None)
+        return
 
     def PySCA_SetShMemDeviceLabelVariableState(self, label, max_length, key_name, event_name):
         if self.writer and self.writer_events:
@@ -191,6 +198,7 @@ class PySCAClipControl:
             result = libInterprocessCommsAPIPython.SCASetDataValue(self.writer, atom, label, max_length)
             if event_name and result == 0:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, 0, 0, 0, None)
+        return
 
     def PySCA_SetShMemDeviceIndexVariableState(self, int_value, key_name, event_name):
         if self.writer and self.writer_events:
@@ -198,6 +206,7 @@ class PySCAClipControl:
             libInterprocessCommsAPIPython.SCASetIntValue(self.writer, atom, int_value)
             if event_name:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, 0, 0, 0, None)
+        return
 
     def PySCA_SetShMemDeviceParamDoubleVariableState(self, device_id, double_value, device_key_name, key_name, event_name):
         if self.writer and self.writer_events:
@@ -205,6 +214,7 @@ class PySCAClipControl:
             libInterprocessCommsAPIPython.SCASetDoubleValue(self.writer, atom, double_value)
             if event_name:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, device_id, 0, 0, None)
+        return
 
     def PySCA_SetShMemDeviceParamLabelVariableState(self, device_id, label, max_length, device_key_name, key_name, event_name):
         if self.writer and self.writer_events:
@@ -212,3 +222,4 @@ class PySCAClipControl:
             result = libInterprocessCommsAPIPython.SCASetDataValue(self.writer, atom, label, max_length)
             if event_name and result == 0:
                 libInterprocessCommsAPIPython.SCAEventsWriteEvent(self.writer_events, event_name, device_id, 0, 0, None)
+        return

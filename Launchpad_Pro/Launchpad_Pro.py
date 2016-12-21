@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/Launchpad_Pro.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\Launchpad_Pro.py
 from __future__ import with_statement
 from functools import partial
 import Live
@@ -19,6 +19,7 @@ from .SpecialMidiMap import SpecialMidiMap, make_button, make_multi_button, make
 from .BackgroundComponent import ModifierBackgroundComponent, BackgroundComponent
 from .ActionsComponent import ActionsComponent
 from .ClipActionsComponent import ClipActionsComponent
+from .LedLightingComponent import LedLightingComponent
 from .TranslationComponent import TranslationComponent
 from .TargetTrackComponent import TargetTrackComponent
 from .SpecialDeviceComponent import SpecialDeviceComponent
@@ -29,6 +30,7 @@ from .DrumGroupComponent import DrumGroupComponent
 from .SpecialMixerComponent import SpecialMixerComponent
 from .SpecialSessionComponent import SpecialSessionComponent as SessionComponent, SpecialClipSlotComponent, SpecialSessionZoomingComponent as SessionZoomingComponent, SessionZoomingManagerComponent
 from .SpecialModesComponent import SpecialModesComponent, SpecialReenterBehaviour, CancelingReenterBehaviour
+from .UserMatrixComponent import UserMatrixComponent
 import consts
 NUM_TRACKS = 8
 NUM_SCENES = 8
@@ -126,6 +128,22 @@ class MidiMap(SpecialMidiMap):
         for index, slider in enumerate(self['Slider_Button_Matrix_Raw'][0]):
             slider.set_index(index)
 
+        self.create_user_mode_controls()
+
+    def create_user_mode_controls(self):
+        """
+        Creates control elements that aren't used in the script
+        but need to exist so they can be grabbed and observed
+        via Max for Live.
+        """
+        for channel in consts.USER_MODE_CHANNELS:
+            channel_name = channel + 1
+            self.add_matrix('User_Button_Matrix_Ch_%d' % (channel_name,), make_button, channel, consts.USER_MATRIX_IDENTIFIERS, MIDI_NOTE_TYPE)
+            self.add_matrix('User_Left_Side_Button_Matrix_Ch_%d' % (channel_name,), make_button, channel, [ [identifier] for identifier in xrange(108, 116) ], MIDI_NOTE_TYPE)
+            self.add_matrix('User_Right_Side_Button_Matrix_Ch_%d' % (channel_name,), make_button, channel, [ [identifier] for identifier in xrange(100, 108) ], MIDI_NOTE_TYPE)
+            self.add_matrix('User_Bottom_Button_Matrix_Ch_%d' % (channel_name,), make_button, channel, [[ identifier for identifier in xrange(116, 124) ]], MIDI_NOTE_TYPE)
+            self.add_matrix('User_Arrow_Button_Matrix_Ch_%d' % (channel_name,), make_button, channel, [[ identifier for identifier in xrange(91, 95) ]], MIDI_CC_TYPE)
+
     def with_shift(self, button_name):
         return ComboElement(self[button_name], modifiers=[self['Shift_Button']], name='Shifted_' + button_name)
 
@@ -156,11 +174,11 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
                 self._create_device()
                 self._create_modes()
                 self._create_m4l_interface()
+                self._create_user()
             self._on_session_record_changed.subject = self.song()
-        self.set_highlighting_session_component(self._session)
         self.set_device_component(self._device)
-        self._device_selection_follows_track_selection = True
         self._on_session_record_changed()
+        return
 
     def disconnect(self):
         self._send_midi(consts.TURN_OFF_LEDS)
@@ -201,6 +219,7 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
         self._drum_group_finder.set_enabled(True)
         self._drum_group = DrumGroupComponent(self._clip_actions_component, name='Drum_Group_Control', translation_channel=consts.DR_MAP_CHANNEL)
         self._drum_group.set_enabled(True)
+        return
 
     def _create_mixer(self):
         self._mixer = SpecialMixerComponent(NUM_TRACKS, auto_name=True, is_enabled=True, invert_mute_feedback=True)
@@ -208,7 +227,7 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
         self._session.set_mixer(self._mixer)
 
     def _create_device(self):
-        self._device = SpecialDeviceComponent(name='Device_Control', is_enabled=False)
+        self._device = SpecialDeviceComponent(name='Device_Control', is_enabled=False, device_selection_follows_track_selection=True)
         self._device_navigation = DeviceNavigationComponent(name='Device_Navigation')
         self._device_background = BackgroundComponent(name='Device_Background_Component')
 
@@ -268,10 +287,14 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
     def _create_note_modes(self):
         note_mode_matrix_translation = self._create_translation('Note_Mode_Matrix_Translation', consts.CHROM_MAP_CHANNEL, Layer(button_matrix=self._midimap['Main_Button_Matrix'], note_button_matrix=self._midimap['Note_Button_Matrix'], drum_matrix=self._midimap['Drum_Button_Matrix'], mixer_button_matrix=self._midimap['Mixer_Button_Matrix']), should_enable=False)
         note_mode_scene_launch_translation = self._create_translation('Note_Mode_Scene_Launch_Translation', consts.CHROM_MAP_CHANNEL, Layer(scene_launch_buttons=self._midimap['Scene_Launch_Button_Matrix']))
+        scale_setup_mode_button_lighting = LedLightingComponent(name='LED_Lighting_Component', is_enabled=False, layer=Layer(button=self._midimap.with_shift('Note_Mode_Button')))
         drum_mode_note_matrix_translation = self._create_translation('Drum_Mode_Note_Button_Translation', 0, Layer(note_button_matrix=self._midimap['Note_Button_Matrix']), should_enable=False, should_reset=False)
         drum_group_layer_mode = LayerMode(self._drum_group, layer=Layer(scroll_up_button=self._midimap['Arrow_Left_Button'], scroll_down_button=self._midimap['Arrow_Right_Button'], scroll_page_up_button=self._midimap['Arrow_Up_Button'], scroll_page_down_button=self._midimap['Arrow_Down_Button'], drum_matrix=self._midimap['Drum_Button_Matrix'], select_button=self._midimap['Shift_Button'], delete_button=self._midimap['Delete_Button']))
         self._note_modes = SpecialModesComponent(name='Note_Modes')
-        self._note_modes.add_mode('chromatic_mode', [partial(self._layout_setup, consts.NOTE_LAYOUT_SYSEX_BYTE), self._clip_delete_layer_mode, note_mode_matrix_translation])
+        self._note_modes.add_mode('chromatic_mode', [partial(self._layout_setup, consts.NOTE_LAYOUT_SYSEX_BYTE),
+         self._clip_delete_layer_mode,
+         note_mode_matrix_translation,
+         scale_setup_mode_button_lighting])
         self._note_modes.add_mode('drum_mode', [partial(self._layout_setup, consts.DRUM_LAYOUT_SYSEX_BYTE),
          self._setup_drum_group,
          drum_group_layer_mode,
@@ -398,6 +421,10 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
             else:
                 view.show_view('Detail/DeviceChain')
 
+    def _create_user(self):
+        self._user_matrix_component = UserMatrixComponent(name='User_Matrix_Component', is_enabled=False, layer=Layer(user_button_matrix_ch_6=self._midimap['User_Button_Matrix_Ch_6'], user_button_matrix_ch_7=self._midimap['User_Button_Matrix_Ch_7'], user_button_matrix_ch_8=self._midimap['User_Button_Matrix_Ch_8'], user_button_matrix_ch_14=self._midimap['User_Button_Matrix_Ch_14'], user_button_matrix_ch_15=self._midimap['User_Button_Matrix_Ch_15'], user_button_matrix_ch_16=self._midimap['User_Button_Matrix_Ch_16'], user_left_side_button_matrix_ch_6=self._midimap['User_Left_Side_Button_Matrix_Ch_6'], user_left_side_button_matrix_ch_7=self._midimap['User_Left_Side_Button_Matrix_Ch_7'], user_left_side_button_matrix_ch_8=self._midimap['User_Left_Side_Button_Matrix_Ch_8'], user_left_side_button_matrix_ch_14=self._midimap['User_Left_Side_Button_Matrix_Ch_14'], user_left_side_button_matrix_ch_15=self._midimap['User_Left_Side_Button_Matrix_Ch_15'], user_left_side_button_matrix_ch_16=self._midimap['User_Left_Side_Button_Matrix_Ch_16'], user_right_side_button_matrix_ch_6=self._midimap['User_Right_Side_Button_Matrix_Ch_6'], user_right_side_button_matrix_ch_7=self._midimap['User_Right_Side_Button_Matrix_Ch_7'], user_right_side_button_matrix_ch_8=self._midimap['User_Right_Side_Button_Matrix_Ch_8'], user_right_side_button_matrix_ch_14=self._midimap['User_Right_Side_Button_Matrix_Ch_14'], user_right_side_button_matrix_ch_15=self._midimap['User_Right_Side_Button_Matrix_Ch_15'], user_right_side_button_matrix_ch_16=self._midimap['User_Right_Side_Button_Matrix_Ch_16'], user_bottom_button_matrix_ch_6=self._midimap['User_Bottom_Button_Matrix_Ch_6'], user_bottom_button_matrix_ch_7=self._midimap['User_Bottom_Button_Matrix_Ch_7'], user_bottom_button_matrix_ch_8=self._midimap['User_Bottom_Button_Matrix_Ch_8'], user_bottom_button_matrix_ch_14=self._midimap['User_Bottom_Button_Matrix_Ch_14'], user_bottom_button_matrix_ch_15=self._midimap['User_Bottom_Button_Matrix_Ch_15'], user_bottom_button_matrix_ch_16=self._midimap['User_Bottom_Button_Matrix_Ch_16'], user_arrow_button_matrix_ch_6=self._midimap['User_Arrow_Button_Matrix_Ch_6'], user_arrow_button_matrix_ch_7=self._midimap['User_Arrow_Button_Matrix_Ch_7'], user_arrow_button_matrix_ch_8=self._midimap['User_Arrow_Button_Matrix_Ch_8'], user_arrow_button_matrix_ch_14=self._midimap['User_Arrow_Button_Matrix_Ch_14'], user_arrow_button_matrix_ch_15=self._midimap['User_Arrow_Button_Matrix_Ch_15'], user_arrow_button_matrix_ch_16=self._midimap['User_Arrow_Button_Matrix_Ch_16']))
+        self._user_matrix_component.set_enabled(True)
+
     @subject_slot('drum_group')
     def _on_drum_group_changed(self):
         if self._note_modes.selected_mode == 'drum_mode':
@@ -407,6 +434,7 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
         else:
             self.release_controlled_track()
         self._update_note_mode_button(self._drum_group_finder.drum_group is not None)
+        return
 
     def _select_note_mode(self):
         """
@@ -427,6 +455,7 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
             self.release_controlled_track()
         else:
             self.set_controlled_track(self._target_track_component.target_track)
+        return
 
     def _select_target_track(self):
         track = self._target_track_component.target_track
@@ -457,6 +486,7 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
             if slot_index >= 0:
                 clip_slot = track.clip_slots[slot_index]
                 self.song().view.highlighted_clip_slot = clip_slot
+        return
 
     def _set_clip_actions_type(self):
         self._clip_actions_component.use_selected_track(self._use_sel_track())
@@ -487,6 +517,10 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
             for control in self.controls:
                 control.clear_send_cache()
 
+    def _update_hardware(self):
+        self._clear_send_cache()
+        self.update()
+
     def _update_global_components(self):
         self._actions_component.update()
         self._session_record.update()
@@ -504,7 +538,9 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
         self._last_sent_mode_byte = mode
 
     def _send_identity_request(self):
+        self.set_highlighting_session_component(None)
         self._send_midi(consts.SYSEX_IDENTITY_REQUEST)
+        return
 
     def on_identified(self):
         self._send_challenge()
@@ -529,7 +565,9 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
             self.set_feedback_channels(consts.FEEDBACK_CHANNELS)
         if self._last_sent_mode_byte is not None:
             self._layout_setup(self._last_sent_mode_byte)
+        self.set_highlighting_session_component(self._session)
         self.update()
+        return
 
     def _is_challenge_response(self, midi_bytes):
         return len(midi_bytes) == 10 and midi_bytes[:7] == consts.SYSEX_STANDARD_PREFIX + consts.SYSEX_CHALLENGE_RESPONSE_BYTE
@@ -542,8 +580,10 @@ class Launchpad_Pro(IdentifiableControlSurface, OptimizedControlSurface):
     def handle_sysex(self, midi_bytes):
         if len(midi_bytes) < 7:
             pass
-        if self._is_challenge_response(midi_bytes) and self._is_response_valid(midi_bytes):
+        elif self._is_challenge_response(midi_bytes) and self._is_response_valid(midi_bytes):
             self._on_handshake_successful()
+        elif midi_bytes[6] == consts.SYSEX_STATUS_BYTE_LAYOUT and midi_bytes[7] == consts.NOTE_LAYOUT_SYSEX_BYTE[0]:
+            self._update_hardware()
         elif midi_bytes[6] in (consts.SYSEX_STATUS_BYTE_MODE, consts.SYSEX_STATUS_BYTE_LAYOUT):
             pass
         else:

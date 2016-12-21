@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_MK2/SessionComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_MK2\SessionComponent.py
 from _Framework.Util import in_range
 from _Framework.SubjectSlot import subject_slot_group
 from _Framework.SessionComponent import SessionComponent as SessionComponentBase
@@ -48,6 +48,7 @@ class SessionComponent(SessionComponentBase):
                     button.send_value(value_to_send)
                 else:
                     button.set_light(value_to_send)
+        return
 
     def _update_stop_all_clips_button(self):
         button = self._stop_all_button

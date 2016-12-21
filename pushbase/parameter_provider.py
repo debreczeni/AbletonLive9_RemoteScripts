@@ -1,7 +1,6 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/parameter_provider.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\pushbase\parameter_provider.py
 from __future__ import absolute_import, print_function
-from ableton.v2.base import liveobj_valid, NamedTuple, Subject
-from . import consts
+from ableton.v2.base import liveobj_valid, NamedTuple, EventObject
 DISCRETE_PARAMETERS_DICT = {'GlueCompressor': ('Ratio', 'Attack', 'Release', 'Peak Clip In')}
 
 def is_parameter_quantized(parameter, parent_device):
@@ -12,24 +11,10 @@ def is_parameter_quantized(parameter, parent_device):
     return is_quantized
 
 
-def parameter_mapping_sensitivity(parameter):
-    is_quantized = is_parameter_quantized(parameter, parameter and parameter.canonical_parent)
-    if is_quantized:
-        return consts.QUANTIZED_MAPPING_SENSITIVITY
-    return consts.CONTINUOUS_MAPPING_SENSITIVITY
-
-
-def fine_grain_parameter_mapping_sensitivity(parameter):
-    is_quantized = is_parameter_quantized(parameter, parameter and parameter.canonical_parent)
-    if is_quantized:
-        return consts.QUANTIZED_MAPPING_SENSITIVITY
-    return consts.FINE_GRAINED_CONTINUOUS_MAPPING_SENSITIVITY
-
-
 class ParameterInfo(NamedTuple):
     parameter = None
-    default_encoder_sensitivity = (None,)
-    fine_grain_encoder_sensitivity = (None,)
+    default_encoder_sensitivity = None
+    fine_grain_encoder_sensitivity = None
 
     def __init__(self, name = None, *a, **k):
         super(ParameterInfo, self).__init__(_overriden_name=name, *a, **k)
@@ -39,11 +24,7 @@ class ParameterInfo(NamedTuple):
         return self._overriden_name or getattr(self.parameter, 'name', '')
 
 
-def generate_info(parameter, name = None, default_sens_factory = parameter_mapping_sensitivity, fine_sens_factory = fine_grain_parameter_mapping_sensitivity):
-    return ParameterInfo(name=name, parameter=parameter, default_encoder_sensitivity=default_sens_factory(parameter), fine_grain_encoder_sensitivity=fine_sens_factory(parameter))
-
-
-class ParameterProvider(Subject):
+class ParameterProvider(EventObject):
     __events__ = ('parameters',)
 
     @property

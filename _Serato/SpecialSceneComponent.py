@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Serato/SpecialSceneComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\_Serato\SpecialSceneComponent.py
 import Live
 from _Framework.SceneComponent import SceneComponent
 from _Framework.InputControlElement import *
@@ -12,6 +12,7 @@ class SpecialSceneComponent(SceneComponent):
         self._index = -1
         self._serato_interface = None
         self._last_name_sent = None
+        return
 
     def disconnect(self):
         if self._scene != None:
@@ -19,6 +20,7 @@ class SpecialSceneComponent(SceneComponent):
             self._scene.remove_color_listener(self._on_color_changed)
         SceneComponent.disconnect(self)
         self._serato_interface = None
+        return
 
     def set_serato_interface(self, serato_interface):
         if not serato_interface != None:
@@ -27,6 +29,7 @@ class SpecialSceneComponent(SceneComponent):
             self._scene != None and self._on_is_triggered_changed()
         self._on_name_changed()
         self._on_color_changed()
+        return
 
     def set_scene(self, scene):
         if self._scene != scene:
@@ -39,6 +42,7 @@ class SpecialSceneComponent(SceneComponent):
                 self._scene.add_color_listener(self._on_color_changed)
             self._on_name_changed()
             self._on_color_changed()
+        return
 
     def set_index(self, index):
         if not index >= 0:
@@ -50,6 +54,7 @@ class SpecialSceneComponent(SceneComponent):
             self._scene != None and self._on_is_triggered_changed()
         self._on_name_changed()
         self._on_color_changed()
+        return
 
     def is_selected(self):
         return self._scene == self.song().view.selected_scene
@@ -65,6 +70,7 @@ class SpecialSceneComponent(SceneComponent):
             if self._last_name_sent != name:
                 self._serato_interface.PySCA_SetSceneLabel(self._index + 1, name)
                 self._last_name_sent = name
+        return
 
     def _on_color_changed(self):
         if self._serato_interface != None and self._index > -1:
@@ -72,3 +78,4 @@ class SpecialSceneComponent(SceneComponent):
             if self._scene != None:
                 value_to_send = self._scene.color
             self._serato_interface.PySCA_SetSceneColor(self._index + 1, value_to_send)
+        return

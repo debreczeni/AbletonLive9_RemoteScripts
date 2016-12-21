@@ -1,4 +1,4 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Pro/DrumGroupComponent.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Launchpad_Pro\DrumGroupComponent.py
 from itertools import imap
 from _Framework.Util import find_if, first, clamp
 from _Framework.Dependency import depends
@@ -90,6 +90,7 @@ class DrumGroupComponent(ResettableSlideComponent, Slideable):
         self._set_pad_translations = set_pad_translations
         self._on_selected_clip_changed.subject = self._pitch_deleter
         self._layout_set = False
+        return
 
     position_count = 32
     page_length = 4
@@ -186,6 +187,7 @@ class DrumGroupComponent(ResettableSlideComponent, Slideable):
             self._on_selected_drum_pad_changed()
             self._update_identifier_translations()
             super(DrumGroupComponent, self).update()
+        return
 
     def _update_drum_pad_listeners(self):
         """
@@ -214,6 +216,8 @@ class DrumGroupComponent(ResettableSlideComponent, Slideable):
                 pad = self._coordinate_to_pad_map.get(button.coordinate, None)
                 if pad:
                     self._update_pad_led(pad, button, soloed_pads)
+
+        return
 
     def _update_pad_led(self, pad, button, soloed_pads):
         button_color = 'DrumGroup.PadEmpty'
@@ -308,6 +312,7 @@ class DrumGroupComponent(ResettableSlideComponent, Slideable):
     def _on_selected_drum_pad_changed(self):
         self._selected_drum_pad = self._drum_group_device.view.selected_drum_pad if self._drum_group_device else None
         self._update_led_feedback()
+        return
 
     @mute_button.value
     def mute_button(self, value, button):
@@ -389,6 +394,7 @@ class DrumGroupComponent(ResettableSlideComponent, Slideable):
             translations = None
             self._set_non_pad_translated_identifiers()
         self._set_pad_translations(translations)
+        return
 
     def select_drum_pad(self, drum_pad):
         """ Override when you give it a select button """

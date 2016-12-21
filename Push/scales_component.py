@@ -1,7 +1,7 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/scales_component.py
+# Embedded file name: c:\Jenkins\live\output\win_32_static\Release\python-bundle\MIDI Remote Scripts\Push\scales_component.py
 from __future__ import absolute_import, print_function
 from functools import partial
-from ableton.v2.base import forward_property, listens, listens_group, recursive_map
+from ableton.v2.base import EventObject, forward_property, listens, listens_group, recursive_map
 from ableton.v2.control_surface import CompoundComponent
 from ableton.v2.control_surface.mode import ModesComponent
 from ableton.v2.control_surface.control import ButtonControl
@@ -55,6 +55,7 @@ class InstrumentPresetsComponent(DisplayingModesComponent):
         self.add_mode('scale_m3_horizontal', partial(self._set_scale_mode, False, 2), self._line_names[1][3])
         self.add_mode('scale_m6_vertical', partial(self._set_scale_mode, True, None), self._line_names[1][4])
         self.add_mode('scale_m6_horizontal', partial(self._set_scale_mode, False, None), self._line_names[1][5])
+        return
 
     def _update_data_sources(self, selected):
         if self.is_enabled():
@@ -82,6 +83,7 @@ class InstrumentPresetsComponent(DisplayingModesComponent):
         if buttons:
             buttons.reset()
         self._set_scales_preset_buttons(buttons[:6] if buttons else None)
+        return
 
     def _set_scales_preset_buttons(self, buttons):
         modes = ('scale_p4_vertical', 'scale_p4_horizontal', 'scale_m3_vertical', 'scale_m3_horizontal', 'scale_m6_vertical', 'scale_m6_horizontal')
@@ -99,6 +101,7 @@ class InstrumentPresetsComponent(DisplayingModesComponent):
                 self.get_mode_button(mode).set_control_element(None)
 
         self.update()
+        return
 
 
 class InstrumentScalesComponent(CompoundComponent):
@@ -109,7 +112,7 @@ class InstrumentScalesComponent(CompoundComponent):
         super(InstrumentScalesComponent, self).__init__(*a, **k)
         self._note_layout = note_layout
         self._key_center_buttons = []
-        self._encoder_touch_button_slots = self.register_slot_manager()
+        self._encoder_touch_button_slots = self.register_disconnectable(EventObject())
         self._encoder_touch_buttons = []
         self._top_key_center_buttons = None
         self._bottom_key_center_buttons = None
@@ -126,6 +129,7 @@ class InstrumentScalesComponent(CompoundComponent):
         self._scale_list.scrollable_list.select_item_index_with_offset(list(SCALES).index(self._note_layout.scale), 1)
         self._on_selected_scale.subject = self._scale_list.scrollable_list
         self._update_data_sources()
+        return
 
     presets_layer = forward_property('_presets')('layer')
 
@@ -187,6 +191,7 @@ class InstrumentScalesComponent(CompoundComponent):
             self.set_key_center_buttons(self._top_key_center_buttons + self._bottom_key_center_buttons)
         else:
             self.set_key_center_buttons(tuple())
+        return
 
     def set_bottom_buttons(self, buttons):
         if buttons:
@@ -202,6 +207,7 @@ class InstrumentScalesComponent(CompoundComponent):
             self.set_key_center_buttons(self._top_key_center_buttons + self._bottom_key_center_buttons)
         else:
             self.set_key_center_buttons([])
+        return
 
     def set_scale_down_button(self, button):
         self._scale_list.select_next_button.set_control_element(button)
@@ -278,11 +284,13 @@ class InstrumentScalesComponent(CompoundComponent):
         if self.is_enabled() and self._absolute_relative_button != None:
             self._absolute_relative_button.set_on_off_values('Scales.FixedOn', 'Scales.FixedOff')
             self._absolute_relative_button.set_light(self._note_layout.is_fixed)
+        return
 
     def _update_diatonic_chromatic_button(self):
         if self.is_enabled() and self._diatonic_chromatic_button != None:
             self._diatonic_chromatic_button.set_on_off_values('Scales.Diatonic', 'Scales.Chromatic')
             self._diatonic_chromatic_button.set_light(self._note_layout.is_in_key)
+        return
 
     def _update_data_sources(self):
         key_index = list(ROOT_NOTES).index(self._note_layout.root_note)
