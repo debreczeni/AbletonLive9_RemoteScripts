@@ -1,5 +1,6 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/message_box_component.py
 from __future__ import absolute_import, print_function
+import re
 from itertools import izip_longest
 from ableton.v2.base import forward_property, const, nop, listens, listenable_property
 from ableton.v2.base.dependency import dependency
@@ -7,6 +8,17 @@ from ableton.v2.control_surface import CompoundComponent
 from ableton.v2.control_surface.elements import DisplayDataSource
 from ableton.v2.control_surface.components import BackgroundComponent
 from .consts import DISPLAY_LENGTH, MessageBoxText
+FORMAT_SPECIFIER_WITH_MARKUP_PATTERN = re.compile('[%](len=([0-9]+),)?([^%]*?[diouxXeEfFgGcrs])')
+
+def strip_restriction_markup_and_format(text_or_text_spec):
+    if isinstance(text_or_text_spec, tuple):
+        format_string = text_or_text_spec[0]
+        stripped_format_string = re.sub(FORMAT_SPECIFIER_WITH_MARKUP_PATTERN, '%\\g<3>', format_string)
+        arguments = text_or_text_spec[1:]
+        return stripped_format_string % arguments
+    else:
+        return text_or_text_spec
+
 
 class Notification(object):
 
@@ -121,7 +133,7 @@ class DialogComponent(CompoundComponent):
         self._message_box = self.register_component(MessageBoxComponent())
         self._message_box.set_enabled(False)
         self._next_message = None
-        self._on_open_dialog_count.subject = self.application()
+        self._on_open_dialog_count.subject = self.application
         self._on_message_cancel.subject = self._message_box
 
     message_box_layer = forward_property('_message_box')('layer')
@@ -145,7 +157,7 @@ class DialogComponent(CompoundComponent):
     def _on_message_cancel(self):
         self._next_message = None
         try:
-            self.application().press_current_dialog_button(0)
+            self.application.press_current_dialog_button(0)
         except RuntimeError:
             pass
 
@@ -156,7 +168,7 @@ class DialogComponent(CompoundComponent):
         can_cancel = self._next_message != None
         self._message_box.text = message
         self._message_box.can_cancel = can_cancel
-        self._message_box.set_enabled(self.application().open_dialog_count > 0 or not open_dialog_changed and self._next_message)
+        self._message_box.set_enabled(self.application.open_dialog_count > 0 or not open_dialog_changed and self._next_message)
 
 
 class InfoComponent(BackgroundComponent):

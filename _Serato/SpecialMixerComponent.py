@@ -21,7 +21,7 @@ class SpecialMixerComponent(MixerComponent):
         self._tracks_to_use_callback = callback
 
     def set_serato_interface(self, serato_interface):
-        raise serato_interface != None or AssertionError
+        assert serato_interface != None
         self._serato_interface = serato_interface
         self.on_selected_track_changed()
 

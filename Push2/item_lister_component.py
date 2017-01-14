@@ -1,12 +1,11 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/item_lister_component.py
 from __future__ import absolute_import, print_function
 from itertools import izip
-from ableton.v2.base import forward_property, listens, SlotManager, Subject
+from ableton.v2.base import forward_property, listenable_property, listens, EventObject
 from ableton.v2.control_surface import Component, CompoundComponent
-from ableton.v2.control_surface.control import control_list, ButtonControl, RadioButtonControl
+from ableton.v2.control_surface.control import control_list, ButtonControl
 
-class SimpleItemSlot(SlotManager, Subject):
-    __events__ = ('name',)
+class SimpleItemSlot(EventObject):
 
     def __init__(self, item = None, name = '', nesting_level = -1, icon = '', *a, **k):
         super(SimpleItemSlot, self).__init__(*a, **k)
@@ -14,14 +13,10 @@ class SimpleItemSlot(SlotManager, Subject):
         self._name = name
         self._nesting_level = nesting_level
         self._icon = icon
-        self.__on_name_changed.subject = self._item if hasattr(self._item, 'name_has_listener') else None
+        self.__on_name_changed.subject = self._item if getattr(self._item, 'name_has_listener', None) else None
+        self.__on_color_index_changed.subject = self._item if getattr(self._item, 'color_index_has_listener', None) else None
 
-    @listens('name')
-    def __on_name_changed(self):
-        self.notify_name()
-        self._name = self._item.name
-
-    @property
+    @listenable_property
     def name(self):
         return self._name
 
@@ -37,11 +32,24 @@ class SimpleItemSlot(SlotManager, Subject):
     def icon(self):
         return self._icon
 
+    @listenable_property
+    def color_index(self):
+        return getattr(self._item, 'color_index', -1)
+
+    @listens('name')
+    def __on_name_changed(self):
+        self.notify_name()
+        self._name = self._item.name
+
+    @listens('color_index')
+    def __on_color_index_changed(self):
+        self.notify_color_index()
+
 
 class ItemSlot(SimpleItemSlot):
 
     def __init__(self, item = None, nesting_level = 0, **k):
-        raise item != None or AssertionError
+        assert item != None
         super(ItemSlot, self).__init__(item=item, name=item.name, nesting_level=nesting_level, **k)
 
     def __eq__(self, other):
@@ -56,7 +64,7 @@ class ItemSlot(SimpleItemSlot):
     _live_ptr = forward_property('_item')('_live_ptr')
 
 
-class ItemProvider(Subject):
+class ItemProvider(EventObject):
     """ General interface to implement for providers used in ItemListerComponent """
     __events__ = ('items', 'selected_item')
 
@@ -208,7 +216,8 @@ class ScrollOverlayComponent(CompoundComponent):
 
 
 class ItemListerComponent(ItemListerComponentBase):
-    select_buttons = control_list(ButtonControl, unavailable_color='ItemNavigation.NoItem')
+    color_class_name = 'ItemNavigation'
+    select_buttons = control_list(ButtonControl, unavailable_color=color_class_name + '.NoItem')
 
     def __init__(self, *a, **k):
         super(ItemListerComponent, self).__init__(*a, **k)
@@ -233,16 +242,18 @@ class ItemListerComponent(ItemListerComponentBase):
     def __on_selection_changed(self):
         self._update_button_colors()
 
+    def _items_equal(self, item, selected_item):
+        return item == selected_item
+
     def _update_button_colors(self):
         selected_item = self._item_provider.selected_item
         for button, item in izip(self.select_buttons, self.items):
-            is_selected = item == selected_item
-            button.color = self._color_for_button(button.index, is_selected)
+            button.color = self._color_for_button(button.index, self._items_equal(item, selected_item))
 
     def _color_for_button(self, button_index, is_selected):
         if is_selected:
-            return 'ItemNavigation.ItemSelected'
-        return 'ItemNavigation.ItemNotSelected'
+            return self.color_class_name + '.ItemSelected'
+        return self.color_class_name + '.ItemNotSelected'
 
     @select_buttons.pressed
     def select_buttons(self, button):

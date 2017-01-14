@@ -1,5 +1,5 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Framework/ClipSlotComponent.py
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 import Live
 from .ControlSurfaceComponent import ControlSurfaceComponent
 from .SubjectSlot import subject_slot
@@ -88,7 +88,7 @@ class ClipSlotComponent(ControlSurfaceComponent):
         self._record_button_value = value
 
     def set_clip_palette(self, palette):
-        raise palette != None or AssertionError
+        assert palette != None
         self._stopped_value = None
         self._clip_palette = palette
 
@@ -98,7 +98,7 @@ class ClipSlotComponent(ControlSurfaceComponent):
         self._clip_rgb_table = rgb_table
 
     def has_clip(self):
-        raise self._clip_slot != None or AssertionError
+        assert self._clip_slot != None
         return self._clip_slot.has_clip
 
     def update(self):

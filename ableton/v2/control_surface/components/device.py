@@ -1,135 +1,9 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/ableton/v2/control_surface/components/device.py
 from __future__ import absolute_import, print_function
-import Live
 from _Generic.Devices import best_of_parameter_bank, device_parameters_to_map, number_of_parameter_banks, parameter_bank_names, parameter_banks
-from ...base import depends, listenable_property, listens, listens_group, liveobj_changed, liveobj_valid, SlotManager, Subject
+from ...base import depends, listens, listens_group, liveobj_valid
 from ..component import Component
 from ..elements import DisplayDataSource
-
-def device_to_appoint(device):
-    appointed_device = device
-    if liveobj_valid(device) and device.can_have_drum_pads and not device.has_macro_mappings and len(device.chains) > 0 and liveobj_valid(device.view.selected_chain) and len(device.view.selected_chain.devices) > 0:
-        appointed_device = device_to_appoint(device.view.selected_chain.devices[0])
-    return appointed_device
-
-
-def select_and_appoint_device(song, device_to_select, ignore_unmapped_macros = True):
-    """
-    Convenience function for selecting a device for a control surface to control.
-    
-    This takes care of selecting the device and appointing it for remote control, which
-    is important, because these are two concepts, that are not exactly the same.
-    
-    The device component always controls the appointed device. It's possible to select
-    another device, but not appoint it for control. The behaviour in this function
-    appoints a drum rack's selected chain's first device if none of the macros are mapped
-    for the drum rack. Though, it's still possible to select the drum rack, we just do
-    not display its controls in this scenario.
-    """
-    appointed_device = device_to_select
-    if ignore_unmapped_macros:
-        appointed_device = device_to_appoint(device_to_select)
-    song.view.select_device(device_to_select, False)
-    song.appointed_device = appointed_device
-
-
-class DeviceProvider(Subject, SlotManager):
-    """
-    Provide "controlled device" to device component
-    
-    This class abstracts the logic required to provide a controlled device to be used
-    by the device component. In most cases, this is the same as the appointed device, but
-    not always, e.g. when a surface is locked to a device (there is only one global
-    appointed device per Song).
-    
-    This class also takes care of appointing the right device when switching between
-    tracks etc.
-    """
-    device_selection_follows_track_selection = True
-
-    def __init__(self, song = None, *a, **k):
-        super(DeviceProvider, self).__init__(*a, **k)
-        self._device = None
-        self._locked_to_device = False
-        self.song = song
-        self.__on_appointed_device_changed.subject = song
-        self.__on_selected_track_changed.subject = song.view
-        self.__on_selected_device_changed.subject = song.view.selected_track.view
-
-    @listenable_property
-    def device(self):
-        return self._device
-
-    @device.setter
-    def device(self, device):
-        if liveobj_changed(self._device, device) and not self.is_locked_to_device:
-            self._device = device
-            self.notify_device()
-
-    @listenable_property
-    def is_locked_to_device(self):
-        """
-        Indicates whether the provider is currently locked to a device.
-        """
-        return self._locked_to_device
-
-    def lock_to_device(self, device):
-        self.device = device
-        self._locked_to_device = True
-        self.notify_is_locked_to_device()
-
-    def unlock_from_device(self):
-        self._locked_to_device = False
-        self.notify_is_locked_to_device()
-
-    def update_device_selection(self):
-        view = self.song.view
-        track_or_chain = view.selected_chain if view.selected_chain else view.selected_track
-        device_to_select = None
-        if isinstance(track_or_chain, Live.Track.Track):
-            device_to_select = track_or_chain.view.selected_device
-        if device_to_select == None and len(track_or_chain.devices) > 0:
-            device_to_select = track_or_chain.devices[0]
-        if liveobj_valid(device_to_select):
-            appointed_device = device_to_appoint(device_to_select)
-            self.song.view.select_device(device_to_select, False)
-            self.song.appointed_device = appointed_device
-            self.device = appointed_device
-        else:
-            self.song.appointed_device = None
-            self.device = None
-
-    @listens('appointed_device')
-    def __on_appointed_device_changed(self):
-        self.device = device_to_appoint(self.song.appointed_device)
-
-    @listens('has_macro_mappings')
-    def __on_has_macro_mappings_changed(self):
-        self.song.appointed_device = device_to_appoint(self.song.view.selected_track.view.selected_device)
-
-    @listens('selected_track')
-    def __on_selected_track_changed(self):
-        self.__on_selected_device_changed.subject = self.song.view.selected_track.view
-        if self.device_selection_follows_track_selection:
-            self.update_device_selection()
-
-    @listens('selected_device')
-    def __on_selected_device_changed(self):
-        self._update_appointed_device()
-
-    @listens('chains')
-    def __on_chains_changed(self):
-        self._update_appointed_device()
-
-    def _update_appointed_device(self):
-        song = self.song
-        device = song.view.selected_track.view.selected_device
-        if liveobj_valid(device):
-            self.song.appointed_device = device_to_appoint(device)
-        rack_device = device if isinstance(device, Live.RackDevice.RackDevice) else None
-        self.__on_has_macro_mappings_changed.subject = rack_device
-        self.__on_chains_changed.subject = rack_device
-
 
 class DeviceComponent(Component):
     """ Class representing a device in Live """
@@ -137,7 +11,7 @@ class DeviceComponent(Component):
     @depends(device_bank_registry=None)
     @depends(device_provider=None)
     def __init__(self, device_provider = None, device_bank_registry = None, *a, **k):
-        raise device_bank_registry is not None or AssertionError
+        assert device_bank_registry is not None
         super(DeviceComponent, self).__init__(*a, **k)
         self._device_bank_registry = device_bank_registry
         self._device_provider = device_provider
@@ -248,9 +122,9 @@ class DeviceComponent(Component):
             self._update_device_bank_nav_buttons()
 
     def _bank_up_value(self, value):
-        raise self._bank_up_button != None or AssertionError
-        raise value != None or AssertionError
-        raise isinstance(value, int) or AssertionError
+        assert self._bank_up_button != None
+        assert value != None
+        assert isinstance(value, int)
         if self.is_enabled():
             if not self._bank_up_button.is_momentary() or value is not 0:
                 if liveobj_valid(self._get_device()):
@@ -265,23 +139,23 @@ class DeviceComponent(Component):
                         self.update()
 
     def _bank_down_value(self, value):
-        if not self._bank_down_button != None:
-            raise AssertionError
-            raise value != None or AssertionError
-            if not isinstance(value, int):
-                raise AssertionError
-                if self.is_enabled():
-                    self._bank_name = (not self._bank_down_button.is_momentary() or value is not 0) and liveobj_valid(self._get_device()) and (self._bank_index == None or self._bank_index > 0) and ''
+        assert self._bank_down_button != None
+        assert value != None
+        assert isinstance(value, int)
+        if self.is_enabled():
+            if not self._bank_down_button.is_momentary() or value is not 0:
+                if liveobj_valid(self._get_device()) and (self._bank_index == None or self._bank_index > 0):
+                    self._bank_name = ''
                     self._bank_index = self._bank_index - 1 if self._bank_index != None else max(0, self._number_of_parameter_banks() - 1)
                     self.update()
 
     def _on_off_value(self, value):
-        if not self._on_off_button != None:
-            raise AssertionError
-            if not value in range(128):
-                raise AssertionError
-                parameter = (not self._on_off_button.is_momentary() or value is not 0) and self._on_off_parameter()
-                parameter.value = parameter != None and parameter.is_enabled and float(int(parameter.value == 0.0))
+        assert self._on_off_button != None
+        assert value in range(128)
+        if not self._on_off_button.is_momentary() or value is not 0:
+            parameter = self._on_off_parameter()
+            if parameter != None and parameter.is_enabled:
+                parameter.value = float(int(parameter.value == 0.0))
 
     @listens_group('value')
     def __on_bank_value(self, value, button):
@@ -306,9 +180,9 @@ class DeviceComponent(Component):
         return direct_banking or roundtrip_banking or increment_banking
 
     def _assign_parameters(self):
-        raise self.is_enabled() or AssertionError
-        raise liveobj_valid(self._get_device()) or AssertionError
-        raise self._parameter_controls != None or AssertionError
+        assert self.is_enabled()
+        assert liveobj_valid(self._get_device())
+        assert self._parameter_controls != None
         self._bank_name, bank = self._current_bank_details()
         for control, parameter in zip(self._parameter_controls, bank):
             if control != None:
@@ -354,7 +228,8 @@ class DeviceComponent(Component):
         if self.is_enabled():
             for index, button in enumerate(self._bank_buttons or []):
                 if button:
-                    button.set_light(index == self._bank_index and self._get_device())
+                    turn_on = index == self._bank_index and liveobj_valid(self._get_device())
+                    button.set_light(turn_on)
 
     def _update_device_bank_nav_buttons(self):
         if self.is_enabled():

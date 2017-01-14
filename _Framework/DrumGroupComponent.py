@@ -1,4 +1,5 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Framework/DrumGroupComponent.py
+from __future__ import absolute_import, print_function
 from itertools import imap
 from .Control import PlayableControl, ButtonControl, control_matrix
 from .Dependency import depends
@@ -51,9 +52,9 @@ class DrumGroupComponent(SlideComponent, Slideable):
         return 0
 
     def _set_position(self, index):
-        if not 0 <= index <= 28:
-            raise AssertionError
-            self._drum_group_device.view.drum_pads_scroll_position = self._drum_group_device and index
+        assert 0 <= index <= 28
+        if self._drum_group_device:
+            self._drum_group_device.view.drum_pads_scroll_position = index
 
     position = property(_get_position, _set_position)
 

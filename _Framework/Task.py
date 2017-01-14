@@ -1,7 +1,5 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Framework/Task.py
-"""
-Task management.
-"""
+from __future__ import absolute_import, print_function
 import functools
 import traceback
 from .Dependency import depends
@@ -123,7 +121,7 @@ class WrapperTask(Task):
 class FuncTask(Task):
 
     def __init__(self, func = None, equivalent = None, *a, **k):
-        raise func != None or AssertionError
+        assert func != None
         super(FuncTask, self).__init__(*a, **k)
         self._func = func
         self._equivalent = equivalent
@@ -154,7 +152,7 @@ class GeneratorTask(Task):
         delta = 0
 
     def __init__(self, generator = None, equivalent = None, *a, **k):
-        raise generator != None and callable(generator) or AssertionError
+        assert generator != None and callable(generator)
         super(GeneratorTask, self).__init__(*a, **k)
         self._param = GeneratorTask.Param()
         self._set_generator(generator)

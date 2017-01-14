@@ -1,5 +1,5 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Framework/BackgroundComponent.py
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 from functools import partial
 from .ControlSurfaceComponent import ControlSurfaceComponent
 from .SubjectSlot import SubjectSlotError

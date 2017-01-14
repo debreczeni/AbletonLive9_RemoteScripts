@@ -20,8 +20,8 @@ class RealTimeDataComponent(Component):
 
     @depends(real_time_mapper=None, register_real_time_data=None)
     def __init__(self, real_time_mapper = None, register_real_time_data = None, channel_type = None, *a, **k):
-        raise channel_type is not None or AssertionError
-        raise liveobj_valid(real_time_mapper) or AssertionError
+        assert channel_type is not None
+        assert liveobj_valid(real_time_mapper)
         super(RealTimeDataComponent, self).__init__(*a, **k)
         self._channel_type = channel_type
         self._real_time_channel_id = ''
@@ -31,6 +31,10 @@ class RealTimeDataComponent(Component):
         self._valid = True
         register_real_time_data(self)
 
+    def disconnect(self):
+        super(RealTimeDataComponent, self).disconnect()
+        self._data = None
+
     @listenable_property
     def channel_id(self):
         return self._real_time_channel_id
@@ -38,6 +42,10 @@ class RealTimeDataComponent(Component):
     @listenable_property
     def object_id(self):
         return self._object_id
+
+    @property
+    def attached_object(self):
+        return self._data
 
     def on_enabled_changed(self):
         super(RealTimeDataComponent, self).on_enabled_changed()

@@ -1,5 +1,5 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Framework/ButtonElement.py
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 import Live
 from .InputControlElement import InputControlElement, MIDI_CC_TYPE
 from .Skin import Skin, SkinColorMissingError
@@ -97,7 +97,7 @@ class ButtonElement(InputControlElement, ButtonElementMixin):
         return self.__is_momentary
 
     def message_map_mode(self):
-        raise self.message_type() is MIDI_CC_TYPE or AssertionError
+        assert self.message_type() is MIDI_CC_TYPE
         return Live.MidiMap.MapMode.absolute
 
     def is_pressed(self):

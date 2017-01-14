@@ -26,7 +26,7 @@ class SliderElement(SliderElementBase):
         return self._type
 
     def _set_type(self, type):
-        raise type in (consts.FADER_STANDARD_TYPE, consts.FADER_BIPOLAR_TYPE) or AssertionError
+        assert type in (consts.FADER_STANDARD_TYPE, consts.FADER_BIPOLAR_TYPE)
         self._type = type
 
     type = property(_get_type, _set_type)

@@ -16,8 +16,8 @@ QUANTIZATION_OPTIONS = [RecordingQuantization.rec_q_quarter,
  RecordingQuantization.rec_q_sixtenth_sixtenth_triplet,
  RecordingQuantization.rec_q_thirtysecond]
 DEFAULT_QUANTIZATION_INDEX = QUANTIZATION_OPTIONS.index(RecordingQuantization.rec_q_sixtenth)
-QUANTIZATION_NAMES = ('1/4', '1/8', '1/8t', '1/8+t', '1/16', '1/16t', '1/16+t', '1/32')
-QUANTIZATION_NAMES_UNICODE = (u'\xbc', u'\u215b', u'\u215bt', u'\u215b+t', u'\ue001', u'\ue001t', u'\ue001+t', u'\ue002')
+QUANTIZATION_NAMES = ('1/4', '1/8', '1/8T', '1/8+T', '1/16', '1/16T', '1/16+T', '1/32')
+QUANTIZATION_NAMES_UNICODE = (u'\xbc', u'\u215b', u'\u215bT', u'\u215b+T', u'\ue001', u'\ue001T', u'\ue001+T', u'\ue002')
 
 def quantize_amount_to_string(amount):
     """
@@ -110,17 +110,17 @@ class QuantizationComponent(CompoundComponent, Messenger):
     action_button = ButtonControl(**SIDE_BUTTON_COLORS)
 
     def __init__(self, settings = None, *a, **k):
-        raise settings is not None or AssertionError
+        assert settings is not None
         super(QuantizationComponent, self).__init__(*a, **k)
         self._settings = self.register_component(settings)
         self._settings.set_enabled(False)
         self._cancel_quantize = False
 
-    def quantize_pitch(self, note):
+    def quantize_pitch(self, note, source = None):
         clip = self.song.view.detail_clip
         if clip:
             clip.quantize_pitch(note, self._settings.quantize_to, self._settings.quantize_amount)
-            self.show_notification(MessageBoxText.QUANTIZE_CLIP_PITCH % dict(amount=quantize_amount_to_string(self._settings.quantize_amount), to=self._settings.selected_quantization_name))
+            self.show_notification(MessageBoxText.QUANTIZE_CLIP_PITCH % dict(source=source, amount=quantize_amount_to_string(self._settings.quantize_amount), to=self._settings.selected_quantization_name))
         self._cancel_quantize = True
 
     @action_button.pressed_delayed

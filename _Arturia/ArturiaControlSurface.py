@@ -68,7 +68,7 @@ class ArturiaControlSurface(ControlSurface):
         """
         Set up a momentary button sending MIDI notes
         """
-        raise msg_type in BUTTON_MSG_TYPES.keys() or AssertionError
+        assert msg_type in BUTTON_MSG_TYPES.keys()
         self._set_button_msg_type(hardware_id, msg_type)
         self._set_identifier(hardware_id, identifier)
         self._set_channel(hardware_id, channel)
@@ -102,9 +102,9 @@ class ArturiaControlSurface(ControlSurface):
         self._collect_setup_message(MAXIMUM_PROPERTY, hardware_id, 127)
 
     def _collect_setup_message(self, property, hardware_id, value):
-        raise property is not None or AssertionError
-        raise hardware_id is not None or AssertionError
-        raise value is not None or AssertionError
+        assert property is not None
+        assert hardware_id is not None
+        assert value is not None
         msg = SETUP_MSG_PREFIX + (WRITE_COMMAND,
          WORKING_MEMORY_ID,
          property,

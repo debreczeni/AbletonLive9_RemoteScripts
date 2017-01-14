@@ -1,12 +1,15 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/track_mixer_control_component.py
 from __future__ import absolute_import, print_function
 from itertools import izip_longest
+import Live
 from ableton.v2.base import clamp, depends, listens, liveobj_valid
 from ableton.v2.control_surface import CompoundComponent
+from ableton.v2.control_surface.mode import ModesComponent
 from ableton.v2.control_surface.control import control_list, ButtonControl
 from pushbase.mapped_control import MappedControl
 from .real_time_channel import RealTimeDataComponent
 from .item_lister_component import SimpleItemSlot
+from .mixer_control_component import find_parent_track, assign_parameters
 MAX_RETURN_TRACKS = 6
 
 class TrackMixerControlComponent(CompoundComponent):
@@ -18,8 +21,8 @@ class TrackMixerControlComponent(CompoundComponent):
 
     @depends(tracks_provider=None, real_time_mapper=None, register_real_time_data=None)
     def __init__(self, real_time_mapper = None, register_real_time_data = None, tracks_provider = None, *a, **k):
-        raise liveobj_valid(real_time_mapper) or AssertionError
-        raise tracks_provider is not None or AssertionError
+        assert liveobj_valid(real_time_mapper)
+        assert tracks_provider is not None
         super(TrackMixerControlComponent, self).__init__(*a, **k)
         self._tracks_provider = tracks_provider
         self._on_return_tracks_changed.subject = self.song
@@ -51,10 +54,7 @@ class TrackMixerControlComponent(CompoundComponent):
 
     def _update_controls(self):
         if self.is_enabled():
-            for control, parameter in izip_longest(self.controls, self.parameters[self.scroll_offset:]):
-                if control:
-                    control.mapped_parameter = parameter
-
+            assign_parameters(self.controls, self.parameters[self.scroll_offset:])
             self.notify_parameters()
 
     @property

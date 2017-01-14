@@ -1,7 +1,7 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/scales_component.py
 from __future__ import absolute_import, print_function
 from functools import partial
-from ableton.v2.base import forward_property, listens, listens_group, recursive_map
+from ableton.v2.base import EventObject, forward_property, listens, listens_group, recursive_map
 from ableton.v2.control_surface import CompoundComponent
 from ableton.v2.control_surface.mode import ModesComponent
 from ableton.v2.control_surface.control import ButtonControl
@@ -45,7 +45,7 @@ class DisplayingModesComponent(ModesComponent):
 class InstrumentPresetsComponent(DisplayingModesComponent):
 
     def __init__(self, note_layout = None, *a, **k):
-        raise note_layout is not None or AssertionError
+        assert note_layout is not None
         super(InstrumentPresetsComponent, self).__init__(*a, **k)
         self._note_layout = note_layout
         self._line_names = recursive_map(DisplayDataSource, (('Scale layout:',), ('4th ^', '4th >', '3rd ^', '3rd >', 'Sequent ^', 'Sequent >', '', '')))
@@ -105,11 +105,11 @@ class InstrumentScalesComponent(CompoundComponent):
     presets_toggle_button = ButtonControl(color='DefaultButton.Off', pressed_color='DefaultButton.On')
 
     def __init__(self, note_layout = None, *a, **k):
-        raise note_layout is not None or AssertionError
+        assert note_layout is not None
         super(InstrumentScalesComponent, self).__init__(*a, **k)
         self._note_layout = note_layout
         self._key_center_buttons = []
-        self._encoder_touch_button_slots = self.register_slot_manager()
+        self._encoder_touch_button_slots = self.register_disconnectable(EventObject())
         self._encoder_touch_buttons = []
         self._top_key_center_buttons = None
         self._bottom_key_center_buttons = None
@@ -213,7 +213,7 @@ class InstrumentScalesComponent(CompoundComponent):
         self._scale_list.encoders.set_control_element([encoders[0]] if encoders else [])
 
     def set_key_center_buttons(self, buttons):
-        raise not buttons or len(buttons) == 12 or AssertionError
+        assert not buttons or len(buttons) == 12
         buttons = buttons or []
         self._key_center_buttons = buttons
         self._on_key_center_button_value.replace_subjects(buttons)

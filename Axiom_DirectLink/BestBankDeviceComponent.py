@@ -8,8 +8,8 @@ BOP_BANK_NAME = 'Best of Parameters'
 class BestBankDeviceComponent(DeviceComponent):
     """ Special Device component that uses the best of bank of a device as default """
 
-    def __init__(self):
-        DeviceComponent.__init__(self)
+    def __init__(self, *a, **k):
+        super(BestBankDeviceComponent, self).__init__(*a, **k)
         new_banks = {}
         new_bank_names = {}
         self._device_banks = DEVICE_DICT
@@ -17,8 +17,8 @@ class BestBankDeviceComponent(DeviceComponent):
         self._device_best_banks = DEVICE_BOB_DICT
         for device_name, current_banks in self._device_banks.iteritems():
             if len(current_banks) > 1:
-                raise device_name in self._device_best_banks.keys() or AssertionError("Could not find best-of-banks for '%s'" % device_name)
-                raise device_name in self._device_bank_names.keys() or AssertionError("Could not find bank names for '%s'" % device_name)
+                assert device_name in self._device_best_banks.keys(), "Could not find best-of-banks for '%s'" % device_name
+                assert device_name in self._device_bank_names.keys(), "Could not find bank names for '%s'" % device_name
                 current_banks = self._device_best_banks[device_name] + current_banks
                 new_bank_names[device_name] = (BOP_BANK_NAME,) + self._device_bank_names[device_name]
             new_banks[device_name] = current_banks

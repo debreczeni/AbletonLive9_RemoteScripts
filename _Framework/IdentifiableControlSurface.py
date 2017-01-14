@@ -1,5 +1,5 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Framework/IdentifiableControlSurface.py
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 from .ControlSurface import ControlSurface
 from . import Task
 SYSEX_IDENTITY_REQUEST = (240, 126, 0, 6, 1, 247)
@@ -16,8 +16,8 @@ class IdentifiableControlSurface(ControlSurface):
 
     def __init__(self, product_id_bytes = None, *a, **k):
         super(IdentifiableControlSurface, self).__init__(*a, **k)
-        raise product_id_bytes is not None or AssertionError
-        raise len(product_id_bytes) < 12 or AssertionError
+        assert product_id_bytes is not None
+        assert len(product_id_bytes) < 12
         self._product_id_bytes = product_id_bytes
         self._request_task = self._tasks.add(Task.sequence(Task.wait(self.identity_request_delay), Task.run(self._send_identity_request)))
         self._request_task.kill()

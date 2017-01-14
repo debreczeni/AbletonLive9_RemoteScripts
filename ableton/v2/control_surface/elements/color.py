@@ -1,6 +1,6 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/ableton/v2/control_surface/elements/color.py
 from __future__ import absolute_import, print_function
-from ...base import listenable_property, listens, liveobj_valid, nop, Subject, SlotManager
+from ...base import EventObject, listenable_property, listens, liveobj_valid, nop
 
 def to_midi_value(int_or_color):
     if hasattr(int_or_color, 'midi_value'):
@@ -31,7 +31,7 @@ class Color(object):
 class DynamicColorFactory(object):
 
     def __init__(self, transformation = nop, *a, **k):
-        raise callable(transformation) or AssertionError
+        assert callable(transformation)
         super(DynamicColorFactory, self).__init__(*a, **k)
         self._transform = transformation
 
@@ -43,11 +43,11 @@ def is_dynamic_color_factory(skin_element):
     return isinstance(skin_element, DynamicColorFactory)
 
 
-class DynamicColorBase(Color, Subject, SlotManager):
+class DynamicColorBase(Color, EventObject):
     midi_value = listenable_property.managed(0)
 
     def __init__(self, transformation = nop, *a, **k):
-        raise callable(transformation) or AssertionError
+        assert callable(transformation)
         super(DynamicColorBase, self).__init__(*a, **k)
         self._transformation = transformation
 
@@ -59,7 +59,7 @@ class DynamicColorBase(Color, Subject, SlotManager):
 class SelectedTrackColor(DynamicColorBase):
 
     def __init__(self, song_view = None, *a, **k):
-        raise liveobj_valid(song_view) or AssertionError
+        assert liveobj_valid(song_view)
         super(SelectedTrackColor, self).__init__(*a, **k)
         self.__on_color_changed.subject = song_view
         self.__on_color_changed()
@@ -72,7 +72,7 @@ class SelectedTrackColor(DynamicColorBase):
 class SelectedClipColor(DynamicColorBase):
 
     def __init__(self, song_view = None, *a, **k):
-        raise liveobj_valid(song_view) or AssertionError
+        assert liveobj_valid(song_view)
         super(SelectedClipColor, self).__init__(*a, **k)
         self.__on_color_changed.subject = song_view
         self.__on_color_changed()

@@ -1,10 +1,10 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/ableton/v2/control_surface/components/slide.py
 from __future__ import absolute_import, print_function
-from ...base import clamp, listens, Subject
+from ...base import clamp, listens, EventObject
 from ..compound_component import CompoundComponent
 from .scroll import ScrollComponent, Scrollable
 
-class Slideable(Subject):
+class Slideable(EventObject):
     """
     Models of an entity that has a position in a 1-D discrete axis,
     and that has some natural steps (called pages) of this axis.

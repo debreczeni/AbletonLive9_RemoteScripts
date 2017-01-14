@@ -126,7 +126,7 @@ class WrapperTask(Task):
 class FuncTask(Task):
 
     def __init__(self, func = None, equivalent = None, *a, **k):
-        raise func is not None or AssertionError
+        assert func is not None
         super(FuncTask, self).__init__(*a, **k)
         self._func = func
         self._equivalent = equivalent
@@ -157,7 +157,7 @@ class GeneratorTask(Task):
         delta = 0
 
     def __init__(self, generator = None, equivalent = None, *a, **k):
-        raise generator is not None and callable(generator) or AssertionError
+        assert generator is not None and callable(generator)
         super(GeneratorTask, self).__init__(*a, **k)
         self._param = GeneratorTask.Param()
         self.generator = generator

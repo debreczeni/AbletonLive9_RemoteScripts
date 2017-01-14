@@ -2,7 +2,7 @@
 from __future__ import absolute_import, print_function
 from functools import partial
 import Live
-from ableton.v2.base import Subject, listens, listenable_property, task
+from ableton.v2.base import EventObject, listens, listenable_property, task
 from ableton.v2.control_surface import CompoundComponent, Component
 from ableton.v2.control_surface.control import RadioButtonControl, TextDisplayControl, ToggleButtonControl, ButtonControl, control_list
 from . import consts
@@ -20,10 +20,11 @@ LENGTH_OPTION_NAMES = ('1 Beat', '2 Beats', '1 Bar', '2 Bars', '4 Bars', '8 Bars
 LENGTH_LABELS = ('Recording length:', '', '', '')
 DEFAULT_LENGTH_OPTION_INDEX = list(LENGTH_OPTIONS).index(Quantization.q_2_bars)
 
-class FixedLengthSetting(Subject):
+class FixedLengthSetting(EventObject):
     option_names = LENGTH_OPTION_NAMES
     selected_index = listenable_property.managed(0)
     enabled = listenable_property.managed(False)
+    legato_launch = listenable_property.managed(False)
 
     def get_selected_length(self, song):
         index = self.selected_index
@@ -37,15 +38,17 @@ class FixedLengthSetting(Subject):
 class FixedLengthSettingComponent(Component):
     length_option_buttons = control_list(RadioButtonControl, checked_color='Option.Selected', unchecked_color='Option.Unselected', control_count=len(LENGTH_OPTIONS))
     fixed_length_toggle_button = ToggleButtonControl(toggled_color='Option.On', untoggled_color='Option.Off')
+    legato_launch_toggle_button = ToggleButtonControl(toggled_color='FixedLength.PhraseAlignedOn', untoggled_color='FixedLength.PhraseAlignedOff')
     label_display_line = TextDisplayControl(LENGTH_LABELS)
     option_display_line = TextDisplayControl(LENGTH_OPTION_NAMES)
 
     def __init__(self, fixed_length_setting = None, *a, **k):
-        raise fixed_length_setting is not None or AssertionError
+        assert fixed_length_setting is not None
         super(FixedLengthSettingComponent, self).__init__(*a, **k)
         self._fixed_length_setting = fixed_length_setting
         self.length_option_buttons.connect_property(fixed_length_setting, 'selected_index')
         self.fixed_length_toggle_button.connect_property(fixed_length_setting, 'enabled')
+        self.legato_launch_toggle_button.connect_property(fixed_length_setting, 'legato_launch')
         self.__on_setting_selected_index_changes.subject = fixed_length_setting
         self.__on_setting_selected_index_changes(fixed_length_setting.selected_index)
 
@@ -63,8 +66,8 @@ class FixedLengthComponent(CompoundComponent, Messenger):
     fixed_length_toggle_button = ButtonControl()
 
     def __init__(self, settings_component = None, fixed_length_setting = None, *a, **k):
-        raise settings_component is not None or AssertionError
-        raise fixed_length_setting is not None or AssertionError
+        assert settings_component is not None
+        assert fixed_length_setting is not None
         super(FixedLengthComponent, self).__init__(*a, **k)
         self._fixed_length_setting = fixed_length_setting
         self._settings_component = self.register_component(settings_component)

@@ -1,19 +1,21 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/ableton/v2/control_surface/components/scene.py
 from __future__ import absolute_import, print_function
 from itertools import izip
-from ...base import in_range, listens, liveobj_valid, liveobj_changed
+from ...base import listens, liveobj_valid, liveobj_changed
 from ..compound_component import CompoundComponent
-from .clip_slot import ClipSlotComponent, find_nearest_color
+from ..control import ButtonControl
+from .clip_slot import ClipSlotComponent, is_button_pressed, find_nearest_color
 
 class SceneComponent(CompoundComponent):
     """
     Class representing a scene in Live
     """
     clip_slot_component_type = ClipSlotComponent
+    launch_button = ButtonControl()
 
     def __init__(self, session_ring = None, *a, **k):
-        raise session_ring is not None or AssertionError
-        raise session_ring.num_tracks >= 0 or AssertionError
+        assert session_ring is not None
+        assert session_ring.num_tracks >= 0
         super(SceneComponent, self).__init__(*a, **k)
         self._session_ring = session_ring
         self._scene = None
@@ -25,10 +27,9 @@ class SceneComponent(CompoundComponent):
             self._clip_slots.append(new_slot)
             self.register_components(new_slot)
 
-        self._launch_button = None
-        self._triggered_value = 127
-        self._scene_value = None
-        self._no_scene_value = None
+        self._triggered_color = 'Session.SceneTriggered'
+        self._scene_color = 'Session.Scene'
+        self._no_scene_color = 'Session.NoScene'
         self._track_offset = 0
         self._select_button = None
         self._delete_button = None
@@ -46,10 +47,8 @@ class SceneComponent(CompoundComponent):
             self.update()
 
     def set_launch_button(self, button):
-        if button != self._launch_button:
-            self._launch_button = button
-            self.__launch_value.subject = button
-            self.update()
+        self.launch_button.set_control_element(button)
+        self.update()
 
     def set_select_button(self, button):
         self._select_button = button
@@ -58,26 +57,15 @@ class SceneComponent(CompoundComponent):
         self._delete_button = button
 
     def set_track_offset(self, offset):
-        if not offset >= 0:
-            raise AssertionError
-            self._track_offset = offset != self._track_offset and offset
+        assert offset >= 0
+        if offset != self._track_offset:
+            self._track_offset = offset
             self.update()
 
-    def set_triggered_value(self, value):
-        self._triggered_value = value
-
-    def set_scene_value(self, value):
-        self._scene_value = value
-
-    def set_no_scene_value(self, value):
-        self._no_scene_value = value
-
     def set_color_palette(self, palette):
-        self._scene_value = None
         self._color_palette = palette
 
     def set_color_table(self, table):
-        self._scene_value = None
         self._color_table = table
 
     def clip_slot(self, index):
@@ -129,16 +117,26 @@ class SceneComponent(CompoundComponent):
 
         return slots_to_use
 
-    @listens('value')
-    def __launch_value(self, value):
-        if self.is_enabled():
-            if self._select_button and self._select_button.is_pressed() and value:
-                self._do_select_scene(self._scene)
-            elif liveobj_valid(self._scene):
-                if self._delete_button and self._delete_button.is_pressed() and value:
-                    self._do_delete_scene(self._scene)
-                else:
-                    self._do_launch_scene(value)
+    @launch_button.pressed
+    def launch_button(self, value):
+        self._on_launch_button_pressed()
+
+    def _on_launch_button_pressed(self):
+        if self._select_button and self._select_button.is_pressed():
+            self._do_select_scene(self._scene)
+        elif liveobj_valid(self._scene):
+            if self._delete_button and self._delete_button.is_pressed():
+                self._do_delete_scene(self._scene)
+            else:
+                self._do_launch_scene(True)
+
+    @launch_button.released
+    def launch_button(self, value):
+        self._on_launch_button_released()
+
+    def _on_launch_button_released(self):
+        if not is_button_pressed(self._select_button) and liveobj_valid(self._scene) and not is_button_pressed(self._delete_button):
+            self._do_launch_scene(False)
 
     def _do_select_scene(self, scene_for_overrides):
         if liveobj_valid(self._scene):
@@ -148,7 +146,7 @@ class SceneComponent(CompoundComponent):
 
     def _do_delete_scene(self, scene_for_overrides):
         try:
-            if self._scene:
+            if liveobj_valid(self._scene):
                 song = self.song
                 song.delete_scene(list(song.scenes).index(self._scene))
         except RuntimeError:
@@ -156,7 +154,7 @@ class SceneComponent(CompoundComponent):
 
     def _do_launch_scene(self, value):
         launched = False
-        if self._launch_button.is_momentary():
+        if self.launch_button.is_momentary:
             self._scene.set_fire_button_state(value != 0)
             launched = value != 0
         elif value != 0:
@@ -167,12 +165,12 @@ class SceneComponent(CompoundComponent):
 
     @listens('is_triggered')
     def __on_is_triggered_changed(self):
-        raise liveobj_valid(self._scene) or AssertionError
+        assert liveobj_valid(self._scene)
         self._update_launch_button()
 
     @listens('color')
     def __on_scene_color_changed(self):
-        raise liveobj_valid(self._scene) or AssertionError
+        assert liveobj_valid(self._scene)
         self._update_launch_button()
 
     def _color_value(self, color):
@@ -184,21 +182,17 @@ class SceneComponent(CompoundComponent):
         return value
 
     def _update_launch_button(self):
-        if self.is_enabled() and self._launch_button != None:
-            value_to_send = self._no_scene_value
-            if self._scene:
+        if self.is_enabled():
+            value_to_send = self._no_scene_color
+            if liveobj_valid(self._scene):
+                value_to_send = self._scene_color
                 if self._scene.is_triggered:
-                    value_to_send = self._triggered_value
-                elif self._scene_value is not None:
-                    value_to_send = self._scene_value
+                    value_to_send = self._triggered_color
                 else:
-                    value_to_send = self._color_value(self._scene.color)
-            if value_to_send is None:
-                self._launch_button.turn_off()
-            elif in_range(value_to_send, 0, 128):
-                self._launch_button.send_value(value_to_send)
-            else:
-                self._launch_button.set_light(value_to_send)
+                    possible_color = self._color_value(self._scene.color)
+                    if possible_color:
+                        value_to_send = possible_color
+            self.launch_button.color = value_to_send
 
     def _create_clip_slot(self):
         return self.clip_slot_component_type()

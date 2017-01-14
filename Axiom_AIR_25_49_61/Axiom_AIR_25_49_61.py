@@ -57,7 +57,6 @@ class Axiom_AIR_25_49_61(ControlSurface):
         self._alt_device_component = None
         with self.component_guard():
             self.set_pad_translations(PAD_TRANSLATIONS)
-            self._device_selection_follows_track_selection = True
             self._suggested_input_port = 'HyperControl'
             self._suggested_output_port = 'HyperControl'
             self._single_fader_button_modes = None
@@ -329,9 +328,9 @@ class Axiom_AIR_25_49_61(ControlSurface):
         transport_view_modes.name = 'Transport_View_Modes'
 
     def _setup_device(self):
-        self._device_for_encoders = BestBankDeviceComponent()
+        self._device_for_encoders = BestBankDeviceComponent(device_selection_follows_track_selection=True)
         self._device_for_encoders.name = 'Device_Component_for_encoders'
-        self._device_for_faders = BestBankDeviceComponent()
+        self._device_for_faders = BestBankDeviceComponent(device_selection_follows_track_selection=True)
         self._device_for_faders.name = 'Device_Component_for_faders'
         self.set_device_component(self._device_for_encoders)
         self.set_alt_device_component(self._device_for_faders)
@@ -563,31 +562,31 @@ class Axiom_AIR_25_49_61(ControlSurface):
         self._set_bank_string(str(bank))
 
     def _install_mapping(self, midi_map_handle, control, parameter, feedback_delay, feedback_map):
-        if not self._in_build_midi_map:
-            raise AssertionError
-            raise midi_map_handle != None or AssertionError
-            raise control != None and parameter != None or AssertionError
-            raise isinstance(parameter, Live.DeviceParameter.DeviceParameter) or AssertionError
-            raise isinstance(control, InputControlElement) or AssertionError
-            raise isinstance(feedback_delay, int) or AssertionError
-            if not isinstance(feedback_map, tuple):
-                raise AssertionError
-                success = False
-                feedback_rule = None
-                feedback_rule = control.message_type() is MIDI_NOTE_TYPE and Live.MidiMap.NoteFeedbackRule()
-                feedback_rule.note_no = 0
-                feedback_rule.vel_map = (0,)
-            elif control.message_type() is MIDI_CC_TYPE:
-                feedback_rule = Live.MidiMap.CCFeedbackRule()
-                feedback_rule.cc_no = 0
-                feedback_rule.cc_value_map = (0,)
-            elif control.message_type() is MIDI_PB_TYPE:
-                feedback_rule = Live.MidiMap.PitchBendFeedbackRule()
-                feedback_rule.value_pair_map = feedback_map
-            raise feedback_rule != None or AssertionError
-            feedback_rule.channel = control.message_channel()
-            feedback_rule.delay_in_ms = feedback_delay
-            success = control.message_type() is MIDI_NOTE_TYPE and Live.MidiMap.map_midi_note_with_feedback_map(midi_map_handle, parameter, control.message_channel(), control.message_identifier(), feedback_rule)
+        assert self._in_build_midi_map
+        assert midi_map_handle != None
+        assert control != None and parameter != None
+        assert isinstance(parameter, Live.DeviceParameter.DeviceParameter)
+        assert isinstance(control, InputControlElement)
+        assert isinstance(feedback_delay, int)
+        assert isinstance(feedback_map, tuple)
+        success = False
+        feedback_rule = None
+        if control.message_type() is MIDI_NOTE_TYPE:
+            feedback_rule = Live.MidiMap.NoteFeedbackRule()
+            feedback_rule.note_no = 0
+            feedback_rule.vel_map = (0,)
+        elif control.message_type() is MIDI_CC_TYPE:
+            feedback_rule = Live.MidiMap.CCFeedbackRule()
+            feedback_rule.cc_no = 0
+            feedback_rule.cc_value_map = (0,)
+        elif control.message_type() is MIDI_PB_TYPE:
+            feedback_rule = Live.MidiMap.PitchBendFeedbackRule()
+            feedback_rule.value_pair_map = feedback_map
+        assert feedback_rule != None
+        feedback_rule.channel = control.message_channel()
+        feedback_rule.delay_in_ms = feedback_delay
+        if control.message_type() is MIDI_NOTE_TYPE:
+            success = Live.MidiMap.map_midi_note_with_feedback_map(midi_map_handle, parameter, control.message_channel(), control.message_identifier(), feedback_rule)
         elif control.message_type() is MIDI_CC_TYPE:
             success = Live.MidiMap.map_midi_cc_with_feedback_map(midi_map_handle, parameter, control.message_channel(), control.message_identifier(), control.message_map_mode(), feedback_rule, not control.needs_takeover())
         elif control.message_type() is MIDI_PB_TYPE:

@@ -2,10 +2,10 @@
 from __future__ import absolute_import, print_function
 import Live
 from itertools import islice
-from ableton.v2.base import Subject, listenable_property, clamp, nop
+from ableton.v2.base import EventObject, listenable_property, clamp, nop
 from .model.uniqueid import UniqueIdMixin
 
-class BrowserList(Subject, UniqueIdMixin):
+class BrowserList(EventObject, UniqueIdMixin):
     LAZY_ACCESS_COUNT = 1000
     LAZY_ACCESS_THRESHOLD = LAZY_ACCESS_COUNT - 100
 
@@ -18,7 +18,7 @@ class BrowserList(Subject, UniqueIdMixin):
         self._access_all = False
         self._items = []
         self._update_items()
-        raise self.LAZY_ACCESS_COUNT > self.LAZY_ACCESS_THRESHOLD or AssertionError
+        assert self.LAZY_ACCESS_COUNT > self.LAZY_ACCESS_THRESHOLD
 
     def _get_limit(self):
         return self._limit
@@ -78,8 +78,8 @@ class BrowserList(Subject, UniqueIdMixin):
 
     @selected_index.setter
     def selected_index(self, value):
-        if not (value != self._selected_index and (value == -1 or self._limit == -1)):
-            raise AssertionError
+        if value != self._selected_index:
+            assert value == -1 or self._limit == -1
             num_children = len(self._items)
             if value < -1 or value >= num_children:
                 raise IndexError('Index %i must be in [-1..%i]' % (value, num_children - 1))

@@ -1,7 +1,7 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/touch_strip_element.py
 from __future__ import absolute_import, print_function
 import Live
-from ableton.v2.base import SlotManager, in_range, nop, NamedTuple, clamp
+from ableton.v2.base import in_range, nop, NamedTuple, clamp
 from ableton.v2.control_surface import InputControlElement, MIDI_PB_TYPE
 MAX_PITCHBEND = 16384.0
 
@@ -88,7 +88,7 @@ class DraggingBehaviour(SelectingBehaviour):
 DEFAULT_BEHAVIOUR = SimpleBehaviour()
 MODWHEEL_BEHAVIOUR = SimpleBehaviour(mode=TouchStripModes.MODWHEEL)
 
-class TouchStripElement(InputControlElement, SlotManager):
+class TouchStripElement(InputControlElement):
     """
     Represents the Push TouchStrip.
     """
@@ -105,8 +105,8 @@ class TouchStripElement(InputControlElement, SlotManager):
     state_count = 24
 
     def __init__(self, touch_button = None, mode_element = None, light_element = None, *a, **k):
-        raise mode_element is not None or AssertionError
-        raise light_element is not None or AssertionError
+        assert mode_element is not None
+        assert light_element is not None
         super(TouchStripElement, self).__init__(MIDI_PB_TYPE, 0, 0, *a, **k)
         self._mode_element = mode_element
         self._light_element = light_element
@@ -156,7 +156,7 @@ class TouchStripElement(InputControlElement, SlotManager):
         self._behaviour.handle_value(value, notify)
 
     def turn_on_index(self, index, on_state = TouchStripStates.STATE_FULL, off_state = TouchStripStates.STATE_OFF):
-        raise in_range(index, 0, self.state_count) or AssertionError
+        assert in_range(index, 0, self.state_count)
         states = [off_state] * self.state_count
         states[index] = on_state
         self.send_state(states)
@@ -165,6 +165,6 @@ class TouchStripElement(InputControlElement, SlotManager):
         self.send_state((off_state,) * self.state_count)
 
     def send_state(self, state):
-        if not (self._behaviour.mode == TouchStripModes.CUSTOM_FREE and len(state) == self.state_count):
-            raise AssertionError
+        if self._behaviour.mode == TouchStripModes.CUSTOM_FREE:
+            assert len(state) == self.state_count
             self._light_element.send_value(state)

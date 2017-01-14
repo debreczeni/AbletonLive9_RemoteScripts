@@ -8,7 +8,7 @@ class MasterTrackComponent(Component):
     toggle_button = ToggleButtonControl()
 
     def __init__(self, tracks_provider = None, *a, **k):
-        raise tracks_provider is not None or AssertionError
+        assert tracks_provider is not None
         super(MasterTrackComponent, self).__init__(*a, **k)
         self._tracks_provider = tracks_provider
         self.__on_selected_item_changed.subject = self._tracks_provider

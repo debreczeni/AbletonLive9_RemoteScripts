@@ -47,9 +47,9 @@ class DrumGroupComponent(PlayableComponent, SlideComponent, Slideable):
 
     @position.setter
     def position(self, index):
-        if not 0 <= index <= 28:
-            raise AssertionError
-            self._drum_group_device.view.drum_pads_scroll_position = liveobj_valid(self._drum_group_device) and index
+        assert 0 <= index <= 28
+        if liveobj_valid(self._drum_group_device):
+            self._drum_group_device.view.drum_pads_scroll_position = index
 
     @property
     def assigned_drum_pads(self):

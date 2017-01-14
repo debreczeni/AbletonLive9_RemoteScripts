@@ -97,6 +97,7 @@ class Colors:
         SliceSelected = Rgb.OCEAN
         SliceUnselected = Rgb.YELLOW
         NoSlice = Rgb.YELLOW.shade(2)
+        NextSlice = Pulse(Rgb.YELLOW.shade(2), Rgb.OCEAN.highlight(), 48)
 
     class LoopSelector:
         Playhead = Rgb.GREEN
@@ -105,6 +106,12 @@ class Colors:
         InsideLoopStartBar = Rgb.WHITE
         InsideLoop = Rgb.WHITE
         OutsideLoop = Rgb.BLACK
+
+    class VelocityLevels:
+        LowLevel = Rgb.DARK_GREY
+        MidLevel = Rgb.GREY
+        HighLevel = Rgb.WHITE
+        SelectedLevel = Rgb.OCEAN
 
     class NoteEditor:
 
@@ -170,6 +177,8 @@ class Colors:
     class FixedLength:
         On = Basic.FULL
         Off = Basic.HALF
+        PhraseAlignedOn = BiLed.AMBER
+        PhraseAlignedOff = BiLed.YELLOW_HALF
 
     class Accent:
         On = Basic.FULL

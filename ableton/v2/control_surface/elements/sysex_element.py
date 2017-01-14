@@ -29,13 +29,13 @@ class SysexElement(InputControlElement):
         self._default_value = default_value
 
     def send_value(self, *arguments):
-        raise self._send_message_generator is not None or AssertionError
+        assert self._send_message_generator is not None
         message = self._send_message_generator(*arguments)
-        raise midi.is_valid_sysex(message) or AssertionError('Trying to send sysex message %r, which is not valid.' % map(hex, message))
+        assert midi.is_valid_sysex(message), 'Trying to send sysex message %r, which is not valid.' % map(hex, message)
         self.send_midi(message)
 
     def enquire_value(self):
-        raise self._enquire_message is not None or AssertionError
+        assert self._enquire_message is not None
         self.send_midi(self._enquire_message)
 
     def reset(self):

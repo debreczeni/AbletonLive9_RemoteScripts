@@ -53,7 +53,7 @@ class GenericScript(ControlSurface):
                 if 'NUMSENDS' in mixer_options.keys() and mixer_options['NUMSENDS'] > 0:
                     for send in range(mixer_options['NUMSENDS']):
                         key = 'SEND' + str(send + 1)
-                        raise key in mixer_options.keys() or AssertionError
+                        assert key in mixer_options.keys()
                         send_info.append(mixer_options[key])
 
                 momentary_buttons = 'NOTOGGLE' in mixer_options.keys()
@@ -104,7 +104,7 @@ class GenericScript(ControlSurface):
     def _init_device_component(self, device_controls, bank_controls, global_channel, macro_map_mode):
         is_momentary = True
         if device_controls:
-            device = DeviceComponent()
+            device = DeviceComponent(device_selection_follows_track_selection=True)
             device.name = 'Device_Component'
             if bank_controls:
                 next_button = None

@@ -1,20 +1,25 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/elements.py
 from __future__ import absolute_import, print_function
 from ableton.v2.base import depends, recursive_map
-from ableton.v2.control_surface import PrioritizedResource, MIDI_NOTE_TYPE
+from ableton.v2.control_surface import CompoundElement, MIDI_NOTE_TYPE, PrioritizedResource
 from ableton.v2.control_surface.elements import ButtonMatrixElement, DoublePressElement, FineGrainWithModifierEncoderElement, MultiElement
 from . import consts
 from .configurable_button_element import PadButtonElement
 from .control_element_factory import create_button, create_modifier_button, create_note_button
 from .playhead_element import PlayheadElement
+from .velocity_levels_element import VelocityLevelsElement
 from .touch_encoder_element import TouchEncoderElement
+BASE_ENCODER_SENSITIVITY = 0.5
 
 class Elements(object):
 
-    def __init__(self, deleter = None, undo_handler = None, pad_sensitivity_update = None, playhead = None, continuous_mapping_sensitivity = consts.CONTINUOUS_MAPPING_SENSITIVITY, fine_grained_continuous_mapping_sensitivity = consts.FINE_GRAINED_CONTINUOUS_MAPPING_SENSITIVITY, *a, **k):
-        raise deleter is not None or AssertionError
-        raise undo_handler is not None or AssertionError
-        raise playhead is not None or AssertionError
+    def __init__(self, deleter = None, undo_handler = None, pad_sensitivity_update = None, playhead = None, velocity_levels = None, continuous_mapping_sensitivity = None, fine_grained_continuous_mapping_sensitivity = None, *a, **k):
+        assert deleter is not None
+        assert undo_handler is not None
+        assert playhead is not None
+        assert velocity_levels is not None
+        assert continuous_mapping_sensitivity is not None
+        assert fine_grained_continuous_mapping_sensitivity is not None
         super(Elements, self).__init__(*a, **k)
         self.foot_pedal_button = DoublePressElement(create_button(69, 'Foot_Pedal', is_rgb=True))
         self.nav_up_button = create_button(46, 'Up_Arrow')
@@ -76,17 +81,18 @@ class Elements(object):
         self.single_press_event_matrix = ButtonMatrixElement(name='Single_Press_Event_Matrix', rows=recursive_map(lambda x: x.single_press, double_press_rows))
         self.double_press_event_matrix = ButtonMatrixElement(name='Double_Press_Event_Matrix', rows=recursive_map(lambda x: x.double_press, double_press_rows))
         self.tempo_control_tap = create_note_button(10, 'Tempo_Control_Tap')
-        self.tempo_control = TouchEncoderElement(channel=0, identifier=14, map_mode=consts.GLOBAL_MAP_MODE, name='Tempo_Control', undo_step_handler=undo_handler, delete_handler=deleter, encoder_sensitivity=consts.ENCODER_SENSITIVITY, touch_element=self.tempo_control_tap)
+        self.tempo_control = TouchEncoderElement(channel=0, identifier=14, map_mode=consts.GLOBAL_MAP_MODE, name='Tempo_Control', undo_step_handler=undo_handler, delete_handler=deleter, encoder_sensitivity=BASE_ENCODER_SENSITIVITY, touch_element=self.tempo_control_tap)
         self.swing_control_tap = create_note_button(9, 'Swing_Control_Tap')
-        self.swing_control = TouchEncoderElement(channel=0, identifier=15, map_mode=consts.GLOBAL_MAP_MODE, name='Swing_Control', undo_step_handler=undo_handler, delete_handler=deleter, encoder_sensitivity=consts.ENCODER_SENSITIVITY, touch_element=self.swing_control_tap)
+        self.swing_control = TouchEncoderElement(channel=0, identifier=15, map_mode=consts.GLOBAL_MAP_MODE, name='Swing_Control', undo_step_handler=undo_handler, delete_handler=deleter, encoder_sensitivity=BASE_ENCODER_SENSITIVITY, touch_element=self.swing_control_tap)
         self.master_volume_control_tap = create_note_button(8, 'Master_Volume_Tap')
-        self.master_volume_control = TouchEncoderElement(channel=0, identifier=79, map_mode=consts.GLOBAL_MAP_MODE, undo_step_handler=undo_handler, delete_handler=deleter, name='Master_Volume_Control', encoder_sensitivity=consts.ENCODER_SENSITIVITY, touch_element=self.master_volume_control_tap)
+        self.master_volume_control = TouchEncoderElement(channel=0, identifier=79, map_mode=consts.GLOBAL_MAP_MODE, undo_step_handler=undo_handler, delete_handler=deleter, name='Master_Volume_Control', encoder_sensitivity=BASE_ENCODER_SENSITIVITY, touch_element=self.master_volume_control_tap)
         self.master_volume_control.mapping_sensitivity = continuous_mapping_sensitivity
         self.global_param_touch_buttons_raw = [ create_note_button(index, 'Track_Control_Touch_' + str(index), resource_type=PrioritizedResource) for index in range(8) ]
         self.global_param_touch_buttons = ButtonMatrixElement(name='Track_Control_Touches', rows=[self.global_param_touch_buttons_raw])
-        self.parameter_controls_raw = [ TouchEncoderElement(channel=0, identifier=71 + index, map_mode=consts.GLOBAL_MAP_MODE, undo_step_handler=undo_handler, delete_handler=deleter, encoder_sensitivity=consts.ENCODER_SENSITIVITY, name='Track_Control_' + str(index), touch_element=self.global_param_touch_buttons_raw[index]) for index in xrange(8) ]
+        self.parameter_controls_raw = [ TouchEncoderElement(channel=0, identifier=71 + index, map_mode=consts.GLOBAL_MAP_MODE, undo_step_handler=undo_handler, delete_handler=deleter, encoder_sensitivity=BASE_ENCODER_SENSITIVITY, name='Track_Control_' + str(index), touch_element=self.global_param_touch_buttons_raw[index]) for index in xrange(8) ]
         self.global_param_controls = ButtonMatrixElement(name='Track_Controls', rows=[self.parameter_controls_raw])
         self.fine_grain_param_controls_raw = [ FineGrainWithModifierEncoderElement(encoder, self.shift_button, fine_grained_continuous_mapping_sensitivity, continuous_mapping_sensitivity) for encoder in self.parameter_controls_raw ]
         self.fine_grain_param_controls = ButtonMatrixElement(rows=[self.fine_grain_param_controls_raw])
         self.any_touch_button = MultiElement(*self.global_param_touch_buttons.nested_control_elements())
         self.playhead_element = PlayheadElement(playhead)
+        self.velocity_levels_element = VelocityLevelsElement(velocity_levels)

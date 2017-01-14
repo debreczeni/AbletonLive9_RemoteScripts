@@ -30,7 +30,7 @@ class ActionsComponent(ControlSurfaceComponent):
         return self.is_enabled() and not self.suppressing_control_notifications
 
     def quantize_clip(self, clip):
-        raise isinstance(clip, Live.Clip.Clip) or AssertionError
+        assert isinstance(clip, Live.Clip.Clip)
         clip.quantize(self._record_quantization, 1.0)
 
     @undo_button.pressed

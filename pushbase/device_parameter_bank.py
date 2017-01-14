@@ -1,12 +1,12 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/device_parameter_bank.py
 from __future__ import absolute_import, print_function
-from ableton.v2.base import SlotManager, Subject, find_if, listens, listens_group, listenable_property, liveobj_valid, clamp
+from ableton.v2.base import EventObject, find_if, listens, listens_group, listenable_property, liveobj_valid, clamp
 from .banking_util import PARAMETERS_KEY, MAIN_KEY, BANK_FORMAT, all_parameters
 
-class DeviceParameterBank(SlotManager, Subject):
+class DeviceParameterBank(EventObject):
 
     def __init__(self, size = None, device = None, banking_info = None, *a, **k):
-        raise size is not None or AssertionError
+        assert size is not None
         super(DeviceParameterBank, self).__init__(*a, **k)
         self._size = size
         self._device = device
@@ -119,7 +119,7 @@ class MaxDeviceParameterBank(DeviceParameterBank):
 
     def __init__(self, *a, **k):
         super(MaxDeviceParameterBank, self).__init__(*a, **k)
-        raise hasattr(self._device, 'get_bank_count') or AssertionError
+        assert hasattr(self._device, 'get_bank_count')
 
     def _calc_name(self):
         if self.bank_count() == 0:

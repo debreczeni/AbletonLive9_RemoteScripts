@@ -160,5 +160,5 @@ class MainDisplayController(MackieControlComponent):
         for i in range(6):
             ret += display_string[i]
 
-        raise len(ret) == 6 or AssertionError
+        assert len(ret) == 6
         return ret

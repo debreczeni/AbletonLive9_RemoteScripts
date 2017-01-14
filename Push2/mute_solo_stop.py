@@ -1,7 +1,7 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push2/mute_solo_stop.py
 from __future__ import absolute_import, print_function
 from functools import partial
-from ableton.v2.base import listenable_property, listens, listens_group, liveobj_valid, MultiSlot, SlotManager, Subject
+from ableton.v2.base import listenable_property, listens, listens_group, liveobj_valid, EventObject, MultiSlot
 from ableton.v2.control_surface import Component, CompoundComponent, Layer
 from ableton.v2.control_surface.control import ButtonControl
 from pushbase.message_box_component import Messenger
@@ -14,7 +14,7 @@ def stop_clip_in_selected_track(song):
         selected_track.stop_all_clips()
 
 
-class TrackStateColorIndicator(Subject, SlotManager):
+class TrackStateColorIndicator(EventObject):
     color = listenable_property.managed('DefaultButton.On')
 
     def __init__(self, item_provider = None, track_property = None, property_active_color = None, song = None, *a, **k):
@@ -24,7 +24,7 @@ class TrackStateColorIndicator(Subject, SlotManager):
         self._property = track_property
         self._song = song
         self.__on_items_changed.subject = item_provider
-        self.register_slot(MultiSlot(listener=self.__on_property_changed, event=('selected_item', track_property), subject=item_provider))
+        self.register_slot(MultiSlot(listener=self.__on_property_changed, event_name_list=('selected_item', track_property), subject=item_provider))
         self._update_color()
 
     @listens('items')
@@ -44,20 +44,20 @@ class GlobalMixerActionComponent(Component):
     action_button = ButtonControl(delay_time=GLOBAL_ACTION_LOCK_MODE_DELAY)
 
     def __init__(self, track_list_component = None, mode = None, immediate_action = None, default_color_indicator = None, mode_locked_color = None, mode_active_color = None, *a, **k):
-        if not track_list_component is not None:
-            raise AssertionError
-            raise mode is not None or AssertionError
-            raise mode in track_list_component.modes or AssertionError
-            super(GlobalMixerActionComponent, self).__init__(*a, **k)
-            self._mode = mode
-            self._immediate_action = immediate_action
-            self._mode_locked = False
-            self._default_color_indicator = None
-            self._locked_color = mode_locked_color
-            self._active_color = mode_active_color if mode_active_color is not None else 'DefaultButton.On'
-            self._allow_released_immediately_action = True
-            self._track_list_component = track_list_component
-            self._default_color_indicator = default_color_indicator is not None and self.register_disconnectable(default_color_indicator)
+        assert track_list_component is not None
+        assert mode is not None
+        assert mode in track_list_component.modes
+        super(GlobalMixerActionComponent, self).__init__(*a, **k)
+        self._mode = mode
+        self._immediate_action = immediate_action
+        self._mode_locked = False
+        self._default_color_indicator = None
+        self._locked_color = mode_locked_color
+        self._active_color = mode_active_color if mode_active_color is not None else 'DefaultButton.On'
+        self._allow_released_immediately_action = True
+        self._track_list_component = track_list_component
+        if default_color_indicator is not None:
+            self._default_color_indicator = self.register_disconnectable(default_color_indicator)
             self.__on_default_color_changed.subject = default_color_indicator
         self._update_default_color()
 

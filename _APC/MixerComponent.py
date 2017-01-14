@@ -24,9 +24,9 @@ class ChanStripComponent(ChannelStripComponentBase):
                 self._toggle_fold_ticks_delay = -1
 
     def _on_timer(self):
-        if self.is_enabled() and self._track != None and self._toggle_fold_ticks_delay > -1:
-            if not self._track.is_foldable:
-                raise AssertionError
+        if self.is_enabled() and self._track != None:
+            if self._toggle_fold_ticks_delay > -1:
+                assert self._track.is_foldable
                 if self._toggle_fold_ticks_delay == 0:
                     self._track.fold_state = not self._track.fold_state
                 self._toggle_fold_ticks_delay -= 1

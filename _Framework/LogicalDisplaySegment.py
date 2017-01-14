@@ -1,5 +1,5 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/_Framework/LogicalDisplaySegment.py
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 class LogicalDisplaySegment(object):
     """
@@ -9,8 +9,8 @@ class LogicalDisplaySegment(object):
 
     def __init__(self, width = None, update_callback = None, *a, **k):
         super(LogicalDisplaySegment, self).__init__(*a, **k)
-        raise width is not None or AssertionError
-        raise callable(update_callback) or AssertionError
+        assert width is not None
+        assert callable(update_callback)
         self._update_callback = update_callback
         self._width = width
         self._position_identifier = ()
@@ -53,7 +53,7 @@ class LogicalDisplaySegment(object):
         if self._data_source != None:
             separator = self._data_source.separator + self.separator
             width = self._width - len(separator)
-            raise width >= 0 or AssertionError
+            assert width >= 0
             return self._data_source.adjust_string(width) + separator
         else:
             return ' ' * self._width

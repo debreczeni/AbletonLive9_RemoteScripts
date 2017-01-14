@@ -1,7 +1,7 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/scrollable_list.py
 from __future__ import absolute_import, print_function
 from functools import partial
-from ableton.v2.base import BooleanContext, clamp, forward_property, in_range, index_if, Subject, listens, task
+from ableton.v2.base import BooleanContext, EventObject, clamp, forward_property, in_range, index_if, listens, task
 from ableton.v2.control_surface import CompoundComponent, defaults
 from ableton.v2.control_surface.control import ButtonControl, EncoderControl, control_list
 from ableton.v2.control_surface.components import ScrollComponent, Scrollable
@@ -41,7 +41,7 @@ class ScrollableListItem(object):
         return self._scrollable_list and self._scrollable_list.select_item(self)
 
 
-class ScrollableList(Subject, Scrollable):
+class ScrollableList(EventObject, Scrollable):
     """
     Class for managing a visual subset of a list of items.
     
@@ -90,7 +90,7 @@ class ScrollableList(Subject, Scrollable):
         return self._num_visible_items
 
     def _set_num_visible_items(self, num_items):
-        raise num_items >= 0 or AssertionError
+        assert num_items >= 0
         self._num_visible_items = num_items
         self._normalize_offset(self._selected_item_index)
 
@@ -106,8 +106,8 @@ class ScrollableList(Subject, Scrollable):
         if possible, 'offset' number of elements visible before the
         selected one.  Does nothing if the item was already selected.
         """
-        if not (index != self.selected_item_index and index >= 0 and index < len(self._items) and self.selected_item_index != -1):
-            raise AssertionError
+        if index != self.selected_item_index and index >= 0 and index < len(self._items):
+            assert self.selected_item_index != -1
             self._offset = clamp(index - offset, 0, len(self._items))
             self._normalize_offset(index)
             self._do_set_selected_item_index(index)
@@ -147,8 +147,8 @@ class ScrollableList(Subject, Scrollable):
             self.select_item_index_with_offset(index, 0)
 
     def _set_selected_item_index(self, index):
-        if not (index >= 0 and index < len(self._items) and self.selected_item_index != -1):
-            raise AssertionError
+        if index >= 0 and index < len(self._items):
+            assert self.selected_item_index != -1
             self._normalize_offset(index)
             self._do_set_selected_item_index(index)
 

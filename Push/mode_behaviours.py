@@ -50,21 +50,21 @@ class AlternativeBehaviour(CancellableBehaviour):
         return mode_groups and mode_groups & alt_group
 
     def release_delayed(self, component, mode):
-        raise self._check_mode_groups(component, mode) or AssertionError
+        assert self._check_mode_groups(component, mode)
         component.pop_groups(component.get_mode_groups(mode))
         self.restore_previous_mode(component)
 
     def press_delayed(self, component, mode):
-        raise self._check_mode_groups(component, mode) or AssertionError
+        assert self._check_mode_groups(component, mode)
         self.remember_previous_mode(component)
         component.push_mode(self._alternative_mode)
 
     def release_immediate(self, component, mode):
-        raise self._check_mode_groups(component, mode) or AssertionError
+        assert self._check_mode_groups(component, mode)
         super(AlternativeBehaviour, self).press_immediate(component, mode)
 
     def press_immediate(self, component, mode):
-        raise self._check_mode_groups(component, mode) or AssertionError
+        assert self._check_mode_groups(component, mode)
 
 
 class DynamicBehaviourMixin(ModeButtonBehaviour):

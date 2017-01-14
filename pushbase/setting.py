@@ -1,14 +1,14 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/pushbase/setting.py
 from __future__ import absolute_import, print_function
 from math import fabs
-from ableton.v2.base import sign, clamp, Subject, Event
+from ableton.v2.base import sign, clamp, EventObject, Event
 
-class Setting(Subject):
+class Setting(EventObject):
     """
     Setting interface for writing to the preferences and all
     information for changing and displaying it.
     """
-    __events__ = (Event(name='value', doc=' Called when the value of the\n                                                 setting changes '),)
+    __events__ = (Event(name='value', doc=' Called when the value of the setting changes '),)
 
     def __init__(self, name = '', values = None, default_value = None, preferences = None, *a, **k):
         super(Setting, self).__init__(*a, **k)
@@ -24,9 +24,9 @@ class Setting(Subject):
         return self.value_to_string(self.value)
 
     def _set_value(self, value):
-        if not value in self.values:
-            raise AssertionError
-            self._preferences[self.name] = self._preferences[self.name] != value and value
+        assert value in self.values
+        if self._preferences[self.name] != value:
+            self._preferences[self.name] = value
             self.on_value_changed(value)
             self.notify_value(self.value)
 

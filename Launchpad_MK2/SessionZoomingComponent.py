@@ -10,8 +10,8 @@ class SessionZoomingComponent(SessionZoomingComponentBase):
         map(skin_scroll_component, (self._horizontal_scroll, self._vertical_scroll))
 
     def register_component(self, component):
-        raise component != None or AssertionError
-        raise component not in self._sub_components or AssertionError
+        assert component != None
+        assert component not in self._sub_components
         self._sub_components.append(component)
         return component
 
